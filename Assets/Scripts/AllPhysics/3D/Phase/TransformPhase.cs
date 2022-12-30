@@ -1,4 +1,5 @@
 using FixMath.NET;
+using ZeroPhysics.AllPhysics.Physics3D.Facade;
 
 namespace ZeroPhysics.AllPhysics.Physics3D
 {
@@ -6,23 +7,24 @@ namespace ZeroPhysics.AllPhysics.Physics3D
     public class TransformPhase
     {
 
-        PhysicsWorld3D world;
+        Physics3DFacade facade;
 
         public TransformPhase() { }
 
-        public void Inject(PhysicsWorld3D world)
+        public void Inject(Physics3DFacade facade)
         {
-            this.world = world;
+            this.facade = facade;
         }
 
         public void Tick(in FP64 time)
         {
             // --- Box
-            var allRbBoxses = world.allRigidbodyBoxes;
-            var rbBoxCount = world.rbBoxCount;
-            for (int i = 0; i < rbBoxCount; i++)
+            var rbBoxes = facade.rbBoxes;
+            var rbBoxInfos = facade.IDService.rbBoxIDInfos;
+            for (int i = 0; i < rbBoxes.Length; i++)
             {
-                var rb = allRbBoxses[i];
+                if (!rbBoxInfos[i]) continue;
+                var rb = rbBoxes[i];
                 var box = rb.Box;
                 var center = box.Center;
                 var offset = rb.LinearV * time;

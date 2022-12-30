@@ -65,17 +65,20 @@ namespace ZeroPhysics.AllPhysics.Physics3D
 
         public FPVector2 GetAxisX_SelfProjectionSub()
         {
-            return new FPVector2(-scaledSize.x, scaledSize.x);
+            var halfX = scaledSize.x * FP64.Half;
+            return new FPVector2(-halfX, halfX);
         }
 
         public FPVector2 GetAxisY_SelfProjectionSub()
         {
-            return new FPVector2(-scaledSize.y, scaledSize.y);
+            var halfY = scaledSize.y * FP64.Half;
+            return new FPVector2(-halfY, halfY);
         }
 
         public FPVector2 GetAxisZ_SelfProjectionSub()
         {
-            return new FPVector2(-scaledSize.z, scaledSize.z);
+            var halfZ = scaledSize.z * FP64.Half;
+            return new FPVector2(-halfZ, halfZ);
         }
 
         public Axis3D GetAxisX()

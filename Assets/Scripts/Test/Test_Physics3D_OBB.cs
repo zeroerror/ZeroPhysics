@@ -1,7 +1,6 @@
 using UnityEngine;
 using FixMath.NET;
 using ZeroPhysics.AllPhysics.Physics3D;
-using ZeroPhysics.Generic;
 using ZeroPhysics.Extensions;
 
 public class Test_Physics3D_OBB : MonoBehaviour
@@ -15,19 +14,18 @@ public class Test_Physics3D_OBB : MonoBehaviour
 
     int[] collsionArray;
 
-    PhysicsWorld3D physicsWorld;
+    PhysicsWorld3DCore physicsCore;
 
     void Start()
     {
         if (Boxes == null) return;
         canRun = true;
-        physicsWorld = new PhysicsWorld3D(10);
+        physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
         InitBox3Ds();
     }
 
     void FixedUpdate()
     {
-        physicsWorld.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
     }
 
     void InitBox3Ds()
@@ -41,12 +39,12 @@ public class Test_Physics3D_OBB : MonoBehaviour
             boxTfs[i] = bc;
         }
 
+        var setterAPI = physicsCore.SetterAPI;
         boxes = new Box3D[bcCount];
         for (int i = 0; i < bcCount; i++)
         {
             var bcTF = boxTfs[i].transform;
-            boxes[i] = physicsWorld.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
-            physicsWorld.SpawnRigidbody(boxes[i]);
+            boxes[i] = setterAPI.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
         }
         Debug.Log($"Total Box: {bcCount}");
     }
@@ -100,7 +98,7 @@ public class Test_Physics3D_OBB : MonoBehaviour
 
     void UpdateBox(Transform src, Box3D box)
     {
-        // box.SetCenter(src.position.ToFPVector3());
+        box.SetCenter(src.position.ToFPVector3());
         box.SetScale(src.localScale.ToFPVector3());
         box.SetRotation(src.rotation.ToFPQuaternion());
     }

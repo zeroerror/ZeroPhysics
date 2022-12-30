@@ -11,14 +11,14 @@ public class Test_Physics3D_AABB : MonoBehaviour
     Box3D[] boxes;
     Transform[] bcs;
     public Transform Boxes;
-    PhysicsWorld3D physicsWorld;
+    PhysicsWorld3DCore physicsCore;
 
     public void Start()
     {
         if (Boxes == null) return;
         isRun = true;
 
-        physicsWorld = new PhysicsWorld3D(10);
+        physicsCore = new PhysicsWorld3DCore(new FixMath.NET.FPVector3(0, -10, 0));
 
         var bcCount = Boxes.childCount;
         bcs = new Transform[bcCount];
@@ -29,10 +29,11 @@ public class Test_Physics3D_AABB : MonoBehaviour
         }
 
         boxes = new Box3D[bcCount];
+        var setterAPI = physicsCore.SetterAPI;
         for (int i = 0; i < bcCount; i++)
         {
             var bcTF = bcs[i].transform;
-            boxes[i] = physicsWorld.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+            boxes[i] = setterAPI.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
         }
     }
 

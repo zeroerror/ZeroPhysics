@@ -16,13 +16,13 @@ public class Test_Physics3D_PenetrationCorrection : MonoBehaviour
     int[] collsionArray;
     bool canRun = false;
 
-    PhysicsWorld3D physicsWorld;
+    PhysicsWorld3DCore physicsCore;
 
     void Start()
     {
         canRun = Boxes != null;
         if (!canRun) return;
-        physicsWorld = new PhysicsWorld3D(10);
+        physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
         InitBox3Ds();
     }
 
@@ -118,11 +118,12 @@ public class Test_Physics3D_PenetrationCorrection : MonoBehaviour
             boxTfs[i] = bc;
         }
 
+        var setterAPI = physicsCore.SetterAPI;
         boxes = new Box3D[bcCount];
         for (int i = 0; i < bcCount; i++)
         {
             var bcTF = boxTfs[i].transform;
-            boxes[i] = physicsWorld.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+            boxes[i] = setterAPI.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
             Debug.Log($"BoxType: {boxes[i].GetBoxType()}");
         }
         Debug.Log($"Total Box: {bcCount}");

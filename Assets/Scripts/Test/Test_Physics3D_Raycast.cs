@@ -22,14 +22,14 @@ public class Test_Physics3D_Raycast : MonoBehaviour
 
     Ray3D ray;
 
-    PhysicsWorld3D physicsWorld;
+    PhysicsWorld3DCore physicsCore;
 
     void Start()
     {
         if (boxRoot == null) return;
         if (sphereRoot == null) return;
         isRun = true;
-        physicsWorld = new PhysicsWorld3D(10);
+        physicsCore = new PhysicsWorld3DCore(new FPVector3(0, 10, 0));
 
         var count = boxRoot.childCount;
         box_tfs = new Transform[count];
@@ -37,6 +37,8 @@ public class Test_Physics3D_Raycast : MonoBehaviour
         {
             box_tfs[i] = boxRoot.GetChild(i);
         }
+
+        var setterAPI = physicsCore.SetterAPI;
         boxes = new Box3D[count];
         for (int i = 0; i < count; i++)
         {
@@ -44,7 +46,7 @@ public class Test_Physics3D_Raycast : MonoBehaviour
             var pos = tf.position.ToFPVector3();
             var rotation = tf.rotation.ToFPQuaternion();
             var localScale = tf.localScale.ToFPVector3();
-            boxes[i] = physicsWorld.SpawnBox(pos, rotation, localScale, Vector3.one.ToFPVector3());
+            boxes[i] = setterAPI.SpawnBox(pos, rotation, localScale, Vector3.one.ToFPVector3());
         }
         Debug.Log($"Total Box: {count}");
 
@@ -62,7 +64,7 @@ public class Test_Physics3D_Raycast : MonoBehaviour
             var rotation = tf.rotation.ToFPQuaternion();
             var localScale = tf.localScale.ToFPVector3();
             var size = Vector3.one.ToFPVector3();
-            spheres[i] = physicsWorld.SpawnSphere(pos, rotation, localScale, size);
+            spheres[i] = setterAPI.SpawnSphere(pos, rotation, localScale, size);
         }
         Debug.Log($"Total Sphere: {count}");
 

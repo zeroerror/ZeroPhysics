@@ -7,6 +7,10 @@ namespace ZeroPhysics.AllPhysics.Physics3D
     public class RigidbodyBox3D
     {
 
+        int instanceID;
+        public int InstanceID => instanceID;
+        public void SetInstanceID(int v) => instanceID = v;
+
         Box3D box;
         public Box3D Box => box;
 
@@ -18,13 +22,13 @@ namespace ZeroPhysics.AllPhysics.Physics3D
         public FPVector3 Force => force;
         public void SetForce(in FPVector3 v) => force = v;
 
+        FP64 mass;
+        public FP64 Mass => mass;
+        public void SetMass(in FP64 v) => mass = v;
+
         FPVector3 linearV;
         public FPVector3 LinearV => linearV;
         public void SetLinearV(in FPVector3 v) => linearV = v;
-
-        FP64 gravity;
-        public FP64 Gravity => gravity;
-        public void SetGravity(in FP64 v) => gravity = v;
 
         public RigidbodyBox3D(Box3D box)
         {

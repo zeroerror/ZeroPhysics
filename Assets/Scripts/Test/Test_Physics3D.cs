@@ -1,0 +1,100 @@
+using UnityEngine;
+using FixMath.NET;
+using ZeroPhysics.AllPhysics.Physics3D;
+using ZeroPhysics.Extensions;
+
+public class Test_Physics3D : MonoBehaviour
+{
+
+    bool canRun = false;
+
+    public Transform rbBoxRoot;
+    Transform[] rbBoxTfs;
+
+    public Transform boxRoot;
+    Transform[] boxTfs;
+
+    PhysicsWorld3DCore physicsCore;
+    void Start()
+    {
+        if (rbBoxRoot == null) return;
+        canRun = true;
+        physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
+        InitBox3Ds();
+    }
+
+    void FixedUpdate()
+    {
+        physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
+    }
+
+    void InitBox3Ds()
+    {
+        var setterAPI = physicsCore.SetterAPI;
+
+        var rbCount = rbBoxRoot.childCount;
+        rbBoxTfs = new Transform[rbCount];
+        for (int i = 0; i < rbCount; i++)
+        {
+            rbBoxTfs[i] = rbBoxRoot.GetChild(i);
+        }
+        for (int i = 0; i < rbCount; i++)
+        {
+            var tf = rbBoxTfs[i].transform;
+            setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+        }
+        Debug.Log($"Total RBBox: {rbCount}");
+
+        var boxCount = boxRoot.childCount;
+        boxTfs = new Transform[boxCount];
+        for (int i = 0; i < boxCount; i++)
+        {
+            boxTfs[i] = boxRoot.GetChild(i);
+        }
+        for (int i = 0; i < boxCount; i++)
+        {
+            var tf = boxTfs[i].transform;
+            setterAPI.SpawnBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+        }
+        Debug.Log($"Total Box: {boxCount}");
+    }
+
+    public void OnDrawGizmos()
+    {
+        if (!canRun) return;
+        if (rbBoxTfs == null) return;
+        if (boxTfs == null) return;
+
+        var getterAPI = physicsCore.GetterAPI;
+        var rbBoxes = getterAPI.GetAllRBBoxes();
+        var boxes = getterAPI.GetAllBoxes();
+        for (int i = 0; i < rbBoxes.Count; i++)
+        {
+            var bc = rbBoxTfs[i];
+            var box = rbBoxes[i].Box;
+            UpdateBox(bc.transform, box);
+            Gizmos.color = Color.green;
+            box.DrawBoxPoint();
+            box.DrawBoxBorder();
+        }
+
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            var bc = boxTfs[i];
+            var box = boxes[i];
+            UpdateBox(bc.transform, box);
+            Gizmos.color = Color.black;
+            box.DrawBoxPoint();
+            box.DrawBoxBorder();
+        }
+
+    }
+
+    void UpdateBox(Transform src, Box3D box)
+    {
+        box.SetScale(src.localScale.ToFPVector3());
+        box.SetRotation(src.rotation.ToFPQuaternion());
+        src.position = box.Center.ToVector3();
+    }
+
+}
