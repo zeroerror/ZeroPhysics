@@ -98,7 +98,7 @@ public class Test_Physics3D_PenetrationCorrection : MonoBehaviour
                     if (c1 == 1 && c2 == 1)
                     {
                         // - Penetration
-                        Intersect3DUtils.PenetrationCorrection(b1, FP64.ToFP64(mtv1_coefficient), b2, FP64.ToFP64(mtv2_coefficient));
+                        Penetration3DUtils.PenetrationCorrection(b1, FP64.ToFP64(mtv1_coefficient), b2, FP64.ToFP64(mtv2_coefficient));
                         btf1.position = b1.Center.ToVector3();
                         btf2.position = b2.Center.ToVector3();
                     }

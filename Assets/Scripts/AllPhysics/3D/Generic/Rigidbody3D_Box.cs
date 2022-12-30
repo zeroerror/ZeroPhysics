@@ -4,7 +4,7 @@ using ZeroPhysics.Generic;
 namespace ZeroPhysics.AllPhysics.Physics3D
 {
 
-    public class RigidbodyBox3D
+    public class Rigidbody3D_Box
     {
 
         int instanceID;
@@ -30,7 +30,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
         public FPVector3 LinearV => linearV;
         public void SetLinearV(in FPVector3 v) => linearV = v;
 
-        public RigidbodyBox3D(Box3D box)
+        public Rigidbody3D_Box(Box3D box)
         {
             this.box = box;
         }

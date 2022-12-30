@@ -21,9 +21,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.Facade
             box.SetCenter(center);
             box.SetRotation(rotation);
             box.SetScale(scale);
-            box.SetWidth(size.x);
-            box.SetHeight(size.y);
-            box.SetLength(size.z);
+            box.SetSize(size);
             return box;
         }
 

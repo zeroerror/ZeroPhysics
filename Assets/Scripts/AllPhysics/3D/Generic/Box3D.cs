@@ -25,20 +25,9 @@ namespace ZeroPhysics.AllPhysics.Physics3D
         public FPVector3 Scale => trans.Scale;
         public void SetScale(in FPVector3 v) => trans.SetScale(v);
 
-        FP64 width;
-        public FP64 Width => width;
-        public void SetWidth(in FP64 v) => width = v;
-        public FP64 GetWidthHalfScaled() => width * Scale.x * FP64.Half;
-
-        public FP64 height;
-        public FP64 Height => height;
-        public void SetHeight(in FP64 v) => height = v;
-        public FP64 GetHeightHalfScaled() => height * Scale.y * FP64.Half;
-
-        public FP64 length;
-        public FP64 Length => length;
-        public void SetLength(in FP64 v) => length = v;
-        public FP64 GetLengthHalfScaled() => length * Scale.z * FP64.Half;
+        FPVector3 size;
+        public FPVector3 Size => size;
+        public void SetSize(in FPVector3 v) => size = v;
 
         public Box3D()
         {
@@ -53,7 +42,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
         public Box3DModel GetModel()
         {
             var model = new Box3DModel();
-            model.Ctor(trans, new FPVector3(width, height, length));
+            model.Ctor(trans, size);
             return model;
         }
 

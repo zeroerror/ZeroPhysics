@@ -23,7 +23,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.API
             return domain.GetAllBoxes();
         }
 
-        List<RigidbodyBox3D> IGetterAPI.GetAllRBBoxes()
+        List<Rigidbody3D_Box> IGetterAPI.GetAllRBBoxes()
         {
             var domain = facade.Domain.DataDomain;
             return domain.GetAllRBBoxes();

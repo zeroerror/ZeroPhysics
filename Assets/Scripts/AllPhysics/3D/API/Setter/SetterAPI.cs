@@ -16,7 +16,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.API
             this.facade = facade;
         }
 
-        RigidbodyBox3D ISetterAPI.SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Rigidbody3D_Box ISetterAPI.SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
             var domain = facade.Domain.SpawnDomain;
             return domain.SpawnRBBox(center, rotation, scale, size, 1);

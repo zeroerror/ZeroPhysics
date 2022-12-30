@@ -30,13 +30,13 @@ namespace ZeroPhysics.AllPhysics.Physics3D.Domain
             return all;
         }
 
-        public List<RigidbodyBox3D> GetAllRBBoxes()
+        public List<Rigidbody3D_Box> GetAllRBBoxes()
         {
-            var rbBoxes = facade.rbBoxes;
+            var rbBoxes = facade.rb_boxes;
             var idService = facade.IDService;
             var infos = idService.rbBoxIDInfos;
             var len = infos.Length;
-            List<RigidbodyBox3D> all = new List<RigidbodyBox3D>();
+            List<Rigidbody3D_Box> all = new List<Rigidbody3D_Box>();
             for (int i = 0; i < len; i++)
             {
                 if (infos[i]) all.Add(rbBoxes[i]);

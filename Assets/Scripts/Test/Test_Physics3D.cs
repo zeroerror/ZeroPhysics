@@ -23,9 +23,60 @@ public class Test_Physics3D : MonoBehaviour
         InitBox3Ds();
     }
 
+    void Update()
+    {
+        if (!canRun) return;
+        if (rbBoxTfs == null) return;
+        if (boxTfs == null) return;
+
+        var getterAPI = physicsCore.GetterAPI;
+        var rbBoxes = getterAPI.GetAllRBBoxes();
+        var boxes = getterAPI.GetAllBoxes();
+        for (int i = 0; i < rbBoxes.Count; i++)
+        {
+            var bc = rbBoxTfs[i];
+            var box = rbBoxes[i].Box;
+            UpdateBox(bc.transform, box);
+        }
+
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            var bc = boxTfs[i];
+            var box = boxes[i];
+            UpdateBox(bc.transform, box);
+        }
+    }
+
     void FixedUpdate()
     {
         physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
+    }
+
+    public void OnDrawGizmos()
+    {
+        if (!canRun) return;
+        if (rbBoxTfs == null) return;
+        if (boxTfs == null) return;
+
+        var getterAPI = physicsCore.GetterAPI;
+        
+        var rbBoxes = getterAPI.GetAllRBBoxes();
+        for (int i = 0; i < rbBoxes.Count; i++)
+        {
+            var box = rbBoxes[i].Box;
+            Gizmos.color = Color.green;
+            box.DrawBoxPoint();
+            box.DrawBoxBorder();
+        }
+
+        var boxes = getterAPI.GetAllBoxes();
+        for (int i = 0; i < boxes.Count; i++)
+        {
+            var box = boxes[i];
+            Gizmos.color = Color.black;
+            box.DrawBoxPoint();
+            box.DrawBoxBorder();
+        }
     }
 
     void InitBox3Ds()
@@ -57,37 +108,6 @@ public class Test_Physics3D : MonoBehaviour
             setterAPI.SpawnBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
         }
         Debug.Log($"Total Box: {boxCount}");
-    }
-
-    public void OnDrawGizmos()
-    {
-        if (!canRun) return;
-        if (rbBoxTfs == null) return;
-        if (boxTfs == null) return;
-
-        var getterAPI = physicsCore.GetterAPI;
-        var rbBoxes = getterAPI.GetAllRBBoxes();
-        var boxes = getterAPI.GetAllBoxes();
-        for (int i = 0; i < rbBoxes.Count; i++)
-        {
-            var bc = rbBoxTfs[i];
-            var box = rbBoxes[i].Box;
-            UpdateBox(bc.transform, box);
-            Gizmos.color = Color.green;
-            box.DrawBoxPoint();
-            box.DrawBoxBorder();
-        }
-
-        for (int i = 0; i < boxes.Count; i++)
-        {
-            var bc = boxTfs[i];
-            var box = boxes[i];
-            UpdateBox(bc.transform, box);
-            Gizmos.color = Color.black;
-            box.DrawBoxPoint();
-            box.DrawBoxBorder();
-        }
-
     }
 
     void UpdateBox(Transform src, Box3D box)

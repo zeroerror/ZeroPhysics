@@ -7,7 +7,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.API
     public interface IGetterAPI
     {
 
-        List<RigidbodyBox3D> GetAllRBBoxes();
+        List<Rigidbody3D_Box> GetAllRBBoxes();
         List<Box3D> GetAllBoxes();
 
     }

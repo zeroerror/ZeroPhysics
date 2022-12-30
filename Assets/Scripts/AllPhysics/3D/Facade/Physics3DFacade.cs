@@ -10,7 +10,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.Facade
         // 保证在创建时，必须确定是rigidbody还是static，其后不做更改，这样就不需要数组之间的数据转移
         // rb需要进行速度改变，和所有包括rb和static进行交叉恢复，static这2个都不需要
 
-        public RigidbodyBox3D[] rbBoxes;
+        public Rigidbody3D_Box[] rb_boxes;
         public Box3D[] boxes;
         public Sphere3D[] spheres;
 
@@ -21,7 +21,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D.Facade
         public Physics3DFacade(int boxMax, int rbBoxMax, int sphereMax)
         {
             boxes = new Box3D[boxMax];
-            rbBoxes = new RigidbodyBox3D[rbBoxMax];
+            rb_boxes = new Rigidbody3D_Box[rbBoxMax];
             spheres = new Sphere3D[sphereMax];
 
             IDService = new IDService(boxMax, rbBoxMax, sphereMax);
