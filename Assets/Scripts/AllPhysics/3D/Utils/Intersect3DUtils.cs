@@ -13,7 +13,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             else return HasCollision_AABB(box1.GetModel(), box2.GetModel());
         }
 
-        public static bool HasCollision_AABB(Box3DModel box1, Box3DModel box2)
+        public static bool HasCollision_AABB(in Box3DModel box1, in Box3DModel box2)
         {
             var min1 = box1.Min;
             var max1 = box1.Max;
@@ -44,7 +44,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             return hasCollisionX && hasCollisionY && hasCollisionZ;
         }
 
-        public static bool HasCollision_OBB(Box3DModel box1, Box3DModel box2)
+        public static bool HasCollision_OBB(in Box3DModel box1, in Box3DModel box2)
         {
             // - 6 Axis
             if (!HasIntersectsWithAxisX_LeftBox(box1, box2)) return false;
@@ -93,7 +93,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             return true;
         }
 
-        internal static bool HasIntersectsWithAxisX_LeftBox(Box3DModel box1, Box3DModel box2)
+        internal static bool HasIntersectsWithAxisX_LeftBox(in Box3DModel box1, in Box3DModel box2)
         {
             var b1AxisX = box1.GetAxisX();
             var box1_projSub = box1.GetAxisX_SelfProjectionSub();
@@ -101,7 +101,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             return HasIntersects(box1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisY_LeftBox(Box3DModel box1, Box3DModel box2)
+        internal static bool HasIntersectsWithAxisY_LeftBox(in Box3DModel box1, in Box3DModel box2)
         {
             var b1AxisY = box1.GetAxisY();
             var box1_projSub = box1.GetAxisY_SelfProjectionSub();
@@ -109,7 +109,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             return HasIntersects(box1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisZ_LeftBox(Box3DModel box1, Box3DModel box2)
+        internal static bool HasIntersectsWithAxisZ_LeftBox(in Box3DModel box1, in Box3DModel box2)
         {
             var b1AxisZ = box1.GetAxisZ();
             var box1_projSub = box1.GetAxisZ_SelfProjectionSub();
@@ -117,14 +117,14 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             return HasIntersects(box1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersects_WithAxis(Box3DModel model1, Box3DModel model2, Axis3D axis)
+        internal static bool HasIntersects_WithAxis(in Box3DModel model1, in Box3DModel model2, in Axis3D axis)
         {
             var box1_projSub = Projection3DUtils.GetProjectionSub(model1, axis);
             var box2_projSub = Projection3DUtils.GetProjectionSub(model2, axis);
             return HasIntersects(box1_projSub, box2_projSub);
         }
 
-        internal static bool IsInsideBox(Box3DModel model, FPVector3 point, FP64 epsilon)
+        internal static bool IsInsideBox(in Box3DModel model, FPVector3 point, in FP64 epsilon)
         {
             var px = point.x;
             var py = point.y;
@@ -162,7 +162,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
             }
         }
 
-        public static bool HasIntersects(FPVector2 sub1, FPVector2 sub2)
+        public static bool HasIntersects(in FPVector2 sub1, in FPVector2 sub2)
         {
             bool cross = !(sub1.y < sub2.x || sub2.y < sub1.x);
             return cross;
