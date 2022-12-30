@@ -29,9 +29,12 @@ namespace ZeroPhysics.AllPhysics.Physics3D
         public FPVector3 Size => size;
         public void SetSize(in FPVector3 v) => size = v;
 
+        Box3DModel model;
+
         public Box3D()
         {
             trans = new TransformComponent();
+            model = new Box3DModel(trans, size);
         }
 
         public BoxType GetBoxType()
@@ -41,8 +44,7 @@ namespace ZeroPhysics.AllPhysics.Physics3D
 
         public Box3DModel GetModel()
         {
-            var model = new Box3DModel();
-            model.Ctor(trans, size);
+            model.Update(trans, size);
             return model;
         }
 
