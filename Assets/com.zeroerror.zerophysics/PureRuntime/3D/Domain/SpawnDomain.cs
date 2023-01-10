@@ -29,19 +29,19 @@ namespace ZeroPhysics.Physics3D.Domain
             return box;
         }
 
-        public Rigidbody3D_Box SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass)
+        public Box3DRigidbody SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass)
         {
             var factory = physicsFacade.Factory;
             var box = factory.SpawnBox3D(center, rotation, scale, size);
 
-            Rigidbody3D_Box rb = new Rigidbody3D_Box(box);
+            Box3DRigidbody rb = new Box3DRigidbody(box);
             rb.SetMass(mass);
 
             var idService = physicsFacade.IDService;
             var id = idService.FetchID_RBBox();
             rb.SetInstanceID(id);
 
-            physicsFacade.rb_boxes[id] = rb;
+            physicsFacade.boxRBs[id] = rb;
             return rb;
         }
 

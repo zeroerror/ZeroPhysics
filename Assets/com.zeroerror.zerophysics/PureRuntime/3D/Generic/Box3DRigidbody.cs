@@ -4,7 +4,7 @@ using ZeroPhysics.Generic;
 namespace ZeroPhysics.Physics3D
 {
 
-    public class Rigidbody3D_Box
+    public class Box3DRigidbody
     {
 
         int instanceID;
@@ -34,7 +34,7 @@ namespace ZeroPhysics.Physics3D
         public FP64 BounceCoefficient => bounceCoefficient;
         public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
 
-        public Rigidbody3D_Box(Box3D box)
+        public Box3DRigidbody(Box3D box)
         {
             this.box = box;
         }

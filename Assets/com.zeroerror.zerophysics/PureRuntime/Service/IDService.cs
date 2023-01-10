@@ -7,13 +7,13 @@ namespace ZeroPhysics.Service
     {
 
         public bool[] boxIDInfos;
-        public bool[] rbBoxIDInfos;
+        public bool[] boxRBIDInfos;
         public bool[] sphereIDInfos;
 
         public IDService(int sBoxMax, int rbBoxMax, int sphereMax)
         {
             boxIDInfos = new bool[sBoxMax];
-            rbBoxIDInfos = new bool[rbBoxMax];
+            boxRBIDInfos = new bool[rbBoxMax];
             sphereIDInfos = new bool[sphereMax];
         }
 
@@ -33,11 +33,11 @@ namespace ZeroPhysics.Service
 
         public int FetchID_RBBox()
         {
-            for (int i = 0; i < rbBoxIDInfos.Length; i++)
+            for (int i = 0; i < boxRBIDInfos.Length; i++)
             {
-                if (!rbBoxIDInfos[i])
+                if (!boxRBIDInfos[i])
                 {
-                    rbBoxIDInfos[i] = true;
+                    boxRBIDInfos[i] = true;
                     return i;
                 }
             }
@@ -66,7 +66,7 @@ namespace ZeroPhysics.Service
 
         public void PutBackID_RBBox(int id)
         {
-            rbBoxIDInfos[id] = false;
+            boxRBIDInfos[id] = false;
         }
 
         public void PutBackID_Sphere(int id)

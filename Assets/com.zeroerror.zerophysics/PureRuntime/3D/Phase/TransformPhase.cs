@@ -19,8 +19,8 @@ namespace ZeroPhysics.Physics3D
         public void Tick(in FP64 time)
         {
             // --- Box
-            var rbBoxes = facade.rb_boxes;
-            var rbBoxInfos = facade.IDService.rbBoxIDInfos;
+            var rbBoxes = facade.boxRBs;
+            var rbBoxInfos = facade.IDService.boxRBIDInfos;
             for (int i = 0; i < rbBoxes.Length; i++)
             {
                 if (!rbBoxInfos[i]) continue;
