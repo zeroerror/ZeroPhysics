@@ -18,18 +18,24 @@ namespace ZeroPhysics.Physics3D
 
         public void Tick(in FP64 time, in FPVector3 gravity)
         {
-            var rbBoxes = facade.boxRBs;
+            var boxRBs = facade.boxRBs;
             var rbBoxInfos = facade.IDService.boxRBIDInfos;
-            for (int i = 0; i < rbBoxes.Length; i++)
+            for (int i = 0; i < boxRBs.Length; i++)
             {
                 if (!rbBoxInfos[i]) continue;
-                
-                // - Force Calculation
-                FPVector3 f = FPVector3.Zero;
-                f += gravity;
+
+                var rb = boxRBs[i];
+                var rbBox = rb.Box;
+                var mass = rb.Mass;
+                FPVector3 totalForce = FPVector3.Zero;
+
+                // === Gravity
+                totalForce += gravity * mass;
+                // === Friction
+                totalForce += rb.FrictionForce;
+
                 // - Set
-                var rb = rbBoxes[i];
-                rb.SetForce(f);
+                rb.SetTotalForce(totalForce);
             }
         }
 

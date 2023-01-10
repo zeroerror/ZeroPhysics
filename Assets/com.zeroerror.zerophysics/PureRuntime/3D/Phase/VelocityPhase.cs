@@ -25,7 +25,7 @@ namespace ZeroPhysics.Physics3D
                 if (!rbBoxIDInfos[i]) continue;
                 var rb = rbBoxes[i];
                 var linearV = rb.LinearV;
-                var f = rb.Force;
+                var f = rb.TotalForce;
                 var m = rb.Mass;
                 var a = f / m;
                 var offset = a * time;

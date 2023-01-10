@@ -18,6 +18,7 @@ namespace ZeroPhysics.Physics3D
         VelocityPhase velocityPhase;
         TransformPhase transformPhase;
         PenetrationPhase penetrationPhase;
+        FrictionPhase frictionPhase;
 
         // ====== API
         GetterAPI getterAPI;
@@ -34,6 +35,7 @@ namespace ZeroPhysics.Physics3D
             velocityPhase = new VelocityPhase();
             transformPhase = new TransformPhase();
             penetrationPhase = new PenetrationPhase();
+            frictionPhase = new FrictionPhase();
 
             getterAPI = new GetterAPI();
             setterAPI = new SetterAPI();
@@ -44,6 +46,7 @@ namespace ZeroPhysics.Physics3D
             velocityPhase.Inject(facade);
             transformPhase.Inject(facade);
             penetrationPhase.Inject(facade);
+            frictionPhase.Inject(facade);
 
             getterAPI.Inject(facade);
             setterAPI.Inject(facade);
@@ -55,7 +58,8 @@ namespace ZeroPhysics.Physics3D
             velocityPhase.Tick(time);
             transformPhase.Tick(time);
             penetrationPhase.Tick(time);
-        }
+            frictionPhase.Tick(time);
+        }   
 
     }
 

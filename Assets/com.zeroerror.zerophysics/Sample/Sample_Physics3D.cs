@@ -42,6 +42,7 @@ namespace ZeroPhysics.Sample
                 var box = rb.Box;
                 UpdateBox(bc.transform, box);
                 rb.SetBounceCoefficient(FP64.ToFP64(bounce));
+                box.SetFirctionCoe(FP64.ToFP64(firctionCoe_rbBox));
             }
 
             for (int i = 0; i < boxes.Count; i++)
@@ -49,6 +50,7 @@ namespace ZeroPhysics.Sample
                 var bc = boxTfs[i];
                 var box = boxes[i];
                 UpdateBox(bc.transform, box);
+                box.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
             }
         }
 
@@ -122,12 +124,24 @@ namespace ZeroPhysics.Sample
             src.position = box.Center.ToVector3();
         }
 
-        float bounce = 1;
+        float bounce = 0f;
+        float firctionCoe_box = 10;
+        float firctionCoe_rbBox = 10;
         void OnGUI()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"弹性系数:{bounce}");
-            bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(100));
+            bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"摩擦系数(静态Box):{firctionCoe_box}");
+            firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 10, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"摩擦系数(动态Box):{firctionCoe_rbBox}");
+            firctionCoe_rbBox = GUILayout.HorizontalSlider(firctionCoe_rbBox, 0, 10, GUILayout.Width(200));
             GUILayout.EndHorizontal();
         }
 

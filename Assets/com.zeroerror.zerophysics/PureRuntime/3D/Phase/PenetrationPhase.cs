@@ -28,20 +28,37 @@ namespace ZeroPhysics.Physics3D
             for (int i = 0; i < boxRBs.Length - 1; i++)
             {
                 if (!boxRBIDInfos[i]) continue;
+
                 var rb1 = boxRBs[i];
+                var boxRB1 = rb1.Box;
+                rb1.SetBeHitDir(FPVector3.Zero);
+                boxRB1.SetFirctionCoe_combined(FP64.Zero);
                 for (int j = i + 1; j < boxRBs.Length; j++)
                 {
                     if (!boxRBIDInfos[j]) continue;
+
                     var rb2 = boxRBs[j];
-                    if (Intersect3DUtils.HasCollision(rb1.Box, rb2.Box))
-                    {
-                        var mtv = Penetration3DUtils.PenetrationCorrection(rb1.Box, FP64.Half, rb2.Box, FP64.Half);
-                        var v1 = Penetration3DUtils.GetBouncedV(rb1.LinearV, mtv.normalized, rb1.BounceCoefficient);
-                        rb1.SetLinearV(v1);
-                        var v2 = Penetration3DUtils.GetBouncedV(rb2.LinearV, -mtv.normalized, rb2.BounceCoefficient);
-                        rb2.SetLinearV(v2);
-                        ;
-                    }
+                    var boxRB2 = rb2.Box;
+                    rb2.SetBeHitDir(FPVector3.Zero);
+                    boxRB2.SetFirctionCoe_combined(FP64.Zero);
+
+                    if (!Intersect3DUtils.HasCollision(rb1.Box, rb2.Box)) continue;
+
+                    var mtv = Penetration3DUtils.PenetrationCorrection(rb1.Box, FP64.Half, rb2.Box, FP64.Half);
+                    var beHitDir = mtv.normalized;
+                    var firctionCoe1 = boxRB1.FrictionCoe;
+                    var firctionCoe2 = boxRB2.FrictionCoe;
+                    var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
+
+                    var v1 = Penetration3DUtils.GetBouncedV(rb1.LinearV, beHitDir, rb1.BounceCoefficient);
+                    rb1.SetLinearV(v1);
+                    rb1.SetBeHitDir(beHitDir);
+                    boxRB1.SetFirctionCoe_combined(firctionCoe_combined);
+
+                    var v2 = Penetration3DUtils.GetBouncedV(rb2.LinearV, -beHitDir, rb2.BounceCoefficient);
+                    rb2.SetLinearV(v2);
+                    rb2.SetBeHitDir(-beHitDir);
+                    boxRB2.SetFirctionCoe_combined(firctionCoe_combined);
                 }
             }
 
@@ -49,18 +66,28 @@ namespace ZeroPhysics.Physics3D
             for (int i = 0; i < boxRBs.Length; i++)
             {
                 if (!boxRBIDInfos[i]) continue;
+
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
+                rb.SetBeHitDir(FPVector3.Zero);
+                rbBox.SetFirctionCoe_combined(FP64.Zero);
                 for (int j = 0; j < boxes.Length; j++)
                 {
                     if (!boxInfos[j]) continue;
+
                     var box = boxes[j];
-                    if (Intersect3DUtils.HasCollision(rbBox, box))
-                    {
-                        var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
-                        var v = Penetration3DUtils.GetBouncedV(rb.LinearV, mtv.normalized, rb.BounceCoefficient);
-                        rb.SetLinearV(v);
-                    }
+                    if (!Intersect3DUtils.HasCollision(rbBox, box)) continue;
+
+                    var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
+                    var beHitDir = mtv.normalized;
+                    var v = Penetration3DUtils.GetBouncedV(rb.LinearV, mtv.normalized, rb.BounceCoefficient);
+                    var firctionCoe1 = rbBox.FrictionCoe;
+                    var firctionCoe2 = box.FrictionCoe;
+                    var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
+
+                    rb.SetLinearV(v);
+                    rb.SetBeHitDir(beHitDir);
+                    rbBox.SetFirctionCoe_combined(firctionCoe_combined);
                 }
             }
         }

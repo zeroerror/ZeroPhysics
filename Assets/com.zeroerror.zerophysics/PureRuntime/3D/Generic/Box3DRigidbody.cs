@@ -18,9 +18,13 @@ namespace ZeroPhysics.Physics3D
         public TickType TickType => tickType;
         public void SetTickType(TickType v) => tickType = v;
 
-        FPVector3 force;
-        public FPVector3 Force => force;
-        public void SetForce(in FPVector3 v) => force = v;
+        FPVector3 totalForce;
+        public FPVector3 TotalForce => totalForce;
+        public void SetTotalForce(in FPVector3 v) => totalForce = v;
+
+        FPVector3 frictionForce;
+        public FPVector3 FrictionForce => frictionForce;
+        public void SetFrictionForce(in FPVector3 v) => frictionForce = v;
 
         FP64 mass;
         public FP64 Mass => mass;
@@ -33,6 +37,10 @@ namespace ZeroPhysics.Physics3D
         FP64 bounceCoefficient;
         public FP64 BounceCoefficient => bounceCoefficient;
         public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
+
+        FPVector3 beHitDir;
+        public FPVector3 BeHitDir => beHitDir;
+        public void SetBeHitDir(FPVector3 v) => beHitDir = v;
 
         public Box3DRigidbody(Box3D box)
         {

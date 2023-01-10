@@ -31,6 +31,14 @@ namespace ZeroPhysics.Physics3D
 
         Box3DModel model;
 
+        FP64 frictionCoe;
+        public FP64 FrictionCoe => frictionCoe;
+        public void SetFirctionCoe(FP64 v) => frictionCoe = v;
+
+        FP64 firctionCoe_combined;
+        public FP64 FirctionCoe_combined => firctionCoe_combined;
+        public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
+
         public Box3D()
         {
             trans = new TransformComponent();
