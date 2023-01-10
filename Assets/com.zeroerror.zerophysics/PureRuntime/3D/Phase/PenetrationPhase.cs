@@ -19,37 +19,37 @@ namespace ZeroPhysics.Physics3D
         public void Tick(in FP64 time)
         {
             var idService = facade.IDService;
-            var rb_boxes = facade.rb_boxes;
-            var rbBoxInfos = idService.rbBoxIDInfos;
+            var boxRBs = facade.boxRBs;
+            var boxRBIDInfos = idService.boxRBIDInfos;
             var boxes = facade.boxes;
             var boxInfos = idService.boxIDInfos;
 
             // - RB & RB
-            for (int i = 0; i < rb_boxes.Length - 1; i++)
+            for (int i = 0; i < boxRBs.Length - 1; i++)
             {
-                if (!rbBoxInfos[i]) continue;
-                var rbBox1 = rb_boxes[i];
-                for (int j = i + 1; j < rb_boxes.Length; j++)
+                if (!boxRBIDInfos[i]) continue;
+                var rb1 = boxRBs[i];
+                for (int j = i + 1; j < boxRBs.Length; j++)
                 {
-                    if (!rbBoxInfos[j]) continue;
-                    var rbBox2 = rb_boxes[j];
-                    if (Intersect3DUtils.HasCollision(rbBox1.Box, rbBox2.Box))
+                    if (!boxRBIDInfos[j]) continue;
+                    var rb2 = boxRBs[j];
+                    if (Intersect3DUtils.HasCollision(rb1.Box, rb2.Box))
                     {
-                        var mtv = Penetration3DUtils.PenetrationCorrection(rbBox1.Box, FP64.Half, rbBox2.Box, FP64.Half);
-                        var v1 = Penetration3DUtils.GetBouncedV(rbBox1.LinearV, mtv.normalized, rbBox1.BounceCoefficient);
-                        rbBox1.SetLinearV(v1);
-                        var v2 = Penetration3DUtils.GetBouncedV(rbBox2.LinearV, -mtv.normalized, rbBox2.BounceCoefficient);
-                        rbBox2.SetLinearV(v2);
+                        var mtv = Penetration3DUtils.PenetrationCorrection(rb1.Box, FP64.Half, rb2.Box, FP64.Half);
+                        var v1 = Penetration3DUtils.GetBouncedV(rb1.LinearV, mtv.normalized, rb1.BounceCoefficient);
+                        rb1.SetLinearV(v1);
+                        var v2 = Penetration3DUtils.GetBouncedV(rb2.LinearV, -mtv.normalized, rb2.BounceCoefficient);
+                        rb2.SetLinearV(v2);
                         ;
                     }
                 }
             }
 
             // - RB & SB
-            for (int i = 0; i < rb_boxes.Length; i++)
+            for (int i = 0; i < boxRBs.Length; i++)
             {
-                if (!rbBoxInfos[i]) continue;
-                var rb = rb_boxes[i];
+                if (!boxRBIDInfos[i]) continue;
+                var rb = boxRBs[i];
                 var rbBox = rb.Box;
                 for (int j = 0; j < boxes.Length; j++)
                 {
