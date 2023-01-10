@@ -2,7 +2,6 @@ using UnityEngine;
 using FixMath.NET;
 using ZeroPhysics.Physics3D;
 using ZeroPhysics.Extensions;
-using ZeroPhysics.Extensions;
 
 namespace ZeroPhysics.Sample
 {
@@ -39,8 +38,10 @@ namespace ZeroPhysics.Sample
             for (int i = 0; i < rbBoxes.Count; i++)
             {
                 var bc = rbBoxTfs[i];
-                var box = rbBoxes[i].Box;
+                var rb = rbBoxes[i];
+                var box = rb.Box;
                 UpdateBox(bc.transform, box);
+                rb.SetBounceCoefficient(FP64.ToFP64(bounce));
             }
 
             for (int i = 0; i < boxes.Count; i++)
@@ -96,7 +97,7 @@ namespace ZeroPhysics.Sample
             for (int i = 0; i < rbCount; i++)
             {
                 var tf = rbBoxTfs[i].transform;
-                setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                var rb = setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
             }
             Debug.Log($"Total RBBox: {rbCount}");
 
@@ -119,6 +120,15 @@ namespace ZeroPhysics.Sample
             box.SetScale(src.localScale.ToFPVector3());
             box.SetRotation(src.rotation.ToFPQuaternion());
             src.position = box.Center.ToVector3();
+        }
+
+        float bounce = 1;
+        void OnGUI()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"弹性系数:{bounce}");
+            bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(100));
+            GUILayout.EndHorizontal();
         }
 
     }

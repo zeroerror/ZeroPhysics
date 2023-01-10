@@ -30,6 +30,10 @@ namespace ZeroPhysics.Physics3D
         public FPVector3 LinearV => linearV;
         public void SetLinearV(in FPVector3 v) => linearV = v;
 
+        FP64 bounceCoefficient;
+        public FP64 BounceCoefficient => bounceCoefficient;
+        public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
+
         public Rigidbody3D_Box(Box3D box)
         {
             this.box = box;

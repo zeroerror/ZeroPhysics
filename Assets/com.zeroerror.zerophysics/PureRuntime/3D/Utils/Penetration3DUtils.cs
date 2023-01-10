@@ -76,7 +76,8 @@ namespace ZeroPhysics.Physics3D
         }
 
         // - 撞击消除分量
-        public static FPVector3 GetErasedVector3(in FPVector3 v, in FPVector3 reverseDir)
+        static readonly FP64 RAD_180 = 180 * FP64.Deg2Rad;
+        public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 reverseDir, in FP64 bounceCoefficient)
         {
             var v_normalized = v.normalized;
             var cosv = FPVector3.Dot(v_normalized, reverseDir);
@@ -87,13 +88,11 @@ namespace ZeroPhysics.Physics3D
 
             var crossAxis = FPVector3.Cross(v, reverseDir);
             crossAxis.Normalize();
-            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, 180 * FP64.Deg2Rad);
+            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, RAD_180);
             var eraseDir = rot * reverseDir;
             var sinv = -cosv;
             var len = v.Length() * sinv;
-            var newV = v - len * eraseDir;
-
-            return newV;
+            return v - (1 + bounceCoefficient) * len * eraseDir;
         }
 
     }
