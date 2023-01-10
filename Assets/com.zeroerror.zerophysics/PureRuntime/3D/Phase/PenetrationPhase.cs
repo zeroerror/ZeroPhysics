@@ -36,10 +36,11 @@ namespace ZeroPhysics.Physics3D
                     if (Intersect3DUtils.HasCollision(rbBox1.Box, rbBox2.Box))
                     {
                         var mtv = Penetration3DUtils.PenetrationCorrection(rbBox1.Box, FP64.Half, rbBox2.Box, FP64.Half);
-                        var v1 = Penetration3DUtils.GetErasedVector3(rbBox1.LinearV, mtv.normalized);
+                        var v1 = Penetration3DUtils.GetBouncedV(rbBox1.LinearV, mtv.normalized, rbBox1.BounceCoefficient);
                         rbBox1.SetLinearV(v1);
-                        var v2 = Penetration3DUtils.GetErasedVector3(rbBox2.LinearV, -mtv.normalized);
+                        var v2 = Penetration3DUtils.GetBouncedV(rbBox2.LinearV, -mtv.normalized, rbBox2.BounceCoefficient);
                         rbBox2.SetLinearV(v2);
+                        ;
                     }
                 }
             }
@@ -57,7 +58,7 @@ namespace ZeroPhysics.Physics3D
                     if (Intersect3DUtils.HasCollision(rbBox, box))
                     {
                         var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
-                        var v = Penetration3DUtils.GetErasedVector3(rb.LinearV, mtv.normalized);
+                        var v = Penetration3DUtils.GetBouncedV(rb.LinearV, mtv.normalized, rb.BounceCoefficient);
                         rb.SetLinearV(v);
                     }
                 }
