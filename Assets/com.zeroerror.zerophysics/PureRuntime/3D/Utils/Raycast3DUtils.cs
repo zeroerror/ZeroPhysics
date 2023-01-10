@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FixMath.NET;
+using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D
 {

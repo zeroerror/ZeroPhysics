@@ -7,21 +7,21 @@ namespace ZeroPhysics.Physics3D
     public class PenetrationPhase
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public PenetrationPhase() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public void Tick(in FP64 time)
         {
-            var idService = facade.IDService;
-            var boxRBs = facade.boxRBs;
+            var idService = physicsFacade.Service.IDService;
+            var boxRBs = physicsFacade.boxRBs;
             var boxRBIDInfos = idService.boxRBIDInfos;
-            var boxes = facade.boxes;
+            var boxes = physicsFacade.boxes;
             var boxInfos = idService.boxIDInfos;
 
             // - RB & RB

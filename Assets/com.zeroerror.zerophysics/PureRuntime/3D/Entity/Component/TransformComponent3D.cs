@@ -3,7 +3,7 @@ using FixMath.NET;
 namespace ZeroPhysics.Physics3D
 {
 
-    public class TransformComponent
+    public class TransformComponent3D
     {
 
         FPVector3 center;

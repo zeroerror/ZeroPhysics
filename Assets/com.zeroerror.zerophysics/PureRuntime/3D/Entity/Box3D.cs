@@ -4,17 +4,17 @@ using ZeroPhysics.Generic;
 namespace ZeroPhysics.Physics3D
 {
 
-    public class Box3D
+    public class Box3D : PhysicsBody3D
     {
 
-        int instanceID;
-        public int InstanceID => instanceID;
-        public void SetInstanceID(int v) => instanceID = v;
+        ushort instanceID;
+        public ushort InstanceID => instanceID;
+        public void SetInstanceID(ushort v) => instanceID = v;
 
         // ====== Component
         // - Trans
-        TransformComponent trans;
-        public TransformComponent Trans => trans;
+        TransformComponent3D trans;
+        public TransformComponent3D Trans => trans;
 
         public FPVector3 Center => trans.Center;
         public void SetCenter(in FPVector3 v) => trans.SetCenter(v);
@@ -37,11 +37,16 @@ namespace ZeroPhysics.Physics3D
 
         FP64 firctionCoe_combined;
         public FP64 FirctionCoe_combined => firctionCoe_combined;
+
+        PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
+
+        ushort PhysicsBody3D.ID => instanceID;
+
         public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
 
         public Box3D()
         {
-            trans = new TransformComponent();
+            trans = new TransformComponent3D();
             model = new Box3DModel(trans, size);
         }
 
@@ -54,6 +59,11 @@ namespace ZeroPhysics.Physics3D
         {
             model.Update(trans, size);
             return model;
+        }
+
+        public override string ToString()
+        {
+            return $"InstanceID:{instanceID}";
         }
 
     }

@@ -4,12 +4,12 @@ using ZeroPhysics.Generic;
 namespace ZeroPhysics.Physics3D
 {
 
-    public class Box3DRigidbody
+    public class Box3DRigidbody : PhysicsBody3D
     {
 
-        int instanceID;
-        public int InstanceID => instanceID;
-        public void SetInstanceID(int v) => instanceID = v;
+        ushort instanceID;
+        public ushort InstanceID => instanceID;
+        public void SetInstanceID(ushort v) => instanceID = v;
 
         Box3D box;
         public Box3D Box => box;
@@ -36,6 +36,11 @@ namespace ZeroPhysics.Physics3D
 
         FPVector3 beHitDir;
         public FPVector3 BeHitDir => beHitDir;
+
+        PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
+
+        ushort PhysicsBody3D.ID => instanceID;
+
         public void SetBeHitDir(FPVector3 v) => beHitDir = v;
 
         public bool IsCollisionStay;
@@ -48,6 +53,11 @@ namespace ZeroPhysics.Physics3D
         public BoxType GetBoxType()
         {
             return box.GetBoxType();
+        }
+
+        public override string ToString()
+        {
+            return $"InstanceID:{instanceID}";
         }
 
     }

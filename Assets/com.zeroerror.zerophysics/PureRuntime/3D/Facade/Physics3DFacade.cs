@@ -1,5 +1,3 @@
-using ZeroPhysics.Service;
-
 namespace ZeroPhysics.Physics3D.Facade
 {
 
@@ -14,9 +12,9 @@ namespace ZeroPhysics.Physics3D.Facade
         public Box3D[] boxes;
         public Sphere3D[] spheres;
 
-        public IDService IDService { get; private set; }
         public AllPhysicsDomain Domain { get; private set; }
         public Physics3DFactory Factory { get; private set; }
+        public AllService Service { get; private set; }
 
         public Physics3DFacade(int boxMax, int rbBoxMax, int sphereMax)
         {
@@ -24,13 +22,13 @@ namespace ZeroPhysics.Physics3D.Facade
             boxRBs = new Box3DRigidbody[rbBoxMax];
             spheres = new Sphere3D[sphereMax];
 
-            IDService = new IDService(boxMax, rbBoxMax, sphereMax);
-
             Domain = new AllPhysicsDomain();
             Domain.Inject(this);
 
             Factory = new Physics3DFactory();
             Factory.Inject(this);
+
+            Service = new AllService(boxMax, rbBoxMax, sphereMax);
         }
 
     }

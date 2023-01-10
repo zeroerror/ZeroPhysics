@@ -1,7 +1,9 @@
 using UnityEngine;
+using static UnityEngine.Debug;
 using FixMath.NET;
 using ZeroPhysics.Physics3D;
 using ZeroPhysics.Extensions;
+using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Sample
 {
@@ -56,6 +58,28 @@ namespace ZeroPhysics.Sample
         void FixedUpdate()
         {
             physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
+            // - Collsion Info
+            var collisionInfos = physicsCore.GetterAPI.GetCollisionInfos();
+            for (int i = 0; i < collisionInfos.Length; i++)
+            {
+                var info = collisionInfos[i];
+                var body_a = info.body_a;
+                var body_b = info.body_b;
+                var type_a = body_a.PhysicsType;
+                var type_b = body_b.PhysicsType;
+                if (type_a == PhysicsType3D.Box3D && type_b == PhysicsType3D.Box3DRigidbody)
+                {
+                    var box = body_a as Box3D;
+                    var rb = body_a as Box3DRigidbody;
+                    Log($"Box3D -- Box3DRigidbody type_a:{box} type_b:{rb}");
+                }
+                if (type_b == PhysicsType3D.Box3D && type_a == PhysicsType3D.Box3DRigidbody)
+                {
+                    var rb = body_a as Box3DRigidbody;
+                    var box = body_b as Box3D;
+                    Log($"Box3D -- Box3DRigidbody type_a:{rb} type_b:{box}");
+                }
+            }
         }
 
         public void OnDrawGizmos()

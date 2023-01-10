@@ -7,19 +7,19 @@ namespace ZeroPhysics.Physics3D
     public class FrictionPhase
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public FrictionPhase() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public void Tick(in FP64 time)
         {
-            var boxRBs = facade.boxRBs;
-            var rbBoxInfos = facade.IDService.boxRBIDInfos;
+            var boxRBs = physicsFacade.boxRBs;
+            var rbBoxInfos = physicsFacade.Service.IDService.boxRBIDInfos;
             for (int i = 0; i < boxRBs.Length; i++)
             {
                 if (!rbBoxInfos[i]) continue;

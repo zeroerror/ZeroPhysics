@@ -11,7 +11,7 @@ namespace ZeroPhysics.Physics3D
         FPVector3 gravity;
 
         // ====== Facade
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         // ====== Phase
         ForcePhase forcePhase;
@@ -40,16 +40,16 @@ namespace ZeroPhysics.Physics3D
             getterAPI = new GetterAPI();
             setterAPI = new SetterAPI();
 
-            facade = new Physics3DFacade(boxMax, rbBoxMax, sphereMax);
+            physicsFacade = new Physics3DFacade(boxMax, rbBoxMax, sphereMax);
 
-            forcePhase.Inject(facade);
-            velocityPhase.Inject(facade);
-            transformPhase.Inject(facade);
-            penetrationPhase.Inject(facade);
-            frictionPhase.Inject(facade);
+            forcePhase.Inject(physicsFacade);
+            velocityPhase.Inject(physicsFacade);
+            transformPhase.Inject(physicsFacade);
+            penetrationPhase.Inject(physicsFacade);
+            frictionPhase.Inject(physicsFacade);
 
-            getterAPI.Inject(facade);
-            setterAPI.Inject(facade);
+            getterAPI.Inject(physicsFacade);
+            setterAPI.Inject(physicsFacade);
         }
 
         public void Tick(FP64 time)

@@ -7,19 +7,19 @@ namespace ZeroPhysics.Physics3D.Domain
     public class DataDomain
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public DataDomain() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade ;
         }
 
         public List<Box3D> GetAllBoxes()
         {
-            var boxes = facade.boxes;
-            var idService = facade.IDService;
+            var boxes = physicsFacade.boxes;
+            var idService = physicsFacade.Service.IDService;
             var infos = idService.boxIDInfos;
             var len = infos.Length;
             List<Box3D> all = new List<Box3D>();
@@ -32,8 +32,8 @@ namespace ZeroPhysics.Physics3D.Domain
 
         public List<Box3DRigidbody> GetAllRBBoxes()
         {
-            var rbBoxes = facade.boxRBs;
-            var idService = facade.IDService;
+            var rbBoxes = physicsFacade.boxRBs;
+            var idService = physicsFacade.Service.IDService;
             var infos = idService.boxRBIDInfos;
             var len = infos.Length;
             List<Box3DRigidbody> all = new List<Box3DRigidbody>();

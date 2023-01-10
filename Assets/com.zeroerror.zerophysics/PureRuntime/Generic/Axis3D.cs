@@ -1,6 +1,6 @@
 using FixMath.NET;
 
-namespace ZeroPhysics.Physics3D
+namespace ZeroPhysics.Generic
 {
 
     public struct Axis3D

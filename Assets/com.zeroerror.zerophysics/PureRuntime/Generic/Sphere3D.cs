@@ -1,4 +1,5 @@
 using FixMath.NET;
+using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D
 {
@@ -12,8 +13,8 @@ namespace ZeroPhysics.Physics3D
 
         // ====== Component
         // - Trans
-        TransformComponent trans;
-        public TransformComponent Trans => trans;
+        TransformComponent3D trans;
+        public TransformComponent3D Trans => trans;
 
         public FPVector3 Center => trans.Center;
         public void SetCenter(in FPVector3 v) => trans.SetCenter(v);
@@ -34,7 +35,7 @@ namespace ZeroPhysics.Physics3D
 
         public Sphere3D()
         {
-            trans = new TransformComponent();
+            trans = new TransformComponent3D();
         }
 
         public FPVector2 GetProjectionSub(Axis3D axis)
