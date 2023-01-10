@@ -6,13 +6,13 @@ namespace ZeroPhysics.Physics3D.Facade
     public class Physics3DFactory
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public Physics3DFactory() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public Box3D SpawnBox3D(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)

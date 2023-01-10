@@ -15,10 +15,10 @@ namespace ZeroPhysics.Physics3D.Facade
             DataDomain = new DataDomain();
         }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            SpawnDomain.Inject(facade);
-            DataDomain.Inject(facade);
+            SpawnDomain.Inject(physicsFacade);
+            DataDomain.Inject(physicsFacade);
         }
 
     }

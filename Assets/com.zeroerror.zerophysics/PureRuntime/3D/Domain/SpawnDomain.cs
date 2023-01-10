@@ -11,9 +11,9 @@ namespace ZeroPhysics.Physics3D.Domain
 
         public SpawnDomain() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.physicsFacade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public Box3D SpawnBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
@@ -21,10 +21,10 @@ namespace ZeroPhysics.Physics3D.Domain
             var factory = physicsFacade.Factory;
             var box = factory.SpawnBox3D(center, rotation, scale, size);
 
-            var idService = physicsFacade.IDService;
+            var idService = physicsFacade.Service.IDService;
             var id = idService.FetchID_Box();
             box.SetInstanceID(id);
-
+            UnityEngine.Debug.Log($"SpawnBox {id}");
             physicsFacade.boxes[id] = box;
             return box;
         }
@@ -37,9 +37,10 @@ namespace ZeroPhysics.Physics3D.Domain
             Box3DRigidbody rb = new Box3DRigidbody(box);
             rb.SetMass(mass);
 
-            var idService = physicsFacade.IDService;
-            var id = idService.FetchID_RBBox();
+            var idService = physicsFacade.Service.IDService;
+            var id = idService.FetchID_BoxRB();
             rb.SetInstanceID(id);
+            UnityEngine.Debug.Log($"SpawnRBBox {id}");
 
             physicsFacade.boxRBs[id] = rb;
             return rb;
@@ -54,7 +55,7 @@ namespace ZeroPhysics.Physics3D.Domain
             sphere.SetRadius(size.x);
             sphere.UpdateScaledRadius();
 
-            var idService = physicsFacade.IDService;
+            var idService = physicsFacade.Service.IDService;
             var id = idService.FetchID_Sphere();
             sphere.SetInstanceID(id);
 

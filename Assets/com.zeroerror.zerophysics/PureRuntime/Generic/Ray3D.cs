@@ -1,6 +1,7 @@
 using FixMath.NET;
+using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D
+namespace ZeroPhysics.Generic
 {
 
     public class Ray3D

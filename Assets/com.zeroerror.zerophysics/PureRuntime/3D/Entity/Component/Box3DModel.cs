@@ -46,7 +46,7 @@ namespace ZeroPhysics.Physics3D
         FPVector3 p6;
         FPVector3 p7;
 
-        public Box3DModel(TransformComponent trans, in FPVector3 size)
+        public Box3DModel(TransformComponent3D trans, in FPVector3 size)
         {
             this.vertices = new FPVector3[8];
             var scaledSize = trans.Scale * size;
@@ -55,7 +55,7 @@ namespace ZeroPhysics.Physics3D
             UpdateCenter(trans.Center);
         }
 
-        public void Update(TransformComponent trans, in FPVector3 size)
+        public void Update(TransformComponent3D trans, in FPVector3 size)
         {
             var scaledSize = trans.Scale * size;
             bool hasChangedSize = scaledSize != this.scaledSize;

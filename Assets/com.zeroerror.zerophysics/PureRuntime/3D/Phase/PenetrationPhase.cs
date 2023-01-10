@@ -7,21 +7,22 @@ namespace ZeroPhysics.Physics3D
     public class PenetrationPhase
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public PenetrationPhase() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public void Tick(in FP64 time)
         {
-            var idService = facade.IDService;
-            var boxRBs = facade.boxRBs;
+            var idService = physicsFacade.Service.IDService;
+            var collisionService = physicsFacade.Service.CollisionService;
+            var boxRBs = physicsFacade.boxRBs;
             var boxRBIDInfos = idService.boxRBIDInfos;
-            var boxes = facade.boxes;
+            var boxes = physicsFacade.boxes;
             var boxInfos = idService.boxIDInfos;
 
             // - RB & RB
@@ -73,33 +74,29 @@ namespace ZeroPhysics.Physics3D
 
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
-                var oldBeHitDir = rb.BeHitDir;
-                FPVector3 newBeHitDir = oldBeHitDir;
-                rbBox.SetFirctionCoe_combined(FP64.Zero);
-                rb.IsCollisionStay = false;
+                if (!collisionService.HasCollision(rb)) continue;
+
                 for (int j = 0; j < boxes.Length; j++)
                 {
                     if (!boxInfos[j]) continue;
 
                     var box = boxes[j];
-                    if (!Intersect3DUtils.HasCollision(rbBox, box)) continue;
-                    rb.IsCollisionStay = true;
+                    if (!collisionService.TryGetCollision(rb, box, out var collision)) continue;
+                    if (collision.CollisionType == Generic.CollisionType.Exit) continue;
 
                     var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
                     var beHitDir = mtv.normalized;
-
-                    newBeHitDir = beHitDir != FPVector3.Zero ? beHitDir : newBeHitDir;
-
-                    var v = Penetration3DUtils.GetBouncedV(rb.LinearV, mtv.normalized, rb.BounceCoefficient);
+                    var v = Penetration3DUtils.GetBouncedV(rb.LinearV, beHitDir, rb.BounceCoefficient);
                     rb.SetLinearV(v);
 
                     var firctionCoe1 = rbBox.FrictionCoe;
                     var firctionCoe2 = box.FrictionCoe;
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
                     rbBox.SetFirctionCoe_combined(firctionCoe_combined);
+
+                    collisionService.UpdateHitDir(rb, box, mtv);
                 }
 
-                rb.SetBeHitDir(newBeHitDir);
             }
         }
 

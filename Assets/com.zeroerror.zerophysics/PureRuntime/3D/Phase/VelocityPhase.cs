@@ -7,19 +7,19 @@ namespace ZeroPhysics.Physics3D
     public class VelocityPhase
     {
 
-        Physics3DFacade facade;
+        Physics3DFacade physicsFacade;
 
         public VelocityPhase() { }
 
-        public void Inject(Physics3DFacade facade)
+        public void Inject(Physics3DFacade physicsFacade)
         {
-            this.facade = facade;
+            this.physicsFacade = physicsFacade;
         }
 
         public void Tick(in FP64 time)
         {
-            var rbBoxes = facade.boxRBs;
-            var rbBoxIDInfos = facade.IDService.boxRBIDInfos;
+            var rbBoxes = physicsFacade.boxRBs;
+            var rbBoxIDInfos = physicsFacade.Service.IDService.boxRBIDInfos;
             for (int i = 0; i < rbBoxes.Length; i++)
             {
                 if (!rbBoxIDInfos[i]) continue;

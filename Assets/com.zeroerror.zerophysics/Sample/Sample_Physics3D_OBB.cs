@@ -2,6 +2,7 @@ using UnityEngine;
 using FixMath.NET;
 using ZeroPhysics.Physics3D;
 using ZeroPhysics.Extensions;
+using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Sample
 {

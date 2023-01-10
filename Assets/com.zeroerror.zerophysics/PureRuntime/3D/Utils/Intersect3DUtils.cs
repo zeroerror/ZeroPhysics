@@ -164,8 +164,7 @@ namespace ZeroPhysics.Physics3D
 
         public static bool HasIntersects(in FPVector2 sub1, in FPVector2 sub2)
         {
-            bool cross = !(sub1.y < sub2.x || sub2.y < sub1.x);
-            return cross;
+            return !(sub1.y < sub2.x || sub2.y < sub1.x);
         }
 
     }

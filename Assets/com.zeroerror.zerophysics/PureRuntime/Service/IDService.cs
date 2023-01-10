@@ -17,9 +17,9 @@ namespace ZeroPhysics.Service
             sphereIDInfos = new bool[sphereMax];
         }
 
-        public int FetchID_Box()
+        public ushort FetchID_Box()
         {
-            for (int i = 0; i < boxIDInfos.Length; i++)
+            for (ushort i = 0; i < boxIDInfos.Length; i++)
             {
                 if (!boxIDInfos[i])
                 {
@@ -28,12 +28,12 @@ namespace ZeroPhysics.Service
                 }
             }
 
-            return -1;
+            throw new System.Exception($"IDService: Box ID Run Out!");
         }
 
-        public int FetchID_RBBox()
+        public ushort FetchID_BoxRB()
         {
-            for (int i = 0; i < boxRBIDInfos.Length; i++)
+            for (ushort i = 0; i < boxRBIDInfos.Length; i++)
             {
                 if (!boxRBIDInfos[i])
                 {
@@ -42,12 +42,12 @@ namespace ZeroPhysics.Service
                 }
             }
 
-            return -1;
+            throw new System.Exception($"IDService: BoxRB ID Run Out!");
         }
 
-        public int FetchID_Sphere()
+        public ushort FetchID_Sphere()
         {
-            for (int i = 0; i < sphereIDInfos.Length; i++)
+            for (ushort i = 0; i < sphereIDInfos.Length; i++)
             {
                 if (!sphereIDInfos[i])
                 {
@@ -56,7 +56,7 @@ namespace ZeroPhysics.Service
                 }
             }
 
-            return -1;
+            throw new System.Exception($"IDService: Sphere ID Run Out!");
         }
 
         public void PutBackID_Box(int id)

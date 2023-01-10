@@ -1,7 +1,9 @@
 using UnityEngine;
+using static UnityEngine.Debug;
 using FixMath.NET;
 using ZeroPhysics.Physics3D;
 using ZeroPhysics.Extensions;
+using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Sample
 {
@@ -56,8 +58,57 @@ namespace ZeroPhysics.Sample
         void FixedUpdate()
         {
             physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
+            // - Collsion Info
+            var collisionInfos = physicsCore.GetterAPI.GetCollisionInfos();
+            Debug.Log($"碰撞事件数量: {collisionInfos.Length}");
+            for (int i = 0; i < collisionInfos.Length; i++)
+            {
+                var collision = collisionInfos[i];
+                var body_a = collision.bodyA;
+                var body_b = collision.bodyB;
+                var type_a = body_a.PhysicsType;
+                var type_b = body_b.PhysicsType;
+                if (type_a == PhysicsType3D.Box3D && type_b == PhysicsType3D.Box3DRigidbody)
+                {
+                    var box = body_a as Box3D;
+                    var rb = body_a as Box3DRigidbody;
+                    OnCollision(box, rb, collision);
+                }
+                if (type_b == PhysicsType3D.Box3D && type_a == PhysicsType3D.Box3DRigidbody)
+                {
+                    var rb = body_a as Box3DRigidbody;
+                    var box = body_b as Box3D;
+                    OnCollision(box, rb, collision);
+                }
+            }
         }
 
+        #region [Collision Listen]
+
+        void OnCollision(Box3D box, Box3DRigidbody boxRB, CollisionModel collision)
+        {
+            if (collision.CollisionType == CollisionType.Enter) OnCollsionEnter(box, boxRB);
+            else if (collision.CollisionType == CollisionType.Stay) OnCollsionStay(box, boxRB);
+            else if (collision.CollisionType == CollisionType.Exit) OnCollsionExit(box, boxRB);
+        }
+
+        void OnCollsionEnter(Box3D box, Box3DRigidbody boxRB)
+        {
+            Log($" OnCollsionEnter : box:{box.name} boxRB:{boxRB.name} ");
+        }
+
+        void OnCollsionStay(Box3D box, Box3DRigidbody boxRB)
+        {
+            Log($" OnCollsionStay : box:{box.name} boxRB:{boxRB.name} ");
+
+        }
+
+        void OnCollsionExit(Box3D box, Box3DRigidbody boxRB)
+        {
+            Log($" OnCollsionExit : box:{box.name} boxRB:{boxRB.name} ");
+        }
+
+        #endregion
         public void OnDrawGizmos()
         {
             if (!canRun) return;
@@ -99,6 +150,7 @@ namespace ZeroPhysics.Sample
             {
                 var tf = rbBoxTfs[i].transform;
                 var rb = setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                rb.name = $"RBBOX_{i}";
             }
             Debug.Log($"Total RBBox: {rbCount}");
 
@@ -111,7 +163,8 @@ namespace ZeroPhysics.Sample
             for (int i = 0; i < boxCount; i++)
             {
                 var tf = boxTfs[i].transform;
-                setterAPI.SpawnBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                var box = setterAPI.SpawnBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                box.name = $"Box_{i}";
             }
             Debug.Log($"Total Box: {boxCount}");
         }
@@ -125,7 +178,7 @@ namespace ZeroPhysics.Sample
 
         float bounce = 0f;
         float firctionCoe_box = 5f;
-        float firctionCoe_rbBox = 1f;
+        float firctionCoe_rbBox = 0.3f;
         void OnGUI()
         {
             GUILayout.BeginHorizontal();

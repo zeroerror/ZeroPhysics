@@ -7,9 +7,12 @@ namespace ZeroPhysics.Physics3D
     public static class Penetration3DUtils
     {
 
+        public static readonly FP64 MTV_MULTY = (1 - FP64.EN4);
+
         public static FPVector3 PenetrationCorrection(Box3D box1, FP64 mtvCoe1, Box3D box2, FP64 mtvCoe2)
         {
             var mtv = GetMTV(box1.GetModel(), box2.GetModel());
+            mtv *= MTV_MULTY;
             var mtv1 = mtv * mtvCoe1;
             var mtv2 = -mtv * mtvCoe2;
             var newCenter1 = box1.Center + mtv1;
@@ -80,7 +83,7 @@ namespace ZeroPhysics.Physics3D
         public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 reverseDir, in FP64 bounceCoefficient)
         {
             if (reverseDir == FPVector3.Zero) return v;
-            
+
             var v_normalized = v.normalized;
             var cosv = FPVector3.Dot(v_normalized, reverseDir);
             cosv = FP64.Clamp(cosv, -FP64.One, FP64.One);
