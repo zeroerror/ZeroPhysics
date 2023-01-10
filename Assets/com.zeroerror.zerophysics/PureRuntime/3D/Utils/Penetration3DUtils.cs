@@ -79,6 +79,8 @@ namespace ZeroPhysics.Physics3D
         static readonly FP64 RAD_180 = 180 * FP64.Deg2Rad;
         public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 reverseDir, in FP64 bounceCoefficient)
         {
+            if (reverseDir == FPVector3.Zero) return v;
+            
             var v_normalized = v.normalized;
             var cosv = FPVector3.Dot(v_normalized, reverseDir);
             cosv = FP64.Clamp(cosv, -FP64.One, FP64.One);

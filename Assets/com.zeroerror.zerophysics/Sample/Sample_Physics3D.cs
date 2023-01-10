@@ -33,7 +33,7 @@ namespace ZeroPhysics.Sample
             if (boxTfs == null) return;
 
             var getterAPI = physicsCore.GetterAPI;
-            var rbBoxes = getterAPI.GetAllRBBoxes();
+            var rbBoxes = getterAPI.GetAllBoxRBs();
             var boxes = getterAPI.GetAllBoxes();
             for (int i = 0; i < rbBoxes.Count; i++)
             {
@@ -49,7 +49,6 @@ namespace ZeroPhysics.Sample
             {
                 var bc = boxTfs[i];
                 var box = boxes[i];
-                UpdateBox(bc.transform, box);
                 box.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
             }
         }
@@ -67,10 +66,10 @@ namespace ZeroPhysics.Sample
 
             var getterAPI = physicsCore.GetterAPI;
 
-            var rbBoxes = getterAPI.GetAllRBBoxes();
-            for (int i = 0; i < rbBoxes.Count; i++)
+            var rbs = getterAPI.GetAllBoxRBs();
+            for (int i = 0; i < rbs.Count; i++)
             {
-                var box = rbBoxes[i].Box;
+                var box = rbs[i].Box;
                 Gizmos.color = Color.green;
                 box.DrawBoxPoint();
                 box.DrawBoxBorder();
@@ -125,23 +124,23 @@ namespace ZeroPhysics.Sample
         }
 
         float bounce = 0f;
-        float firctionCoe_box = 10;
-        float firctionCoe_rbBox = 10;
+        float firctionCoe_box = 5f;
+        float firctionCoe_rbBox = 1f;
         void OnGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"弹性系数:{bounce}");
+            GUILayout.Label($"弹性系数:{bounce}", GUILayout.Width(100));
             bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"摩擦系数(静态Box):{firctionCoe_box}");
-            firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 10, GUILayout.Width(200));
-            GUILayout.EndHorizontal();
+            // GUILayout.BeginHorizontal();
+            // GUILayout.Label($"摩擦系数(静态Box):{firctionCoe_box}", GUILayout.Width(200));
+            // firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 5, GUILayout.Width(200));
+            // GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"摩擦系数(动态Box):{firctionCoe_rbBox}");
-            firctionCoe_rbBox = GUILayout.HorizontalSlider(firctionCoe_rbBox, 0, 10, GUILayout.Width(200));
+            GUILayout.Label($"摩擦系数(RBBOX):{firctionCoe_rbBox}", GUILayout.Width(200));
+            firctionCoe_rbBox = GUILayout.HorizontalSlider(firctionCoe_rbBox, 0, 5, GUILayout.Width(200));
             GUILayout.EndHorizontal();
         }
 

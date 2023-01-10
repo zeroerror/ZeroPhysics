@@ -25,9 +25,9 @@ namespace ZeroPhysics.Physics3D
                 if (!rbBoxInfos[i]) continue;
 
                 var rb = boxRBs[i];
-                var linearV = rb.LinearV;
-                if (linearV == FPVector3.Zero) continue;
+                if (!rb.IsCollisionStay) continue;
 
+                var linearV = rb.LinearV;
                 var rbBox = rb.Box;
                 var mass = rb.Mass;
                 var linearV_normalized = linearV.normalized;
@@ -41,7 +41,11 @@ namespace ZeroPhysics.Physics3D
                 f = f > maxFrictionForce ? maxFrictionForce : f;
                 FPVector3 frictionForce = -f * linearV_normalized;
                 // - Set
-                rb.SetFrictionForce(frictionForce);
+                var m = rb.Mass;
+                var a = frictionForce / m;
+                var offset = a * time;
+                var newV = linearV + offset;
+                rb.SetLinearV(newV);
             }
         }
 

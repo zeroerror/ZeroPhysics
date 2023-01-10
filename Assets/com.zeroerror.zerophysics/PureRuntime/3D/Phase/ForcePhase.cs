@@ -31,8 +31,6 @@ namespace ZeroPhysics.Physics3D
 
                 // === Gravity
                 totalForce += gravity * mass;
-                // === Friction
-                totalForce += rb.FrictionForce;
 
                 // - Set
                 rb.SetTotalForce(totalForce);

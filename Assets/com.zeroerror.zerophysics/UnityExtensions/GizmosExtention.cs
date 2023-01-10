@@ -27,7 +27,7 @@ namespace ZeroPhysics.Extensions
             Gizmos.DrawLine(vertices[3], vertices[7]);
         }
 
-        public static void DrawBoxPoint(this Box3D box, float size = 0.1f)
+        public static void DrawBoxPoint(this Box3D box, float size = 1f)
         {
             var model = box.GetModel();
             Gizmos.color = Color.blue;

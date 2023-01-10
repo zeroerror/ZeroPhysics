@@ -56,10 +56,10 @@ namespace ZeroPhysics.Physics3D
         {
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);
-            transformPhase.Tick(time);
             penetrationPhase.Tick(time);
             frictionPhase.Tick(time);
-        }   
+            transformPhase.Tick(time);
+        }
 
     }
 

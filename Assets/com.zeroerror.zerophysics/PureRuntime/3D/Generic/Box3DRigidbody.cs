@@ -22,10 +22,6 @@ namespace ZeroPhysics.Physics3D
         public FPVector3 TotalForce => totalForce;
         public void SetTotalForce(in FPVector3 v) => totalForce = v;
 
-        FPVector3 frictionForce;
-        public FPVector3 FrictionForce => frictionForce;
-        public void SetFrictionForce(in FPVector3 v) => frictionForce = v;
-
         FP64 mass;
         public FP64 Mass => mass;
         public void SetMass(in FP64 v) => mass = v;
@@ -41,6 +37,8 @@ namespace ZeroPhysics.Physics3D
         FPVector3 beHitDir;
         public FPVector3 BeHitDir => beHitDir;
         public void SetBeHitDir(FPVector3 v) => beHitDir = v;
+
+        public bool IsCollisionStay;
 
         public Box3DRigidbody(Box3D box)
         {
