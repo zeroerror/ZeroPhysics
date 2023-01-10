@@ -16,9 +16,10 @@ namespace ZeroPhysics.Physics3D
         // ====== Phase
         ForcePhase forcePhase;
         VelocityPhase velocityPhase;
-        TransformPhase transformPhase;
-        PenetrationPhase penetrationPhase;
         FrictionPhase frictionPhase;
+        IntersectPhase intersectPhase;
+        PenetrationPhase penetrationPhase;
+        TransformPhase transformPhase;
 
         // ====== API
         GetterAPI getterAPI;
@@ -33,9 +34,10 @@ namespace ZeroPhysics.Physics3D
 
             forcePhase = new ForcePhase();
             velocityPhase = new VelocityPhase();
-            transformPhase = new TransformPhase();
+            intersectPhase = new IntersectPhase();
             penetrationPhase = new PenetrationPhase();
             frictionPhase = new FrictionPhase();
+            transformPhase = new TransformPhase();
 
             getterAPI = new GetterAPI();
             setterAPI = new SetterAPI();
@@ -44,9 +46,10 @@ namespace ZeroPhysics.Physics3D
 
             forcePhase.Inject(physicsFacade);
             velocityPhase.Inject(physicsFacade);
-            transformPhase.Inject(physicsFacade);
+            intersectPhase.Inject(physicsFacade);
             penetrationPhase.Inject(physicsFacade);
             frictionPhase.Inject(physicsFacade);
+            transformPhase.Inject(physicsFacade);
 
             getterAPI.Inject(physicsFacade);
             setterAPI.Inject(physicsFacade);
@@ -56,6 +59,7 @@ namespace ZeroPhysics.Physics3D
         {
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);
+            intersectPhase.Tick(time);
             penetrationPhase.Tick(time);
             frictionPhase.Tick(time);
             transformPhase.Tick(time);

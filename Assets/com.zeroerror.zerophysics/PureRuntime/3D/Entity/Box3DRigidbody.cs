@@ -11,6 +11,8 @@ namespace ZeroPhysics.Physics3D
         public ushort InstanceID => instanceID;
         public void SetInstanceID(ushort v) => instanceID = v;
 
+        public string name;
+
         Box3D box;
         public Box3D Box => box;
 
@@ -34,16 +36,9 @@ namespace ZeroPhysics.Physics3D
         public FP64 BounceCoefficient => bounceCoefficient;
         public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
 
-        FPVector3 beHitDir;
-        public FPVector3 BeHitDir => beHitDir;
-
         PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
 
         ushort PhysicsBody3D.ID => instanceID;
-
-        public void SetBeHitDir(FPVector3 v) => beHitDir = v;
-
-        public bool IsCollisionStay;
 
         public Box3DRigidbody(Box3D box)
         {
@@ -57,7 +52,7 @@ namespace ZeroPhysics.Physics3D
 
         public override string ToString()
         {
-            return $"InstanceID:{instanceID}";
+            return $"BoxRB name:{name}  InstanceID:{instanceID}";
         }
 
     }

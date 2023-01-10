@@ -18,6 +18,7 @@ namespace ZeroPhysics.Physics3D
 
         public void Tick(in FP64 time)
         {
+            var collisionService = physicsFacade.Service.CollisionService;
             var boxRBs = physicsFacade.boxRBs;
             var rbBoxInfos = physicsFacade.Service.IDService.boxRBIDInfos;
             for (int i = 0; i < boxRBs.Length; i++)
@@ -25,17 +26,19 @@ namespace ZeroPhysics.Physics3D
                 if (!rbBoxInfos[i]) continue;
 
                 var rb = boxRBs[i];
-                if (!rb.IsCollisionStay) continue;
+                if (!collisionService.TryGetCollision(rb, out var collision)) continue;
 
                 var linearV = rb.LinearV;
                 var rbBox = rb.Box;
                 var mass = rb.Mass;
                 var linearV_normalized = linearV.normalized;
-                FPVector3 totalForce = rb.TotalForce;
+                var totalForce = rb.TotalForce;
+                FPVector3 beHitDirA = collision.BeHitDirA;
+                FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
 
                 // === Friction
                 var U = rbBox.FirctionCoe_combined;
-                var N = FPVector3.Dot(totalForce, -rb.BeHitDir);
+                var N = FPVector3.Dot(totalForce, -beHitDir);
                 FP64 f = U * N;
                 var maxFrictionForce = linearV.Length() * (mass / time);
                 f = f > maxFrictionForce ? maxFrictionForce : f;

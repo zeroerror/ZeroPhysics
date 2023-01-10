@@ -10,7 +10,7 @@ namespace ZeroPhysics.Physics3D.API
 
         List<Box3DRigidbody> GetAllBoxRBs();
         List<Box3D> GetAllBoxes();
-        Collision[] GetCollisionInfos();
+        CollisionModel[] GetCollisionInfos();
 
     }
 

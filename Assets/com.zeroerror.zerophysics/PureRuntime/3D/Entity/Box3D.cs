@@ -11,6 +11,8 @@ namespace ZeroPhysics.Physics3D
         public ushort InstanceID => instanceID;
         public void SetInstanceID(ushort v) => instanceID = v;
 
+        public string name;
+
         // ====== Component
         // - Trans
         TransformComponent3D trans;
@@ -37,12 +39,12 @@ namespace ZeroPhysics.Physics3D
 
         FP64 firctionCoe_combined;
         public FP64 FirctionCoe_combined => firctionCoe_combined;
+        public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
 
         PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
 
         ushort PhysicsBody3D.ID => instanceID;
 
-        public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
 
         public Box3D()
         {
@@ -61,9 +63,10 @@ namespace ZeroPhysics.Physics3D
             return model;
         }
 
+
         public override string ToString()
         {
-            return $"InstanceID:{instanceID}";
+            return $"Box name:{name}  InstanceID:{instanceID}";
         }
 
     }

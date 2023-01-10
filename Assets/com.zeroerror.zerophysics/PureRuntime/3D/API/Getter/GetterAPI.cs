@@ -30,7 +30,7 @@ namespace ZeroPhysics.Physics3D.API
             return domain.GetAllRBBoxes();
         }
 
-        Collision[] IGetterAPI.GetCollisionInfos()
+        CollisionModel[] IGetterAPI.GetCollisionInfos()
         {
             var collisionService = physicsFacade.Service.CollisionService;
             return collisionService.GetAllCollisions();
