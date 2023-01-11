@@ -6,7 +6,7 @@ namespace ZeroPhysics.Physics3D {
     public static class Bounce3DUtils {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
-        
+
         public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 beHitDir, in FP64 bounceCoefficient) {
             if (beHitDir == FPVector3.Zero || v == FPVector3.Zero) {
                 return v;

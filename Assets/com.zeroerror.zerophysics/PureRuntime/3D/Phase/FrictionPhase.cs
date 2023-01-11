@@ -18,6 +18,7 @@ namespace ZeroPhysics.Physics3D {
             var collisionService = physicsFacade.Service.CollisionService;
             var boxRBs = physicsFacade.boxRBs;
             var rbBoxInfos = physicsFacade.Service.IDService.boxRBIDInfos;
+
             for (int i = 0; i < boxRBs.Length; i++) {
                 if (!rbBoxInfos[i]) continue;
 
@@ -56,6 +57,7 @@ namespace ZeroPhysics.Physics3D {
                 FPVector3 newV = linearV + offset;
                 rb.SetLinearV(newV);
             }
+      
         }
 
     }

@@ -26,6 +26,7 @@ namespace ZeroPhysics.Physics3D {
                 var offset = a * time;
                 linearV += offset;
                 rb.SetLinearV(linearV);
+                UnityEngine.Debug.Log($"速度:{linearV}");
             }
         }
 
