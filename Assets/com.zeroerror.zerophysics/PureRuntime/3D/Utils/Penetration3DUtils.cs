@@ -74,6 +74,7 @@ namespace ZeroPhysics.Physics3D {
         static readonly FP64 RAD_180 = 180 * FP64.Deg2Rad;
         static readonly FP64 NegativeOne_Small_Epsilon = -1 - FP64.EN4;
         static readonly FP64 NegativeOne_Big_Epsilon = -1 + FP64.EN4;
+        static readonly FP64 Bounce_Epsilon = FP64.EN1;
         public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 beHitDir, in FP64 bounceCoefficient) {
             if (beHitDir == FPVector3.Zero || v == FPVector3.Zero) {
                 return v;
@@ -87,6 +88,10 @@ namespace ZeroPhysics.Physics3D {
             }
 
             var vLen = v.Length();
+            if (vLen < Bounce_Epsilon) {
+                return FPVector3.Zero;
+            }
+
             if (cosv <= NegativeOne_Big_Epsilon && cosv >= NegativeOne_Small_Epsilon) {
                 return -bounceCoefficient * vLen * v_normalized;
             }

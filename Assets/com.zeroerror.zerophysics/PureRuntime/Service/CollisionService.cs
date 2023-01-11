@@ -43,7 +43,7 @@ namespace ZeroPhysics.Service
             // // UnityEngine.Debug.Log($"Collision {info.CollisionType.ToString()} ------------  A: {a} &&&&&&&& {b}");
         }
 
-        public void UpdateHitDir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 mtv)
+        public void UpdateBeHitDir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 beHitDir)
         {
             var ida = CombinePhysicsBodyKey(a);
             var idb = CombinePhysicsBodyKey(b);
@@ -53,14 +53,13 @@ namespace ZeroPhysics.Service
                 return;
             }
 
-            var beHitDir = mtv.normalized;
             if (beHitDir == FPVector3.Zero)
             {
                 return;
             }
 
             var hasSwap = SwapBiggerToLeft(ref ida, ref idb);
-            collision.SetBeHitDirA(hasSwap ? -beHitDir : beHitDir);
+            collision.SetBeHitDirA((FPVector3)(hasSwap ? -beHitDir : beHitDir));
         }
 
         public void RemoveCollision(PhysicsBody3D a, PhysicsBody3D b)

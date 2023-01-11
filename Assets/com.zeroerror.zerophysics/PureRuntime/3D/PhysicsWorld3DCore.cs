@@ -2,11 +2,9 @@ using FixMath.NET;
 using ZeroPhysics.Physics3D.API;
 using ZeroPhysics.Physics3D.Facade;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class PhysicsWorld3DCore
-    {
+    public class PhysicsWorld3DCore {
 
         FPVector3 gravity;
 
@@ -14,6 +12,7 @@ namespace ZeroPhysics.Physics3D
         Physics3DFacade physicsFacade;
 
         // ====== Phase
+        BouncePhase bouncePhase;
         ForcePhase forcePhase;
         VelocityPhase velocityPhase;
         FrictionPhase frictionPhase;
@@ -28,10 +27,10 @@ namespace ZeroPhysics.Physics3D
         SetterAPI setterAPI;
         public ISetterAPI SetterAPI => setterAPI;
 
-        public PhysicsWorld3DCore(FPVector3 gravity, int boxMax = 1000, int rbBoxMax = 1000, int sphereMax = 1000)
-        {
+        public PhysicsWorld3DCore(FPVector3 gravity, int boxMax = 1000, int rbBoxMax = 1000, int sphereMax = 1000) {
             this.gravity = gravity;
 
+            bouncePhase = new BouncePhase();
             forcePhase = new ForcePhase();
             velocityPhase = new VelocityPhase();
             intersectPhase = new IntersectPhase();
@@ -44,6 +43,7 @@ namespace ZeroPhysics.Physics3D
 
             physicsFacade = new Physics3DFacade(boxMax, rbBoxMax, sphereMax);
 
+            bouncePhase.Inject(physicsFacade);
             forcePhase.Inject(physicsFacade);
             velocityPhase.Inject(physicsFacade);
             intersectPhase.Inject(physicsFacade);
@@ -55,8 +55,8 @@ namespace ZeroPhysics.Physics3D
             setterAPI.Inject(physicsFacade);
         }
 
-        public void Tick(FP64 time)
-        {
+        public void Tick(FP64 time) {
+            bouncePhase.Tick(time, gravity);
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);
             intersectPhase.Tick(time);

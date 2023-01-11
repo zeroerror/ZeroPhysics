@@ -35,7 +35,7 @@ namespace ZeroPhysics.Physics3D {
                 FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
 
                 var cos = FPVector3.Dot(totalForce.normalized, beHitDir);
-                if (cos >= NegativeOne_Small_Epsilon && cos <= NegativeOne_Big_Epsilon) {
+                if (cos <= NegativeOne_Big_Epsilon) {
                     continue;
                 }
 

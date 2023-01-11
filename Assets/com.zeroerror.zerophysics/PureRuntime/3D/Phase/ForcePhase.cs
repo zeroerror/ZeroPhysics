@@ -1,27 +1,23 @@
 using FixMath.NET;
 using ZeroPhysics.Physics3D.Facade;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class ForcePhase
-    {
+    public class ForcePhase {
 
         Physics3DFacade physicsFacade;
 
         public ForcePhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
-        {
-            this.physicsFacade = physicsFacade ;
+        public void Inject(Physics3DFacade physicsFacade) {
+            this.physicsFacade = physicsFacade;
         }
 
-        public void Tick(in FP64 time, in FPVector3 gravity)
-        {
+        public void Tick(in FP64 time, in FPVector3 gravity) {
             var boxRBs = physicsFacade.boxRBs;
             var rbBoxInfos = physicsFacade.Service.IDService.boxRBIDInfos;
-            for (int i = 0; i < boxRBs.Length; i++)
-            {
+            var collisionService = physicsFacade.Service.CollisionService;
+            for (int i = 0; i < boxRBs.Length; i++) {
                 if (!rbBoxInfos[i]) continue;
 
                 var rb = boxRBs[i];
@@ -35,6 +31,7 @@ namespace ZeroPhysics.Physics3D
                 // - Set
                 rb.SetTotalForce(totalForce);
             }
+
         }
 
     }
