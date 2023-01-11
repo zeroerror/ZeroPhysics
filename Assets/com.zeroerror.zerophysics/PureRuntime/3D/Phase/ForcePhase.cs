@@ -62,7 +62,7 @@ namespace ZeroPhysics.Physics3D {
                     if (!collisionService.TryGetCollision(rb, box, out var collision)) continue;
                     if (collision.CollisionType == Generic.CollisionType.Exit) continue;
 
-                    //   f /m  *time = v  f = vm/time;
+                    //   f /m  *time = v  f = vm/time;  + 重力需要抵消的力
                     FPVector3 beHitDirA = collision.BeHitDirA;
                     FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
                     var linearV = rb.LinearV;
@@ -99,10 +99,11 @@ namespace ZeroPhysics.Physics3D {
                 }
 
                 var U = rbBox.FirctionCoe_combined;
-                var N = FPVector3.Dot(totalForce, -beHitDir);
-                FP64 frictionF = U * N;
-                totalForce += frictionF * -linearV_normalized;
+                var N = FPVector3.Dot(gravity, -beHitDir);
+                FPVector3 frictionF = U * N * -linearV_normalized;
+                totalForce += frictionF;
                 UnityEngine.Debug.Log($"摩擦力:{frictionF}");
+                UnityEngine.Debug.Log($"摩擦力细节:  N {N} totalForce:{totalForce} ");
             }
 
         }
