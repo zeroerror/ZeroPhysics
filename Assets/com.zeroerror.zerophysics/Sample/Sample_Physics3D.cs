@@ -52,7 +52,7 @@ namespace ZeroPhysics.Sample {
             physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
             // - Collsion Info
             var collisionInfos = physicsCore.GetterAPI.GetCollisionInfos();
-            Debug.Log($"碰撞事件数量: {collisionInfos.Length}");
+            // Debug.Log($"碰撞事件数量: {collisionInfos.Length}");
             for (int i = 0; i < collisionInfos.Length; i++) {
                 var collision = collisionInfos[i];
                 var body_a = collision.bodyA;

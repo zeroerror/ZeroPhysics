@@ -1,23 +1,19 @@
 using FixMath.NET;
 using ZeroPhysics.Physics3D.Facade;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class PenetrationPhase
-    {
+    public class PenetrationPhase {
 
         Physics3DFacade physicsFacade;
 
         public PenetrationPhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
-        {
+        public void Inject(Physics3DFacade physicsFacade) {
             this.physicsFacade = physicsFacade;
         }
 
-        public void Tick(in FP64 time)
-        {
+        public void Tick(in FP64 time) {
             var idService = physicsFacade.Service.IDService;
             var collisionService = physicsFacade.Service.CollisionService;
             var boxRBs = physicsFacade.boxRBs;
@@ -68,16 +64,14 @@ namespace ZeroPhysics.Physics3D
             // }
 
             // - RB & SB
-            for (int i = 0; i < boxRBs.Length; i++)
-            {
+            for (int i = 0; i < boxRBs.Length; i++) {
                 if (!boxRBIDInfos[i]) continue;
 
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
                 if (!collisionService.HasCollision(rb)) continue;
 
-                for (int j = 0; j < boxes.Length; j++)
-                {
+                for (int j = 0; j < boxes.Length; j++) {
                     if (!boxInfos[j]) continue;
 
                     var box = boxes[j];
@@ -86,7 +80,11 @@ namespace ZeroPhysics.Physics3D
 
                     var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
                     var beHitDir = mtv.normalized;
-                    var v = Penetration3DUtils.GetBouncedV(rb.LinearV, beHitDir, rb.BounceCoefficient);
+                    var linearV = rb.LinearV;
+                    var v = Penetration3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
+                    v = v.Length() < FP64.Half ? FPVector3.Zero : v;
+                    UnityEngine.Debug.Log($"v.Length():{v.Length()}");
+                    UnityEngine.Debug.Log($"linearV:{linearV}-->GetBouncedV {v} mtv:{mtv} beHitDir:{beHitDir}");
                     rb.SetLinearV(v);
 
                     var firctionCoe1 = rbBox.FrictionCoe;
