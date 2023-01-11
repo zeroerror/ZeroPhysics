@@ -24,7 +24,7 @@ namespace ZeroPhysics.Physics3D.Domain
             var idService = physicsFacade.Service.IDService;
             var id = idService.FetchID_Box();
             box.SetInstanceID(id);
-            UnityEngine.Debug.Log($"SpawnBox {id}");
+            // UnityEngine.Debug.Log($"SpawnBox {id}");
             physicsFacade.boxes[id] = box;
             return box;
         }
@@ -40,7 +40,7 @@ namespace ZeroPhysics.Physics3D.Domain
             var idService = physicsFacade.Service.IDService;
             var id = idService.FetchID_BoxRB();
             rb.SetInstanceID(id);
-            UnityEngine.Debug.Log($"SpawnRBBox {id}");
+            // UnityEngine.Debug.Log($"SpawnRBBox {id}");
 
             physicsFacade.boxRBs[id] = rb;
             return rb;
