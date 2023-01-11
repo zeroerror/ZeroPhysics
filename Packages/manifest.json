@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.frame.fpmath": "ssh://git@github.com/chenwansal/FPMath.git?path=/Assets/com.frame.fpmath#main",
+    "com.gamearki.fpmath": "ssh://git@github.com/GameArki/FPMath.git?path=Assets/com.gamearki.fpmath#main",
     "com.unity.collab-proxy": "1.15.15",
     "com.unity.feature.development": "1.0.1",
     "com.unity.ide.rider": "3.0.13",

@@ -1,14 +1,12 @@
 using FixMath.NET;
 using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
     public class FrictionPhase {
 
         Physics3DFacade physicsFacade;
-
-        static readonly FP64 NegativeOne_Small_Epsilon = -1 - FP64.EN4;
-        static readonly FP64 NegativeOne_Big_Epsilon = -1 + FP64.EN4;
 
         public FrictionPhase() { }
 
@@ -28,32 +26,34 @@ namespace ZeroPhysics.Physics3D {
 
                 var linearV = rb.LinearV;
                 var linearV_normalized = linearV.normalized;
+                var totalForce = rb.TotalForce;
+
                 var rbBox = rb.Box;
                 var mass = rb.Mass;
-                var totalForce = rb.TotalForce;
                 FPVector3 beHitDirA = collision.BeHitDirA;
                 FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
 
-                var cos = FPVector3.Dot(totalForce.normalized, beHitDir);
-                if (cos <= NegativeOne_Big_Epsilon) {
+                // Cross instead?
+                var cos_vnh = FPVector3.Dot(linearV_normalized, beHitDir);
+                if (FPUtils.IsNear(cos_vnh, -1, FP64.EN4) || FPUtils.IsNear(cos_vnh, 1, FP64.EN4)) {
                     continue;
                 }
 
                 // === Friction
                 var U = rbBox.FirctionCoe_combined;
                 var N = FPVector3.Dot(totalForce, -beHitDir);
+
                 FP64 f = U * N;
-                var maxFrictionForce = linearV.Length() * (mass / time);
+                var linearV_Len = linearV.Length();
+                var maxFrictionForce = linearV_Len * (mass / time);
                 f = f > maxFrictionForce ? maxFrictionForce : f;
+                UnityEngine.Debug.Log($"摩擦系数:{U}  总力{totalForce} -> 摩擦垂直力N:{N}  最大摩擦力:{maxFrictionForce}  摩擦力{f}");
+
                 FPVector3 frictionForce = -f * linearV_normalized;
-                // - Set
-                var m = rb.Mass;
-                var a = frictionForce / m;
-                var offset = a * time;
-                var newV = linearV + offset;
-                if (offset != FPVector3.Zero) {
-                    UnityEngine.Debug.Log($"cos:{cos} maxFrictionForce:{maxFrictionForce}  f:{f} offset:{offset}");
-                }
+                FP64 m = rb.Mass;
+                FPVector3 a = frictionForce / m;
+                FPVector3 offset = a * time;
+                FPVector3 newV = linearV + offset;
                 rb.SetLinearV(newV);
             }
         }

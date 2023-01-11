@@ -39,9 +39,7 @@ namespace ZeroPhysics.Physics3D {
                     FPVector3 beHitDirA = collision.BeHitDirA;
                     FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
                     var linearV = rb.LinearV;
-                    var v = Penetration3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
-                    // v = v.Length() < FP64.Half ? FPVector3.Zero : v;
-                    UnityEngine.Debug.Log($"linearV:{linearV} BouncedV {v.Length()}  ");
+                    var v = Bounce3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
                     rb.SetLinearV(v);
                 }
 

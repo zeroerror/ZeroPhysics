@@ -80,20 +80,12 @@ namespace ZeroPhysics.Physics3D {
 
                     var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
                     var beHitDir = mtv.normalized;
-
-                    // var linearV = rb.LinearV;
-                    // var v = Penetration3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
-                    // v = v.Length() < FP64.Half ? FPVector3.Zero : v;
-                    // UnityEngine.Debug.Log($"v.Length():{v.Length()}");
-                    // UnityEngine.Debug.Log($"linearV:{linearV}--> BouncedV {v}    mtv:{mtv} beHitDir:{beHitDir}");
-                    // rb.SetLinearV(v);
+                    collisionService.UpdateBeHitDir(rb, box, beHitDir);
 
                     var firctionCoe1 = rbBox.FrictionCoe;
                     var firctionCoe2 = box.FrictionCoe;
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
                     rbBox.SetFirctionCoe_combined(firctionCoe_combined);
-
-                    collisionService.UpdateBeHitDir(rb, box, beHitDir);
                 }
 
             }

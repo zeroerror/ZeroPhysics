@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "com.frame.fpmath": {
-      "version": "ssh://git@github.com/chenwansal/FPMath.git?path=/Assets/com.frame.fpmath#main",
+    "com.gamearki.fpmath": {
+      "version": "ssh://git@github.com/GameArki/FPMath.git?path=Assets/com.gamearki.fpmath#main",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "8a06f8331a5f67e71f31550e5c170aa726b8b615"
+      "hash": "8070a9c7fd4441434cbb1c433517ee1aebbfb428"
     },
     "com.unity.collab-proxy": {
       "version": "1.15.15",

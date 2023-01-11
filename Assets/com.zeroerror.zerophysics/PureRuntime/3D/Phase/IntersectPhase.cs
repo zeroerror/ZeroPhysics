@@ -1,23 +1,19 @@
 using FixMath.NET;
 using ZeroPhysics.Physics3D.Facade;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class IntersectPhase
-    {
+    public class IntersectPhase {
 
         Physics3DFacade physicsFacade;
 
         public IntersectPhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
-        {
+        public void Inject(Physics3DFacade physicsFacade) {
             this.physicsFacade = physicsFacade;
         }
 
-        public void Tick(in FP64 time)
-        {
+        public void Tick(in FP64 time) {
             var idService = physicsFacade.Service.IDService;
             var collisionService = physicsFacade.Service.CollisionService;
             var boxRBs = physicsFacade.boxRBs;
@@ -26,22 +22,18 @@ namespace ZeroPhysics.Physics3D
             var boxInfos = idService.boxIDInfos;
 
             // - RB & SB
-            for (int i = 0; i < boxRBs.Length; i++)
-            {
+            for (int i = 0; i < boxRBs.Length; i++) {
                 if (!boxRBIDInfos[i]) continue;
 
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
-                for (int j = 0; j < boxes.Length; j++)
-                {
-                    if (!boxInfos[j])
-                    {
+                for (int j = 0; j < boxes.Length; j++) {
+                    if (!boxInfos[j]) {
                         continue;
                     }
 
                     var box = boxes[j];
-                    if (!Intersect3DUtils.HasCollision(rbBox, box))
-                    {
+                    if (!Intersect3DUtils.HasCollision(rbBox, box)) {
                         collisionService.RemoveCollision(rb, box);
                         continue;
                     }

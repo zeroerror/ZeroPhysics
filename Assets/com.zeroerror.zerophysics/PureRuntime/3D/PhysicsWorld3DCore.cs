@@ -55,6 +55,8 @@ namespace ZeroPhysics.Physics3D {
             setterAPI.Inject(physicsFacade);
         }
 
+// 摩擦力作用 需要在bounce改变了速度方向之后计算，   bouncePhase -- frictionPhase
+// 但是bounce又应该在Force之前，一个开始， bouncePhase -- forcePhase
         public void Tick(FP64 time) {
             bouncePhase.Tick(time, gravity);
             forcePhase.Tick(time, gravity);
