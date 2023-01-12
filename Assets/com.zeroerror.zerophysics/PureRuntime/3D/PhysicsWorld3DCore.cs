@@ -49,8 +49,6 @@ namespace ZeroPhysics.Physics3D {
             setterAPI.Inject(physicsFacade);
         }
 
-
-
         public void Tick(FP64 time) {
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);

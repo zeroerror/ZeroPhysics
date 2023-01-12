@@ -153,9 +153,9 @@ namespace ZeroPhysics.Sample {
             src.position = box.Center.ToVector3();
         }
 
-        float bounce = 0f;
-        float firctionCoe_box = 5f;
-        float firctionCoe_rbBox = 1f;
+        public float bounce = 0f;
+        public float firctionCoe_box = 5f;
+        public float firctionCoe_rbBox = 1f;
         void OnGUI() {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"弹性系数:{bounce}", GUILayout.Width(100));

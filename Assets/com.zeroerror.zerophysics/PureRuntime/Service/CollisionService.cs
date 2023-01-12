@@ -62,10 +62,10 @@ namespace ZeroPhysics.Service {
 
             if (collision.CollisionType == CollisionType.Enter || collision.CollisionType == CollisionType.Stay) {
                 collision.SetCollisionType(CollisionType.Exit);
-                UnityEngine.Debug.Log($"Collision Exit ------------  A: {a} &&&&&&&& {b}");
+                // UnityEngine.Debug.Log($"Collision Exit ------------  A: {a} &&&&&&&& {b}");
             } else if (collision.CollisionType == CollisionType.Exit) {
                 collisionDic.Remove(dicKey);
-                UnityEngine.Debug.Log($"Collision Dic Remove  ------------  A: {a} &&&&&&&& {b}");
+                // UnityEngine.Debug.Log($"Collision Dic Remove  ------------  A: {a} &&&&&&&& {b}");
             }
 
         }
