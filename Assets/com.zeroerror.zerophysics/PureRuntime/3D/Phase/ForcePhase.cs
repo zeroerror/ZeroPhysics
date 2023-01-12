@@ -41,7 +41,6 @@ namespace ZeroPhysics.Physics3D {
 
                 FPVector3 totalForce_outForce = FPVector3.Zero;
                 FPVector3 totalForce_bounce = FPVector3.Zero;
-                FPVector3 totalForce_friction = FPVector3.Zero;
 
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
@@ -79,29 +78,13 @@ namespace ZeroPhysics.Physics3D {
                         continue;
                     }
 
-                    // - 摩擦力累加
-                    var crossAxis = FPVector3.Cross(v, beHitDir);
-                    crossAxis.Normalize();
-                    var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_90);
-                    var frictionDir = rot * beHitDir;    // 撞击方向 绕轴旋转
-                    CalculateFriction(rb, frictionDir, totalForce_outForce, collision, ref totalForce_friction);
                 }
 
-                // ====== 弹力 摩擦力 结算
-                var totalForce = totalForce_outForce + totalForce_bounce + totalForce_friction;
-                var m = rb.Mass;
-                var a = totalForce / m;
-                var offset = a * dt;
-                var linearV = v + offset;
-                var fd = totalForce.normalized;
-                var cos = FPVector3.Dot(linearV.normalized, fd);
-                if (cos >= 0) {
-                    totalForce -= totalForce_friction;
-                }
-                UnityEngine.Debug.Log($"coscoscoscos:{cos}  linearV:{linearV}");
+                // ====== 弹力  结算
+                var totalForce = totalForce_outForce + totalForce_bounce ;
 
                 // ====== 总力
-                UnityEngine.Debug.Log($"总力:{totalForce}");
+                UnityEngine.Debug.Log($"总力结算:{totalForce}");
                 rb.SetTotalForce(totalForce);
             }
         }
