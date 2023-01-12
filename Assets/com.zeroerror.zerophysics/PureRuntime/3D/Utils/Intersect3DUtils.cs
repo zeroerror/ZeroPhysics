@@ -1,5 +1,6 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
+using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
@@ -149,7 +150,7 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public static bool HasIntersects(in FPVector2 sub1, in FPVector2 sub2) {
-            return !(sub1.y < sub2.x || sub2.y < sub1.x);
+            return !(sub1.y < sub2.x - FPUtils.epsilon_intersect || sub2.y < sub1.x - FPUtils.epsilon_intersect);
         }
 
     }

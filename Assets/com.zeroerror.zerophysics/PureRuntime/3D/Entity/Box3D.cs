@@ -37,10 +37,6 @@ namespace ZeroPhysics.Physics3D
         public FP64 FrictionCoe => frictionCoe;
         public void SetFirctionCoe(FP64 v) => frictionCoe = v;
 
-        FP64 firctionCoe_combined;
-        public FP64 FirctionCoe_combined => firctionCoe_combined;
-        public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
-
         PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
 
         ushort PhysicsBody3D.ID => instanceID;

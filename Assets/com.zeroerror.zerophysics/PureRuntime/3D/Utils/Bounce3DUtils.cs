@@ -6,7 +6,7 @@ namespace ZeroPhysics.Physics3D {
     public static class Bounce3DUtils {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
-        
+
         public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 beHitDir, in FP64 bounceCoefficient) {
             if (beHitDir == FPVector3.Zero || v == FPVector3.Zero) {
                 return v;
@@ -32,7 +32,7 @@ namespace ZeroPhysics.Physics3D {
             vLen *= sinv;
             var crossAxis = FPVector3.Cross(v, beHitDir);
             crossAxis.Normalize();
-            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_180);
+            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.rad_180);
             var eraseDir = rot * beHitDir;
             return v - (1 + bounceCoefficient) * vLen * eraseDir;
         }

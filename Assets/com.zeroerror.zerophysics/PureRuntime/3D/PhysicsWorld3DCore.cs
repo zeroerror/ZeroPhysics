@@ -12,10 +12,8 @@ namespace ZeroPhysics.Physics3D {
         Physics3DFacade physicsFacade;
 
         // ====== Phase
-        BouncePhase bouncePhase;
         ForcePhase forcePhase;
         VelocityPhase velocityPhase;
-        FrictionPhase frictionPhase;
         IntersectPhase intersectPhase;
         PenetrationPhase penetrationPhase;
         TransformPhase transformPhase;
@@ -30,12 +28,10 @@ namespace ZeroPhysics.Physics3D {
         public PhysicsWorld3DCore(FPVector3 gravity, int boxMax = 1000, int rbBoxMax = 1000, int sphereMax = 1000) {
             this.gravity = gravity;
 
-            bouncePhase = new BouncePhase();
             forcePhase = new ForcePhase();
             velocityPhase = new VelocityPhase();
             intersectPhase = new IntersectPhase();
             penetrationPhase = new PenetrationPhase();
-            frictionPhase = new FrictionPhase();
             transformPhase = new TransformPhase();
 
             getterAPI = new GetterAPI();
@@ -43,27 +39,21 @@ namespace ZeroPhysics.Physics3D {
 
             physicsFacade = new Physics3DFacade(boxMax, rbBoxMax, sphereMax);
 
-            bouncePhase.Inject(physicsFacade);
             forcePhase.Inject(physicsFacade);
             velocityPhase.Inject(physicsFacade);
             intersectPhase.Inject(physicsFacade);
             penetrationPhase.Inject(physicsFacade);
-            frictionPhase.Inject(physicsFacade);
             transformPhase.Inject(physicsFacade);
 
             getterAPI.Inject(physicsFacade);
             setterAPI.Inject(physicsFacade);
         }
 
-// 摩擦力作用 需要在bounce改变了速度方向之后计算，   bouncePhase -- frictionPhase
-// 但是bounce又应该在Force之前，一个开始， bouncePhase -- forcePhase
         public void Tick(FP64 time) {
-            bouncePhase.Tick(time, gravity);
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);
             intersectPhase.Tick(time);
             penetrationPhase.Tick(time);
-            frictionPhase.Tick(time);
             transformPhase.Tick(time);
         }
 

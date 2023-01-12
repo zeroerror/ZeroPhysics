@@ -1,14 +1,14 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
+using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
     public static class Penetration3DUtils {
 
-        static readonly FP64 MTV_MULTY = (1 - FP64.EN4);
         public static FPVector3 PenetrationCorrection(Box3D box1, FP64 mtvCoe1, Box3D box2, FP64 mtvCoe2) {
             var mtv = GetMTV(box1.GetModel(), box2.GetModel());
-            mtv *= MTV_MULTY;
+            mtv *= FPUtils.mtv_multy;
             var mtv1 = mtv * mtvCoe1;
             var mtv2 = -mtv * mtvCoe2;
             var newCenter1 = box1.Center + mtv1;
