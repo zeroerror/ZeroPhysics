@@ -24,6 +24,7 @@ namespace ZeroPhysics.Physics3D {
                 var center = box.Center;
                 var offset = rb.LinearV * time;
                 center += offset;
+                UnityEngine.Debug.Log($"offset:{offset}");
                 box.SetCenter(center);
             }
         }

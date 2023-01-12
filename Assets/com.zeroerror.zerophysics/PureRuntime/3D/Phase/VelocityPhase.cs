@@ -33,6 +33,7 @@ namespace ZeroPhysics.Physics3D {
                 linearV += GetOffsetV_ByForce(totalF, m, dt);
 
                 if (!collisionService.HasCollision(rb)) {
+                    UnityEngine.Debug.Log($"notHasCollision");
                     rb.SetLinearV(linearV);
                     continue;
                 }
@@ -50,7 +51,6 @@ namespace ZeroPhysics.Physics3D {
                     // - With SB
                     FPVector3 beHitDirA = collision.BeHitDirA;
                     FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
-
                     FP64 n = FPVector3.Dot(outForce, -beHitDir);
                     FP64 u = collision.FirctionCoe_combined;
                     FPVector3 force = u * n * GetFrictionDir(linearV, beHitDir);
@@ -59,20 +59,20 @@ namespace ZeroPhysics.Physics3D {
 
                 // 对累加后的总滑动摩擦力进行计算
                 // 根据速度计算摩擦力方向
-                FPVector3 allFDir = allFrictionForce.normalized;
-                // FPVector3 v1 = FPVector3.Dot(linearV, allFDir) * allFDir;
-                // UnityEngine.Debug.Log($"所有摩擦力 和：{allFrictionForce} 方向:{allFDir}");
-                // UnityEngine.Debug.Log($"速度: V: {linearV}  V1:{v1}");
-                // UnityEngine.Debug.Log($"速度方向: {linearV.normalized}  所有摩擦力方向:{allFDir}");
-                FP64 F = allFrictionForce.Length();
-                FP64 V = linearV.Length();
-                FP64 F_MAX = m * V / dt;
-                if (F > F_MAX) {
-                    linearV = FPVector3.Zero;
-                } else {
-                    linearV += GetOffsetV_ByForce(-allFrictionForce, m, dt);
+                if (allFrictionForce.LengthSquared() != 0) {
+                    var offsetV_friction = GetOffsetV_ByForce(-allFrictionForce, m, dt);
+                    var offsetLen = offsetV_friction.Length();
+                    var linearVLen = linearV.Length();
+                    if (offsetLen - linearVLen > FPUtils.epsilon_friction) {
+                        linearV = FPVector3.Zero;
+                        UnityEngine.Debug.Log("因为摩擦力停下");
+                    } else if (linearVLen - offsetLen > FPUtils.epsilon_friction) {
+                        linearV += offsetV_friction;
+                        UnityEngine.Debug.Log($"摩擦力   差:{linearVLen - offsetLen} ");
+                    }
+
                 }
-                UnityEngine.Debug.Log($"F_MAX: {F_MAX}  F:{F}  allFrictionForce：{allFrictionForce}");
+
                 rb.SetLinearV(linearV);
             }
         }
@@ -80,7 +80,7 @@ namespace ZeroPhysics.Physics3D {
         FPVector3 GetFrictionDir(in FPVector3 linearV, in FPVector3 beHitDir) {
             var crossAxis = FPVector3.Cross(linearV, beHitDir);
             crossAxis.Normalize();
-            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_90);
+            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.rad_90);
             var frictionDir = rot * -beHitDir;    // 撞击方向 绕轴旋转
             return frictionDir;
         }

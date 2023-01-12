@@ -32,7 +32,7 @@ namespace ZeroPhysics.Physics3D {
             vLen *= sinv;
             var crossAxis = FPVector3.Cross(v, beHitDir);
             crossAxis.Normalize();
-            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_180);
+            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.rad_180);
             var eraseDir = rot * beHitDir;
             return v - (1 + bounceCoefficient) * vLen * eraseDir;
         }
