@@ -18,6 +18,10 @@ namespace ZeroPhysics.Generic
         public FPVector3 BeHitDirA => beHitDirA;
         public void SetBeHitDirA(FPVector3 v) => beHitDirA = v;
 
+        FP64 firctionCoe_combined;
+        public FP64 FirctionCoe_combined => firctionCoe_combined;
+        public void SetFirctionCoe_combined(FP64 v) => firctionCoe_combined = v;
+
         public CollisionModel()
         {
         }

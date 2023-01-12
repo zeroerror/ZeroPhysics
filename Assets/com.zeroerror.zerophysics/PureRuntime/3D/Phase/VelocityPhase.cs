@@ -14,30 +14,81 @@ namespace ZeroPhysics.Physics3D {
             this.physicsFacade = physicsFacade;
         }
 
-        public void Tick(in FP64 time) {
+        public void Tick(in FP64 dt) {
             var rbBoxes = physicsFacade.boxRBs;
-            var rbBoxIDInfos = physicsFacade.Service.IDService.boxRBIDInfos;
+            var boxes = physicsFacade.boxes;
+            var service = physicsFacade.Service;
+            var idService = service.IDService;
+            var collisionService = service.CollisionService;
+            var rbBoxIDInfos = idService.boxRBIDInfos;
+            var boxIDInfos = idService.boxIDInfos;
+
             for (int i = 0; i < rbBoxes.Length; i++) {
                 if (!rbBoxIDInfos[i]) continue;
                 var rb = rbBoxes[i];
                 var linearV = rb.LinearV;
-                var f = rb.TotalForce;
                 var m = rb.Mass;
-                var a = f / m;
-                var offset = a * time;
-                linearV += offset;
-                rb.SetLinearV(linearV);
-                UnityEngine.Debug.Log($"速度:{linearV}");
+                var totalF = rb.GetTotalForce();
+                var outForce = rb.OutForce;
+                linearV += GetOffsetV_ByForce(totalF, m, dt);
 
-                // // 跟所有其他RB、SB进行 F = UN 计算 ，并且累加
-                // // - 摩擦力累加
-                // // - With SB
-                // var crossAxis = FPVector3.Cross(v, beHitDir);
-                // crossAxis.Normalize();
-                // var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_90);
-                // var frictionDir = rot * beHitDir;    // 撞击方向 绕轴旋转
-                // CalculateFriction(rb, frictionDir, totalForce_outForce, collision, ref totalForce_friction);
+                if (!collisionService.HasCollision(rb)) {
+                    rb.SetLinearV(linearV);
+                    continue;
+                }
+
+                FPVector3 allFrictionForce = FPVector3.Zero;
+                // 跟所有其他RB、SB进行 F = UN 计算 ，并且累加
+                for (int j = 0; j < boxes.Length; j++) {
+                    if (!boxIDInfos[j]) continue;
+                    var box = boxes[j];
+                    if (!collisionService.TryGetCollision(rb, box, out var collision)) {
+                        continue;
+                    }
+
+                    // - 摩擦力累加
+                    // - With SB
+                    FPVector3 beHitDirA = collision.BeHitDirA;
+                    FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
+
+                    FP64 n = FPVector3.Dot(outForce, -beHitDir);
+                    FP64 u = collision.FirctionCoe_combined;
+                    FPVector3 force = u * n * GetFrictionDir(linearV, beHitDir);
+                    allFrictionForce += force;
+                }
+
+                // 对累加后的总滑动摩擦力进行计算
+                // 根据速度计算摩擦力方向
+                FPVector3 allFDir = allFrictionForce.normalized;
+                // FPVector3 v1 = FPVector3.Dot(linearV, allFDir) * allFDir;
+                // UnityEngine.Debug.Log($"所有摩擦力 和：{allFrictionForce} 方向:{allFDir}");
+                // UnityEngine.Debug.Log($"速度: V: {linearV}  V1:{v1}");
+                // UnityEngine.Debug.Log($"速度方向: {linearV.normalized}  所有摩擦力方向:{allFDir}");
+                FP64 F = allFrictionForce.Length();
+                FP64 V = linearV.Length();
+                FP64 F_MAX = m * V / dt;
+                if (F > F_MAX) {
+                    linearV = FPVector3.Zero;
+                } else {
+                    linearV += GetOffsetV_ByForce(-allFrictionForce, m, dt);
+                }
+                UnityEngine.Debug.Log($"F_MAX: {F_MAX}  F:{F}  allFrictionForce：{allFrictionForce}");
+                rb.SetLinearV(linearV);
             }
+        }
+
+        FPVector3 GetFrictionDir(in FPVector3 linearV, in FPVector3 beHitDir) {
+            var crossAxis = FPVector3.Cross(linearV, beHitDir);
+            crossAxis.Normalize();
+            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.RAD_90);
+            var frictionDir = rot * -beHitDir;    // 撞击方向 绕轴旋转
+            return frictionDir;
+        }
+
+        FPVector3 GetOffsetV_ByForce(in FPVector3 f, in FP64 m, in FP64 t) {
+            var a = f / m;
+            var offset = a * t;
+            return offset;
         }
 
     }

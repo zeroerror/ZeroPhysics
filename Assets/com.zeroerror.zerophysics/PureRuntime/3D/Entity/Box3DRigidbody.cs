@@ -1,11 +1,9 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class Box3DRigidbody : PhysicsBody3D
-    {
+    public class Box3DRigidbody : PhysicsBody3D {
 
         ushort instanceID;
         public ushort InstanceID => instanceID;
@@ -20,9 +18,15 @@ namespace ZeroPhysics.Physics3D
         public TickType TickType => tickType;
         public void SetTickType(TickType v) => tickType = v;
 
-        FPVector3 totalForce;
-        public FPVector3 TotalForce => totalForce;
-        public void SetTotalForce(in FPVector3 v) => totalForce = v;
+        FPVector3 outForce;
+        public FPVector3 OutForce => outForce;
+        public void SetOutForce(in FPVector3 v) => outForce = v;
+
+        FPVector3 bounceForce;
+        public FPVector3 BounceForce => bounceForce;
+        public void SetBounceForce(in FPVector3 v) => bounceForce = v;
+
+        public FPVector3 GetTotalForce() => outForce + bounceForce;
 
         FP64 mass;
         public FP64 Mass => mass;
@@ -40,18 +44,15 @@ namespace ZeroPhysics.Physics3D
 
         ushort PhysicsBody3D.ID => instanceID;
 
-        public Box3DRigidbody(Box3D box)
-        {
+        public Box3DRigidbody(Box3D box) {
             this.box = box;
         }
 
-        public BoxType GetBoxType()
-        {
+        public BoxType GetBoxType() {
             return box.GetBoxType();
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return $"BoxRB name:{name}  InstanceID:{instanceID}";
         }
 

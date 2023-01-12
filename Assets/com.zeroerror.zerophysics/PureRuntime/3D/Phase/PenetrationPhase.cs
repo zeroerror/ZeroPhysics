@@ -85,7 +85,7 @@ namespace ZeroPhysics.Physics3D {
                     var firctionCoe1 = rbBox.FrictionCoe;
                     var firctionCoe2 = box.FrictionCoe;
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
-                    rbBox.SetFirctionCoe_combined(firctionCoe_combined);
+                    collision.SetFirctionCoe_combined(firctionCoe_combined);
                 }
 
             }

@@ -39,8 +39,8 @@ namespace ZeroPhysics.Physics3D {
             for (int i = 0; i < boxRBs.Length; i++) {
                 if (!boxRBIDInfos[i]) continue;
 
-                FPVector3 totalForce_outForce = FPVector3.Zero;
-                FPVector3 totalForce_bounce = FPVector3.Zero;
+                FPVector3 outForce = FPVector3.Zero;
+                FPVector3 bounceForce = FPVector3.Zero;
 
                 var rb = boxRBs[i];
                 var rbBox = rb.Box;
@@ -49,11 +49,10 @@ namespace ZeroPhysics.Physics3D {
                 var v_normalized = v.normalized;
 
                 // ====== 重力计算
-                ApplyGravity(gravity, rb, ref totalForce_outForce);
+                ApplyGravity(gravity, rb, ref outForce);
 
                 if (!collisionService.HasCollision(rb)) {
-                    UnityEngine.Debug.Log($"总力:{totalForce_outForce}");
-                    rb.SetTotalForce(totalForce_outForce);
+                    rb.SetOutForce(outForce);
                     continue;
                 }
 
@@ -73,27 +72,22 @@ namespace ZeroPhysics.Physics3D {
                     FPVector3 beHitDirA = collision.BeHitDirA;
                     FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
                     // - 弹力累加
-                    CalculateBounce(rb, box, beHitDir, totalForce_outForce, dt, ref totalForce_bounce, ref v_bounced);
+                    CalculateBounce(rb, box, beHitDir, outForce, dt, ref bounceForce, ref v_bounced);
                     if (v_bounced == FPVector3.Zero) {
                         continue;
                     }
 
                 }
 
-                // ====== 弹力  结算
-                var totalForce = totalForce_outForce + totalForce_bounce ;
-
-                // ====== 总力
-                UnityEngine.Debug.Log($"总力结算:{totalForce}");
-                rb.SetTotalForce(totalForce);
+                // ====== 弹力 
+                rb.SetBounceForce(bounceForce);
             }
         }
 
-        void ApplyGravity(in FPVector3 gravity, Box3DRigidbody rb, ref FPVector3 totalForce) {
+        void ApplyGravity(in FPVector3 gravity, Box3DRigidbody rb, ref FPVector3 outForce) {
             var rbBox = rb.Box;
             var mass = rb.Mass;
-            totalForce += gravity * mass;
-            UnityEngine.Debug.Log($"重力:{totalForce}");
+            outForce += gravity * mass;
         }
 
         void CalculateBounce(Box3DRigidbody rb, Box3D box, in FPVector3 beHitDir, in FPVector3 totalForce_outForce, in FP64 dt,
@@ -102,26 +96,7 @@ namespace ZeroPhysics.Physics3D {
             v_bounced = Bounce3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
             var deltaV = v_bounced - linearV;
             var bounceF = deltaV * rb.Mass / dt;
-            UnityEngine.Debug.Log($"弹力:{bounceF}");
             totalForce_bounce += bounceF;
-        }
-
-        void CalculateFriction(Box3DRigidbody rb, in FPVector3 frictionDir, in FPVector3 totalForce_outForce, CollisionModel collision, ref FPVector3 totalForce_friction) {
-            var rbBox = rb.Box;
-            var mass = rb.Mass;
-            FPVector3 beHitDirA = collision.BeHitDirA;
-            FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
-
-            // Cross instead? nEED?
-            var cos = FPVector3.Dot(frictionDir, beHitDir);
-            if (FPUtils.IsNear(cos, -1, FP64.EN4) || FPUtils.IsNear(cos, 1, FP64.EN4)) {
-                return;
-            }
-
-            FP64 U = rbBox.FirctionCoe_combined;
-            FP64 N = FPVector3.Dot(totalForce_outForce, -beHitDir);
-            FPVector3 frictionF = U * N * frictionDir;
-            totalForce_friction += frictionF;
         }
 
     }
