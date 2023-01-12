@@ -1,6 +1,6 @@
 {
   "name": "com.zeroerror.zerophysics",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "description": "基于FPMath定点数的自制3D物理引擎",
   "displayName": "ZeroError.ZeroPhysics",
   "unity": "2019.4",
