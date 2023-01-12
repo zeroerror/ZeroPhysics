@@ -56,7 +56,6 @@ namespace ZeroPhysics.Physics3D {
                     continue;
                 }
 
-                FPVector3 v_bounced = FPVector3.Zero;
                 for (int j = 0; j < boxes.Length; j++) {
                     if (!boxInfos[j]) {
                         continue;
@@ -72,11 +71,7 @@ namespace ZeroPhysics.Physics3D {
                     FPVector3 beHitDirA = collision.BeHitDirA;
                     FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
                     // - 弹力累加
-                    CalculateBounce(rb, box, beHitDir, outForce, dt, ref bounceForce, ref v_bounced);
-                    if (v_bounced == FPVector3.Zero) {
-                        continue;
-                    }
-
+                    CalculateBounce(rb, box, beHitDir, outForce, dt, ref bounceForce);
                 }
 
                 // ====== 弹力 
@@ -91,12 +86,12 @@ namespace ZeroPhysics.Physics3D {
         }
 
         void CalculateBounce(Box3DRigidbody rb, Box3D box, in FPVector3 beHitDir, in FPVector3 totalForce_outForce, in FP64 dt,
-        ref FPVector3 totalForce_bounce, ref FPVector3 v_bounced) {
+        ref FPVector3 bounceForce) {
             var linearV = rb.LinearV;
-            v_bounced = Bounce3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
+            var v_bounced = Bounce3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
             var deltaV = v_bounced - linearV;
             var bounceF = deltaV * rb.Mass / dt;
-            totalForce_bounce += bounceF;
+            bounceForce += bounceF;
         }
 
     }

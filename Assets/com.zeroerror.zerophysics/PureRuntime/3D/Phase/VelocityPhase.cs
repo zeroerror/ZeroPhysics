@@ -33,7 +33,6 @@ namespace ZeroPhysics.Physics3D {
                 linearV += GetOffsetV_ByForce(totalF, m, dt);
 
                 if (!collisionService.HasCollision(rb)) {
-                    UnityEngine.Debug.Log($"notHasCollision");
                     rb.SetLinearV(linearV);
                     continue;
                 }
@@ -63,12 +62,12 @@ namespace ZeroPhysics.Physics3D {
                     var offsetV_friction = GetOffsetV_ByForce(-allFrictionForce, m, dt);
                     var offsetLen = offsetV_friction.Length();
                     var linearVLen = linearV.Length();
-                    if (offsetLen - linearVLen > FPUtils.epsilon_friction) {
+                    if (offsetLen > linearVLen) {
                         linearV = FPVector3.Zero;
-                        UnityEngine.Debug.Log("因为摩擦力停下");
+                        // UnityEngine.Debug.Log("静摩擦力");
                     } else if (linearVLen - offsetLen > FPUtils.epsilon_friction) {
+                        // UnityEngine.Debug.Log($"滑动摩擦力   差:{linearVLen - offsetLen} linearV:{linearV} offsetV_friction:{offsetV_friction}");
                         linearV += offsetV_friction;
-                        UnityEngine.Debug.Log($"摩擦力   差:{linearVLen - offsetLen} ");
                     }
 
                 }
