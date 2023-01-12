@@ -22,12 +22,6 @@ namespace ZeroPhysics.Physics3D {
         public FPVector3 OutForce => outForce;
         public void SetOutForce(in FPVector3 v) => outForce = v;
 
-        FPVector3 bounceForce;
-        public FPVector3 BounceForce => bounceForce;
-        public void SetBounceForce(in FPVector3 v) => bounceForce = v;
-
-        public FPVector3 GetTotalForce() => outForce + bounceForce;
-
         FP64 mass;
         public FP64 Mass => mass;
         public void SetMass(in FP64 v) => mass = v;

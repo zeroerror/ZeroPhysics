@@ -27,23 +27,31 @@ namespace ZeroPhysics.Physics3D {
                 var rb = rbBoxes[i];
                 var linearV = rb.LinearV;
                 var m = rb.Mass;
-                var totalF = rb.GetTotalForce();
                 var outForce = rb.OutForce;
-                linearV += GetOffsetV_ByForce(totalF, m, dt);
+                if (outForce.LengthSquared() > FP64.Epsilon) {
+                    linearV += GetOffsetV_ByForce(outForce, m, dt);
+                }
 
                 if (!collisionService.HasCollision(rb)) {
                     rb.SetLinearV(linearV);
                     continue;
                 }
 
-                ApplyFriction(collisionService, rb, dt, m, outForce, ref linearV);
+                // - 弹力累加
+                CalculateBounce(rb, dt, ref linearV);
+                // UnityEngine.Debug.Log($"弹力过后 linearV {linearV}");
+
+                ApplyFriction(rb, dt, m, outForce, ref linearV);
+                // UnityEngine.Debug.Log($"摩擦力过后 linearV {linearV}");
 
                 rb.SetLinearV(linearV);
             }
         }
 
-        void ApplyFriction(CollisionService collisionService, Box3DRigidbody rb, in FP64 dt, in FP64 mass, in FPVector3 outForce, ref FPVector3 linearV) {
+        void ApplyFriction(Box3DRigidbody rb, in FP64 dt, in FP64 mass, in FPVector3 outForce, ref FPVector3 linearV) {
             var boxes = physicsFacade.boxes;
+            var service = physicsFacade.Service;
+            var collisionService = service.CollisionService;
             var boxIDInfos = physicsFacade.Service.IDService.boxIDInfos;
             FPVector3 allFrictionForce = FPVector3.Zero;
             // 跟所有其他RB、SB进行 F = UN 计算 ，并且累加
@@ -77,11 +85,11 @@ namespace ZeroPhysics.Physics3D {
                 var offsetV_friction = GetOffsetV_ByForce(-allFrictionForce, mass, dt);
                 var offsetLen = offsetV_friction.Length();
                 var linearVLen = linearV.Length();
-                if (offsetLen > linearVLen) {
+                if (offsetLen  > linearVLen ) {
+                    // UnityEngine.Debug.Log($"摩擦力 停下");
                     linearV = FPVector3.Zero;
-                    UnityEngine.Debug.Log("静摩擦力");
-                } else if (linearVLen - offsetLen > FPUtils.epsilon_friction) {
-                    UnityEngine.Debug.Log($"滑动摩擦力   差:{linearVLen - offsetLen} linearV:{linearV} offsetV_friction:{offsetV_friction}");
+                } else {
+                    // UnityEngine.Debug.Log($"摩擦力 减速 ");
                     linearV += offsetV_friction;
                 }
             }
@@ -100,6 +108,30 @@ namespace ZeroPhysics.Physics3D {
             var a = f / m;
             var offset = a * t;
             return offset;
+        }
+
+        void CalculateBounce(Box3DRigidbody rb, in FP64 dt, ref FPVector3 linearV) {
+            var boxes = physicsFacade.boxes;
+            var service = physicsFacade.Service;
+            var collisionService = service.CollisionService;
+            var boxIDInfos = physicsFacade.Service.IDService.boxIDInfos;
+            // 跟所有其他RB、SB进行 F = UN 计算 ，并且累加
+            for (int i = 0; i < boxes.Length; i++) {
+                if (!boxIDInfos[i]) {
+                    continue;
+                }
+                var box = boxes[i];
+                if (!collisionService.TryGetCollision(rb, box, out var collision)) {
+                    continue;
+                }
+                if (collision.CollisionType == Generic.CollisionType.Exit) {
+                    continue;
+                }
+                FPVector3 beHitDirA = collision.BeHitDirA;
+                FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
+                var v_bounced = Bounce3DUtils.GetBouncedV(linearV, beHitDir, rb.BounceCoefficient);
+                linearV = v_bounced;
+            }
         }
 
     }
