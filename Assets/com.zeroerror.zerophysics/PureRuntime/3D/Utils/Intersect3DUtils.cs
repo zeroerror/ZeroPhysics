@@ -25,17 +25,17 @@ namespace ZeroPhysics.Physics3D {
             // - Axis x
             var diff_x1 = min1.x - max2.x;
             var diff_x2 = min2.x - max1.x;
-            bool hasCollisionX = !(diff_x1 > 0 || diff_x2 > 0);
+            bool hasCollisionX = !(diff_x1 > FPUtils.epsilon_intersect || diff_x2 > FPUtils.epsilon_intersect);
 
             // - Axis y
             var diff_y1 = min1.y - max2.y;
             var diff_y2 = min2.y - max1.y;
-            bool hasCollisionY = !(diff_y1 > 0 || diff_y2 > 0);
+            bool hasCollisionY = !(diff_y1 > FPUtils.epsilon_intersect || diff_y2 > FPUtils.epsilon_intersect);
 
             // - Axis y
             var diff_z1 = min1.z - max2.z;
             var diff_z2 = min2.z - max1.z;
-            bool hasCollisionZ = !(diff_z1 > 0 || diff_z2 > 0);
+            bool hasCollisionZ = !(diff_z1 > FPUtils.epsilon_intersect || diff_z2 > FPUtils.epsilon_intersect);
 
             return hasCollisionX && hasCollisionY && hasCollisionZ;
         }

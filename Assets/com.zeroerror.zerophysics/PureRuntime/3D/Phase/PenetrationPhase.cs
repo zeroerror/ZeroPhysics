@@ -22,6 +22,7 @@ namespace ZeroPhysics.Physics3D {
             var boxInfos = idService.boxIDInfos;
 
             // - RB & SB
+            // TODO 用Span数组存储 rb和box和 MTV
             for (int i = 0; i < boxRBs.Length; i++) {
                 if (!boxRBIDInfos[i]) continue;
 
@@ -35,15 +36,20 @@ namespace ZeroPhysics.Physics3D {
                     if (!collisionService.TryGetCollision(rb, box, out var collision)) continue;
                     if (collision.CollisionType == Generic.CollisionType.Exit) continue;
 
-                    var mtv = Penetration3DUtils.PenetrationCorrection(rbBox, 1, box, 0);
-                    var beHitDir = mtv.normalized;
-                    collisionService.UpdateBeHitDir(rb, box, beHitDir);
+                    // bug 如果第一个MTV假如是一个斜向上的，那么如果当前MTV计算就会有问题 变成拉近 所以先缓存MTV，不做位移
+                    var mtv = Penetration3DUtils.GetMTV(rbBox.GetModel(), box.GetModel());
 
                     var firctionCoe1 = rbBox.FrictionCoe;
                     var firctionCoe2 = box.FrictionCoe;
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
                     collision.SetFirctionCoe_combined(firctionCoe_combined);
                 }
+
+                // 这里运用
+                // var beHitDir = mtv.normalized;
+                // UnityEngine.Debug.Log($"beHitDir:{beHitDir} mtv:{mtv}");
+                // collisionService.UpdateBeHitDir(rb, box, beHitDir);
+
 
             }
         }

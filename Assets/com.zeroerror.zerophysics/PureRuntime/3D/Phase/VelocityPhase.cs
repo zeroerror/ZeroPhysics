@@ -116,7 +116,10 @@ namespace ZeroPhysics.Physics3D {
             var service = physicsFacade.Service;
             var collisionService = service.CollisionService;
             var boxIDInfos = physicsFacade.Service.IDService.boxIDInfos;
-            // 跟所有其他RB、SB进行 F = UN 计算 ，并且累加
+            var outForce = rb.OutForce;
+            var m = rb.Mass;
+
+            // OutForce's Velcotiy Influence Erase By Collsion First
             for (int i = 0; i < boxes.Length; i++) {
                 if (!boxIDInfos[i]) {
                     continue;
@@ -130,15 +133,26 @@ namespace ZeroPhysics.Physics3D {
                 }
                 FPVector3 beHitDirA = collision.BeHitDirA;
                 FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
-                var outForce = rb.OutForce;
-                var m = rb.Mass;
 
-                // OutForce
                 EraseForce(ref outForce, beHitDir);
-                var v_offset = GetOffsetV_ByForce(outForce, m, dt);
-                linearV += v_offset;
+            }
+            linearV += GetOffsetV_ByForce(outForce, m, dt);
 
-                // Bounce
+            // Bounce
+            for (int i = 0; i < boxes.Length; i++) {
+                if (!boxIDInfos[i]) {
+                    continue;
+                }
+                var box = boxes[i];
+                if (!collisionService.TryGetCollision(rb, box, out var collision)) {
+                    continue;
+                }
+                if (collision.CollisionType == Generic.CollisionType.Exit) {
+                    continue;
+                }
+                FPVector3 beHitDirA = collision.BeHitDirA;
+                FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
+
                 Bounce3DUtils.ApplyBounce(beHitDir, rb.BounceCoefficient, ref linearV);
             }
         }
