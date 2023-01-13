@@ -17,11 +17,16 @@ namespace ZeroPhysics.Sample {
         Transform[] boxTfs;
 
         PhysicsWorld3DCore physicsCore;
+
+        FP64 restoreTime;
+        FP64 intervalTime;
+
         void Start() {
             if (rbBoxRoot == null) return;
             canRun = true;
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
             InitBox3Ds();
+            intervalTime = 1 / FP64.ToFP64(60);
         }
 
         void Update() {
@@ -46,10 +51,19 @@ namespace ZeroPhysics.Sample {
                 var box = boxes[i];
                 box.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
             }
+            FixedUpdate_Physics();
+        }
+
+        void FixedUpdate_Physics() {
+            var dt = UnityEngine.Time.deltaTime;
+            restoreTime += FP64.ToFP64(dt);
+            while (restoreTime >= intervalTime) {
+                restoreTime -= intervalTime;
+                physicsCore.Tick(intervalTime);
+            }
         }
 
         void FixedUpdate() {
-            physicsCore.Tick(FP64.ToFP64(UnityEngine.Time.fixedDeltaTime));
             // - Collsion Info
             var collisionInfos = physicsCore.GetterAPI.GetCollisionInfos();
             // Debug.Log($"碰撞事件数量: {collisionInfos.Length}");

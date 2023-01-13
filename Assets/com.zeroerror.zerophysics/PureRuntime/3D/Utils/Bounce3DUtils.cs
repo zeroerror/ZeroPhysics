@@ -7,34 +7,35 @@ namespace ZeroPhysics.Physics3D {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
 
-        public static FPVector3 GetBouncedV(in FPVector3 v, in FPVector3 beHitDir, in FP64 bounceCoefficient) {
-            if (beHitDir == FPVector3.Zero || v == FPVector3.Zero) {
-                return v;
+        public static void ApplyBounce(in FPVector3 beHitDir, in FP64 bounceCoefficient, ref FPVector3 linearV) {
+            if (beHitDir == FPVector3.Zero || linearV == FPVector3.Zero) {
+                return;
             }
 
-            var v_normalized = v.normalized;
-            var cosv = FPVector3.Dot(v_normalized, beHitDir);
-            cosv = FP64.Clamp(cosv, -FP64.One, FP64.One);
-            if (cosv >= 0) {
-                return v;
-            }
+            var v_proj = FPVector3.Dot(linearV, beHitDir);
+            FPVector3 bouncedV = -v_proj * beHitDir;
+            FPVector3 linearV_normalized = linearV.normalized;
+            FP64 cosv = FPVector3.Dot(linearV_normalized, beHitDir);
 
-            var vLen = v.Length();
-            if (vLen < Bounce_Epsilon) {
-                return FPVector3.Zero;
+            if (cosv == 1) {
+                // 速度和撞击速度相同
+                linearV -= (1 + bounceCoefficient) * bouncedV;
+                return;
             }
 
             if (cosv == -1) {
-                return -bounceCoefficient * vLen * v_normalized;
+                // 速度和撞击速度相反
+                UnityEngine.Debug.Log($"linearV_normalized{linearV_normalized} beHitDir:{beHitDir} bouncedV:{bouncedV}");
+                linearV += (1 + bounceCoefficient) * bouncedV;
+                return;
             }
 
-            var sinv = -cosv;
-            vLen *= sinv;
-            var crossAxis = FPVector3.Cross(v, beHitDir);
-            crossAxis.Normalize();
-            var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.rad_180);
-            var eraseDir = rot * beHitDir;
-            return v - (1 + bounceCoefficient) * vLen * eraseDir;
+            // 速度和撞击呈斜角
+            FP64 sinv = -cosv;
+            FP64 bouncedVLen = bouncedV.Length();
+            bouncedVLen *= sinv;
+            FPVector3 offset = (1 + bounceCoefficient) * bouncedVLen * bouncedV.normalized;
+            linearV += offset;
         }
 
     }

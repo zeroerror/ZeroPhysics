@@ -85,7 +85,7 @@ namespace ZeroPhysics.Service {
                 var id2 = (uint)(key >> 32);
                 if (id == id1 || id == id2) {
                     var col = collisionDic[key];
-                    if (col.CollisionType != CollisionType.None) {
+                    if (col.CollisionType == CollisionType.Enter || col.CollisionType == CollisionType.Stay) {
                         return true;
                     }
                 }
