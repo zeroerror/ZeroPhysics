@@ -31,7 +31,13 @@ namespace ZeroPhysics.Physics3D {
                     UnityEngine.Debug.Log($"弹力前 linearV {linearV}");
                     ApplyBounce(rb, dt, ref linearV);
                     UnityEngine.Debug.Log($"弹力后 linearV {linearV}");
-                    linearV += rb.OutForce * dt / rb.Mass;
+
+                    // !!!避免无限极小反弹
+                    var newV = linearV + rb.OutForce * dt / rb.Mass;
+                    if (FPVector3.Dot(linearV, newV) < 0) {
+                        linearV = newV;
+                    }
+
                     UnityEngine.Debug.Log($"摩擦力前 linearV {linearV}");
                     ApplyFriction(rb, dt, ref linearV);
                     UnityEngine.Debug.Log($"摩擦力后 linearV {linearV}");

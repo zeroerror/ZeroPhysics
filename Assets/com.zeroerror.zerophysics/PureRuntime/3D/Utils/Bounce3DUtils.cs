@@ -25,7 +25,6 @@ namespace ZeroPhysics.Physics3D {
 
             if (cosv == -1) {
                 // 速度和撞击速度相反
-                UnityEngine.Debug.Log($"linearV_normalized{linearV_normalized} beHitDir:{beHitDir} bouncedV:{bouncedV}");
                 linearV += (1 + bounceCoefficient) * bouncedV;
                 return;
             }
