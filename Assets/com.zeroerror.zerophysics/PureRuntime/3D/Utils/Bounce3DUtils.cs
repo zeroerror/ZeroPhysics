@@ -34,6 +34,7 @@ namespace ZeroPhysics.Physics3D {
             crossAxis.Normalize();
             var rot = FPQuaternion.CreateFromAxisAngle(crossAxis, FPUtils.rad_180);
             var eraseDir = rot * beHitDir;
+            UnityEngine.Debug.Log($"cosv:{cosv} 2");
             return v - (1 + bounceCoefficient) * vLen * eraseDir;
         }
 

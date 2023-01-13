@@ -39,6 +39,7 @@ namespace ZeroPhysics.Physics3D {
 
                 // - 弹力累加
                 CalculateBounce(rb, dt, ref linearV);
+                linearV += dt * outForce / rb.Mass;
                 // UnityEngine.Debug.Log($"弹力过后 linearV {linearV}");
 
                 ApplyFriction(rb, dt, m, outForce, ref linearV);
@@ -85,7 +86,7 @@ namespace ZeroPhysics.Physics3D {
                 var offsetV_friction = GetOffsetV_ByForce(-allFrictionForce, mass, dt);
                 var offsetLen = offsetV_friction.Length();
                 var linearVLen = linearV.Length();
-                if (offsetLen  > linearVLen ) {
+                if (offsetLen > linearVLen) {
                     // UnityEngine.Debug.Log($"摩擦力 停下");
                     linearV = FPVector3.Zero;
                 } else {
