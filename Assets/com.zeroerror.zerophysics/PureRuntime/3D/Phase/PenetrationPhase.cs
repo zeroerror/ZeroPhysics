@@ -11,10 +11,7 @@ namespace ZeroPhysics.Physics3D {
 
         Physics3DFacade physicsFacade;
 
-        Queue<MTVModel> mtvModelQueue;
-
         public PenetrationPhase() {
-            mtvModelQueue = new Queue<MTVModel>();
         }
 
         public void Inject(Physics3DFacade physicsFacade) {
@@ -25,58 +22,83 @@ namespace ZeroPhysics.Physics3D {
             var idService = physicsFacade.Service.IDService;
             var collisionService = physicsFacade.Service.CollisionService;
             var boxRBs = physicsFacade.boxRBs;
-            var boxRBIDInfos = idService.boxRBIDInfos;
             var boxes = physicsFacade.boxes;
-            var boxInfos = idService.boxIDInfos;
+            var boxRBIDInfos = idService.boxRBIDInfos;
 
-            // - RB & SB
             for (int i = 0; i < boxRBs.Length; i++) {
                 if (!boxRBIDInfos[i]) continue;
 
-                var rb = boxRBs[i];
-                var rbBox = rb.Box;
-                mtvModelQueue.Clear();
+                var rb1 = boxRBs[i];
+                var rbBox1 = rb1.Box;
 
-                for (int j = 0; j < boxes.Length; j++) {
-                    if (!boxInfos[j]) continue;
+                // RB & SB
+                RBNSB(rb1);
 
-                    var box = boxes[j];
-                    if (!collisionService.TryGetCollision(rb, box, out var collision)) continue;
-                    if (collision.CollisionType == Generic.CollisionType.Exit) continue;
+                // RB & RB
+                for (int j = i + 1; j < boxRBs.Length; j++) {
+                    if (!boxRBIDInfos[j]) {
+                        continue;
+                    }
+
+                    var rb2 = boxRBs[j];
+                    if (!collisionService.TryGetCollision(rb1, rb2, out var collision)) {
+                        continue;
+                    }
+                    if (collision.CollisionType == Generic.CollisionType.Exit) {
+                        continue;
+                    }
 
                     // 确定摩擦力系数
-                    var firctionCoe1 = rbBox.FrictionCoe;
-                    var firctionCoe2 = box.FrictionCoe;
+                    var rbBox2 = rb2.Box;
+                    var firctionCoe1 = rbBox1.FrictionCoe;
+                    var firctionCoe2 = rbBox2.FrictionCoe;
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
                     collision.SetFirctionCoe_combined(firctionCoe_combined);
 
-                    // 计算MTV 有bug，一平地，一斜的强，撞击时因根据撞击方向也就是 mtv方向 ，还有在其方向上的 速度分量 才是正确的撞击方向即反弹速度方向
-                    var mtv = Penetration3DUtils.GetMTV(rbBox.GetModel(), box.GetModel());
-                    mtvModelQueue.Enqueue(new MTVModel { instanceID = box.InstanceID, mtv = mtv, collision = collision });
-                }
-
-                // 统计MTV
-                FPVector3 mtv_final = FPVector3.Zero;
-                FPVector3 beHitDir_final = FPVector3.Zero;
-                while (mtvModelQueue.TryDequeue(out var mtvModel)) {
-                    var mtv = mtvModel.mtv;
-                    var instanceID = mtvModel.instanceID;
-                    var collision = mtvModel.collision;
-
-                    var box = boxes[instanceID];
-                    var beHitDir = mtv.normalized;
-                    collisionService.UpdateBeHitDir(rb, box, beHitDir);
-                    mtv_final += mtv;
-                    beHitDir_final -= FPVector3.Dot(rb.LinearV, beHitDir) * beHitDir;
+                    // 计算MTV
+                    var mtv = Penetration3DUtils.GetMTV(rbBox1.GetModel(), rbBox2.GetModel());
+                    var mtv_half = mtv * FP64.Half;
+                    rb1.AddMTV(mtv_half);
+                    rb2.AddMTV(-mtv_half);
                 }
 
                 // 交叉恢复处理
-                mtv_final *= FPUtils.mtv_multy;
-                rbBox.SetCenter(rbBox.Center + mtv_final);
+                rb1.ApplyMTV();
+            }
 
-                // 设置RB被撞击方向
-                beHitDir_final.Normalize();
-                rb.SetBeHitDir(beHitDir_final);
+        }
+
+        void RBNSB(Box3DRigidbody rb) {
+            var idService = physicsFacade.Service.IDService;
+            var collisionService = physicsFacade.Service.CollisionService;
+            var boxInfos = idService.boxIDInfos;
+            var boxes = physicsFacade.boxes;
+            var rbBox = rb.Box;
+            var firctionCoe1 = rbBox.FrictionCoe;
+            var rbBoxModel = rbBox.GetModel();
+            for (int j = 0; j < boxes.Length; j++) {
+                if (!boxInfos[j]) {
+                    continue;
+                }
+
+                var box = boxes[j];
+                if (!collisionService.TryGetCollision(rb, box, out var collision)) {
+                    continue;
+                }
+                if (collision.CollisionType == Generic.CollisionType.Exit) {
+                    continue;
+                }
+
+                // 确定摩擦力系数
+                var firctionCoe2 = box.FrictionCoe;
+                var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
+                collision.SetFirctionCoe_combined(firctionCoe_combined);
+
+                // 计算MTV
+                var mtv = Penetration3DUtils.GetMTV(rbBoxModel, box.GetModel());
+                var beHitDir = mtv.normalized;
+                rb.AddMTV(mtv);
+                collisionService.UpdateBHitA_Dir(rb, box, beHitDir);
             }
         }
 

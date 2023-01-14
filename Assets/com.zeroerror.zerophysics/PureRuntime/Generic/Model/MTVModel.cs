@@ -5,9 +5,9 @@ namespace ZeroPhysics.Generic {
 
     public struct MTVModel {
 
-        public ushort instanceID;
+        public PhysicsBody3D bodyA;
+        public PhysicsBody3D bodyB;
         public FPVector3 mtv;
-        public CollisionModel collision;
 
     }
 

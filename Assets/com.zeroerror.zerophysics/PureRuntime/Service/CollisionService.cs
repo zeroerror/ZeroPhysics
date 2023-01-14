@@ -33,7 +33,7 @@ namespace ZeroPhysics.Service {
                 info.SetCollisionType(CollisionType.Enter);
             }
 
-            // // UnityEngine.Debug.Log($"Collision {info.CollisionType.ToString()} ------------  A: {a} &&&&&&&& {b}");
+            // UnityEngine.Debug.Log($"Collision {info.CollisionType.ToString()} ------------  A: {a} &&&&&&&& {b}");
         }
 
         public void RemoveCollision(PhysicsBody3D a, PhysicsBody3D b) {
@@ -104,7 +104,7 @@ namespace ZeroPhysics.Service {
             return collisionDic.TryGetValue(dicKey, out collision) && collision.CollisionType != CollisionType.None;
         }
 
-        public void UpdateBeHitDir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 beHitDir) {
+        public void UpdateBHitA_Dir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 bHitA_Dir) {
             var ida = a.GetKey();
             var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
@@ -112,12 +112,11 @@ namespace ZeroPhysics.Service {
                 return;
             }
 
-            if (beHitDir == FPVector3.Zero) {
+            if (bHitA_Dir == FPVector3.Zero) {
                 return;
             }
 
-            var hasSwap = SwapBiggerToLeft(ref ida, ref idb);
-            collision.SetBeHitDirA((FPVector3)(hasSwap ? -beHitDir : beHitDir));
+            collision.SetBHitA_Dir(bHitA_Dir);
         }
 
         ulong CombineDicKey(uint ida, uint idb) {

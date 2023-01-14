@@ -1,11 +1,9 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class Box3D : PhysicsBody3D
-    {
+    public class Box3D : PhysicsBody3D {
 
         ushort instanceID;
         public ushort InstanceID => instanceID;
@@ -42,27 +40,23 @@ namespace ZeroPhysics.Physics3D
         ushort PhysicsBody3D.ID => instanceID;
 
 
-        public Box3D()
-        {
+        public Box3D() {
             trans = new TransformComponent3D();
             model = new Box3DModel(trans, size);
         }
 
-        public BoxType GetBoxType()
-        {
+        public BoxType GetBoxType() {
             return trans.Rotation == FPQuaternion.Identity ? BoxType.AABB : BoxType.OBB;
         }
 
-        public Box3DModel GetModel()
-        {
+        public Box3DModel GetModel() {
             model.Update(trans, size);
             return model;
         }
 
 
-        public override string ToString()
-        {
-            return $"Box name:{name}  InstanceID:{instanceID}";
+        public override string ToString() {
+            return $"Box <Name>:{name}  <ID>:{instanceID}";
         }
 
     }

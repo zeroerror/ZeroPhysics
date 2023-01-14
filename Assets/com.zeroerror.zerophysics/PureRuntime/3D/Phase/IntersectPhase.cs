@@ -1,5 +1,6 @@
 using FixMath.NET;
 using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Service;
 
 namespace ZeroPhysics.Physics3D {
 
@@ -14,33 +15,59 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public void Tick(in FP64 time) {
-            var idService = physicsFacade.Service.IDService;
-            var collisionService = physicsFacade.Service.CollisionService;
+            var allServices = physicsFacade.Service;
+            var collisionService = allServices.CollisionService;
+            var idService = allServices.IDService;
             var boxRBs = physicsFacade.boxRBs;
             var boxRBIDInfos = idService.boxRBIDInfos;
-            var boxes = physicsFacade.boxes;
-            var boxInfos = idService.boxIDInfos;
 
-            // - RB & SB
-            for (int i = 0; i < boxRBs.Length; i++) {
-                if (!boxRBIDInfos[i]) continue;
+            for (int i = 0; i < boxRBs.Length - 1; i++) {
 
-                var rb = boxRBs[i];
-                var rbBox = rb.Box;
-                for (int j = 0; j < boxes.Length; j++) {
-                    if (!boxInfos[j]) {
-                        continue;
-                    }
-
-                    var box = boxes[j];
-                    if (!Intersect3DUtils.HasCollision(rbBox, box)) {
-                        collisionService.RemoveCollision(rb, box);
-                        continue;
-                    }
-
-                    collisionService.AddCollision(rb, box);
+                if (!boxRBIDInfos[i]) {
+                    continue;
                 }
 
+                var rb1 = boxRBs[i];
+                var rbBox1 = rb1.Box;
+                // RB & SB
+                RBNSB(rb1);
+                // RB & RB
+                for (int j = i + 1; j < boxRBs.Length; j++) {
+                    if (!boxRBIDInfos[j]) {
+                        continue;
+                    }
+                    var rb2 = boxRBs[j];
+                    var rbBox2 = rb2.Box;
+                    if (!Intersect3DUtils.HasCollision(rbBox1, rbBox2)) {
+                        collisionService.RemoveCollision(rb1, rb2);
+                        continue;
+                    }
+
+                    collisionService.AddCollision(rb1, rb2);
+                }
+
+            }
+        }
+
+        void RBNSB(Box3DRigidbody rb) {
+            var allServices = physicsFacade.Service;
+            var collisionService = allServices.CollisionService;
+            var idService = allServices.IDService;
+            var boxInfos = idService.boxIDInfos;
+            var boxes = physicsFacade.boxes;
+            var rbBox = rb.Box;
+            for (int j = 0; j < boxes.Length; j++) {
+                if (!boxInfos[j]) {
+                    continue;
+                }
+
+                var box = boxes[j];
+                if (!Intersect3DUtils.HasCollision(rbBox, box)) {
+                    collisionService.RemoveCollision(rb, box);
+                    continue;
+                }
+
+                collisionService.AddCollision(rb, box);
             }
         }
 

@@ -38,9 +38,9 @@ namespace ZeroPhysics.Physics3D {
 
         ushort PhysicsBody3D.ID => instanceID;
 
-        FPVector3 beHitDir;
-        public FPVector3 BeHitDir => beHitDir;
-        public void SetBeHitDir(in FPVector3 v) => beHitDir = v;
+        FPVector3 mtv;
+        public FPVector3 MTV => mtv;
+        public void SetMTV(in FPVector3 v) => mtv = v;
 
         public Box3DRigidbody(Box3D box) {
             this.box = box;
@@ -50,8 +50,17 @@ namespace ZeroPhysics.Physics3D {
             return box.GetBoxType();
         }
 
+        public void AddMTV(in FPVector3 v) {
+            mtv += v;
+        }
+
+        public void ApplyMTV() {
+            box.SetCenter(box.Center + mtv);
+            mtv = FPVector3.Zero;
+        }
+
         public override string ToString() {
-            return $"BoxRB name:{name}  InstanceID:{instanceID}";
+            return $"BoxRB <Name>:{name}  <ID>:{instanceID}";
         }
 
     }
