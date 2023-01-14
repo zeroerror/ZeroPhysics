@@ -32,11 +32,15 @@ namespace ZeroPhysics.Physics3D {
 
         FP64 bounceCoefficient;
         public FP64 BounceCoefficient => bounceCoefficient;
-        public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
+        public void SetBounceCoefficient(in FP64 v) => bounceCoefficient = v;
 
         PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
 
         ushort PhysicsBody3D.ID => instanceID;
+
+        FPVector3 beHitDir;
+        public FPVector3 BeHitDir => beHitDir;
+        public void SetBeHitDir(in FPVector3 v) => beHitDir = v;
 
         public Box3DRigidbody(Box3D box) {
             this.box = box;

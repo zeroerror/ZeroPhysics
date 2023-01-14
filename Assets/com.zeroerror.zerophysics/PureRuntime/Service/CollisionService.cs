@@ -15,8 +15,8 @@ namespace ZeroPhysics.Service {
         }
 
         public void AddCollision(PhysicsBody3D a, PhysicsBody3D b) {
-            var ida = CombinePhysicsBodyKey(a);
-            var idb = CombinePhysicsBodyKey(b);
+            var ida = a.GetKey();
+            var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
             bool getFromDic = collisionDic.TryGetValue(dicKey, out var info);
             if (getFromDic && info.CollisionType == CollisionType.Enter) {
@@ -36,25 +36,9 @@ namespace ZeroPhysics.Service {
             // // UnityEngine.Debug.Log($"Collision {info.CollisionType.ToString()} ------------  A: {a} &&&&&&&& {b}");
         }
 
-        public void UpdateBeHitDir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 beHitDir) {
-            var ida = CombinePhysicsBodyKey(a);
-            var idb = CombinePhysicsBodyKey(b);
-            var dicKey = CombineDicKey(ida, idb);
-            if (!collisionDic.TryGetValue(dicKey, out var collision)) {
-                return;
-            }
-
-            if (beHitDir == FPVector3.Zero) {
-                return;
-            }
-
-            var hasSwap = SwapBiggerToLeft(ref ida, ref idb);
-            collision.SetBeHitDirA((FPVector3)(hasSwap ? -beHitDir : beHitDir));
-        }
-
         public void RemoveCollision(PhysicsBody3D a, PhysicsBody3D b) {
-            var ida = CombinePhysicsBodyKey(a);
-            var idb = CombinePhysicsBodyKey(b);
+            var ida = a.GetKey();
+            var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
             if (!collisionDic.TryGetValue(dicKey, out var collision)) {
                 return;
@@ -79,7 +63,7 @@ namespace ZeroPhysics.Service {
         }
 
         public bool HasCollision(PhysicsBody3D a) {
-            var id = CombinePhysicsBodyKey(a);
+            var id = a.GetKey();
             foreach (var key in collisionDic.Keys) {
                 var id1 = (uint)key;
                 var id2 = (uint)(key >> 32);
@@ -96,7 +80,7 @@ namespace ZeroPhysics.Service {
 
         public bool TryGetCollision(PhysicsBody3D a, out CollisionModel collision) {
             collision = null;
-            var id = CombinePhysicsBodyKey(a);
+            var id = a.GetKey();
             foreach (var key in collisionDic.Keys) {
                 var id1 = (uint)key;
                 var id2 = (uint)(key >> 32);
@@ -114,24 +98,32 @@ namespace ZeroPhysics.Service {
 
         public bool TryGetCollision(PhysicsBody3D a, PhysicsBody3D b, out CollisionModel collision) {
             collision = null;
-            var ida = CombinePhysicsBodyKey(a);
-            var idb = CombinePhysicsBodyKey(b);
+            var ida = a.GetKey();
+            var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
             return collisionDic.TryGetValue(dicKey, out collision) && collision.CollisionType != CollisionType.None;
+        }
+
+        public void UpdateBeHitDir(PhysicsBody3D a, PhysicsBody3D b, in FPVector3 beHitDir) {
+            var ida = a.GetKey();
+            var idb = b.GetKey();
+            var dicKey = CombineDicKey(ida, idb);
+            if (!collisionDic.TryGetValue(dicKey, out var collision)) {
+                return;
+            }
+
+            if (beHitDir == FPVector3.Zero) {
+                return;
+            }
+
+            var hasSwap = SwapBiggerToLeft(ref ida, ref idb);
+            collision.SetBeHitDirA((FPVector3)(hasSwap ? -beHitDir : beHitDir));
         }
 
         ulong CombineDicKey(uint ida, uint idb) {
             SwapBiggerToLeft(ref ida, ref idb);
             ulong key = (ulong)(idb);
             key |= (ulong)ida << 32;
-            return key;
-        }
-
-        uint CombinePhysicsBodyKey(PhysicsBody3D a) {
-            byte t = (byte)a.PhysicsType;
-            ushort id = a.ID;
-            uint key = (uint)id;
-            key |= (uint)t << 16;
             return key;
         }
 

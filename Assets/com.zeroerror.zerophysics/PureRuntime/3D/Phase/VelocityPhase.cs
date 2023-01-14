@@ -28,9 +28,9 @@ namespace ZeroPhysics.Physics3D {
                 var linearV = rb.LinearV;
 
                 if (collisionService.HasCollision(rb)) {
-                    UnityEngine.Debug.Log($"弹力前 linearV {linearV}");
+                    // UnityEngine.Debug.Log($"弹力前 linearV {linearV}");
                     ApplyBounce(rb, dt, ref linearV);
-                    UnityEngine.Debug.Log($"弹力后 linearV {linearV}");
+                    // UnityEngine.Debug.Log($"弹力后 linearV {linearV}");
 
                     // !!!避免无限极小反弹
                     var newV = linearV + rb.OutForce * dt / rb.Mass;
@@ -38,9 +38,9 @@ namespace ZeroPhysics.Physics3D {
                         linearV = newV;
                     }
 
-                    UnityEngine.Debug.Log($"摩擦力前 linearV {linearV}");
+                    // UnityEngine.Debug.Log($"摩擦力前 linearV {linearV}");
                     ApplyFriction(rb, dt, ref linearV);
-                    UnityEngine.Debug.Log($"摩擦力后 linearV {linearV}");
+                    // UnityEngine.Debug.Log($"摩擦力后 linearV {linearV}");
                 } else {
                     var v_offset = GetOffsetV_ByForce(rb.OutForce, rb.Mass, dt);
                     linearV += v_offset;
@@ -87,10 +87,10 @@ namespace ZeroPhysics.Physics3D {
                 var offsetLen = offsetV_friction.Length();
                 var linearVLen = linearV.Length();
                 if (offsetLen > linearVLen) {
-                    UnityEngine.Debug.Log($"摩擦力 停下");
+                    // UnityEngine.Debug.Log($"摩擦力 停下");
                     linearV = FPVector3.Zero;
                 } else {
-                    UnityEngine.Debug.Log($"摩擦力 减速 ");
+                    // UnityEngine.Debug.Log($"摩擦力 减速 ");
                     linearV += offsetV_friction;
                 }
             }
@@ -139,28 +139,13 @@ namespace ZeroPhysics.Physics3D {
             linearV += GetOffsetV_ByForce(outForce, m, dt);
 
             // Bounce
-            for (int i = 0; i < boxes.Length; i++) {
-                if (!boxIDInfos[i]) {
-                    continue;
-                }
-                var box = boxes[i];
-                if (!collisionService.TryGetCollision(rb, box, out var collision)) {
-                    continue;
-                }
-                if (collision.CollisionType == Generic.CollisionType.Exit) {
-                    continue;
-                }
-                FPVector3 beHitDirA = collision.BeHitDirA;
-                FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
-
-                Bounce3DUtils.ApplyBounce(beHitDir, rb.BounceCoefficient, ref linearV);
-            }
+            Bounce3DUtils.ApplyBounce(rb.BeHitDir, rb.BounceCoefficient, ref linearV);
         }
 
         void EraseForce(ref FPVector3 force, in FPVector3 beHitDir) {
             var force_pj = FPVector3.Dot(force, beHitDir);
             if (force_pj >= 0) {
-                UnityEngine.Debug.Log($"Cant Erase Force");
+                // UnityEngine.Debug.Log($"Cant Erase Force");
                 return;
             }
 
