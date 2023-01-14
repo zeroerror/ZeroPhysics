@@ -47,14 +47,18 @@ namespace ZeroPhysics.Physics3D {
             if (bodyA is Box3DRigidbody rb_a) {
                 var v = rb_a.LinearV;
                 var v_bounced = ApplyBounce(bHitA_Dir, rb_a.BounceCoefficient, v);
-                var dot = FPVector3.Dot(rb_a.OutForce, v_bounced);
-                if (dot < 0) {
+                var v_bounced_len = v_bounced.Length();
+                bool hasBounced = v_bounced != v;
+                if (hasBounced && v_bounced_len < rb_a.BounceCoefficient * FPUtils.epsilon_bounce) {
+                    v_bounced = FPVector3.Zero;
+                }
+                if (hasBounced) {
                     var offsetV = GetOffsetV_ByForce(rb_a.OutForce, rb_a.Mass, dt);
                     v_bounced += offsetV;
                 }
+
                 rb_a.SetLinearV(v_bounced);
-                UnityEngine.Debug.Log($"dot:{dot}");
-                UnityEngine.Debug.Log($"v_bounced:{v_bounced}");
+                UnityEngine.Debug.Log($" v_bounced:{v_bounced}");
                 return;
             }
             if (bodyB is Box3DRigidbody rb_b) {
