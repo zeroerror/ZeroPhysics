@@ -50,13 +50,14 @@ namespace ZeroPhysics.Physics3D {
                     var firctionCoe_combined = firctionCoe1 < firctionCoe2 ? firctionCoe1 : firctionCoe2;
                     collision.SetFirctionCoe_combined(firctionCoe_combined);
 
-                    // 计算MTV
+                    // 计算MTV 有bug，一平地，一斜的强，撞击时因根据撞击方向也就是 mtv方向 ，还有在其方向上的 速度分量 才是正确的撞击方向即反弹速度方向
                     var mtv = Penetration3DUtils.GetMTV(rbBox.GetModel(), box.GetModel());
                     mtvModelQueue.Enqueue(new MTVModel { instanceID = box.InstanceID, mtv = mtv, collision = collision });
                 }
 
                 // 统计MTV
                 FPVector3 mtv_final = FPVector3.Zero;
+                FPVector3 beHitDir_final = FPVector3.Zero;
                 while (mtvModelQueue.TryDequeue(out var mtvModel)) {
                     var mtv = mtvModel.mtv;
                     var instanceID = mtvModel.instanceID;
@@ -66,6 +67,7 @@ namespace ZeroPhysics.Physics3D {
                     var beHitDir = mtv.normalized;
                     collisionService.UpdateBeHitDir(rb, box, beHitDir);
                     mtv_final += mtv;
+                    beHitDir_final -= FPVector3.Dot(rb.LinearV, beHitDir) * beHitDir;
                 }
 
                 // 交叉恢复处理
@@ -73,7 +75,7 @@ namespace ZeroPhysics.Physics3D {
                 rbBox.SetCenter(rbBox.Center + mtv_final);
 
                 // 设置RB被撞击方向
-                var beHitDir_final = mtv_final.normalized;
+                beHitDir_final.Normalize();
                 rb.SetBeHitDir(beHitDir_final);
             }
         }

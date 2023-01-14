@@ -112,14 +112,21 @@ namespace ZeroPhysics.Physics3D {
         }
 
         void ApplyBounce(Box3DRigidbody rb, in FP64 dt, ref FPVector3 linearV) {
-            var boxes = physicsFacade.boxes;
+            EraseRBForceByHit(rb);
+            linearV += GetOffsetV_ByForce(rb.OutForce, rb.Mass, dt);
+
+            // Bounce
+            Bounce3DUtils.ApplyBounce(rb.BeHitDir, rb.BounceCoefficient, ref linearV);
+        }
+
+        void EraseRBForceByHit(Box3DRigidbody rb) {
+            // OutForce's Velcotiy Influence Erase By Collsion First
             var service = physicsFacade.Service;
             var collisionService = service.CollisionService;
             var boxIDInfos = physicsFacade.Service.IDService.boxIDInfos;
             var outForce = rb.OutForce;
             var m = rb.Mass;
-
-            // OutForce's Velcotiy Influence Erase By Collsion First
+            var boxes = physicsFacade.boxes;
             for (int i = 0; i < boxes.Length; i++) {
                 if (!boxIDInfos[i]) {
                     continue;
@@ -134,22 +141,18 @@ namespace ZeroPhysics.Physics3D {
                 FPVector3 beHitDirA = collision.BeHitDirA;
                 FPVector3 beHitDir = collision.bodyA == rb ? beHitDirA : -beHitDirA;
 
-                EraseForce(ref outForce, beHitDir);
+                rb.SetOutForce(GetErasedForce(outForce, beHitDir));
             }
-            linearV += GetOffsetV_ByForce(outForce, m, dt);
-
-            // Bounce
-            Bounce3DUtils.ApplyBounce(rb.BeHitDir, rb.BounceCoefficient, ref linearV);
         }
 
-        void EraseForce(ref FPVector3 force, in FPVector3 beHitDir) {
+        FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
             var force_pj = FPVector3.Dot(force, beHitDir);
-            if (force_pj >= 0) {
-                // UnityEngine.Debug.Log($"Cant Erase Force");
-                return;
-            }
+            // if (force_pj >= 0) {
+            //     // UnityEngine.Debug.Log($"Cant Erase Force");
+            //     return force;
+            // }
 
-            force = force - force_pj * beHitDir;
+            return force - force_pj * beHitDir;
         }
 
     }

@@ -12,28 +12,11 @@ namespace ZeroPhysics.Physics3D {
                 return;
             }
 
-            var v_proj = FPVector3.Dot(linearV, beHitDir);
-            FPVector3 bouncedV = -v_proj * beHitDir;
+            var bouncedVLen = FPVector3.Dot(linearV, beHitDir);
+            FPVector3 bouncedV = bouncedVLen * beHitDir;
             FPVector3 linearV_normalized = linearV.normalized;
-            FP64 cosv = FPVector3.Dot(linearV_normalized, beHitDir);
-
-            if (cosv == 1) {
-                // 速度和撞击速度相同
-                linearV -= (1 + bounceCoefficient) * bouncedV;
-                return;
-            }
-
-            if (cosv == -1) {
-                // 速度和撞击速度相反
-                linearV += (1 + bounceCoefficient) * bouncedV;
-                return;
-            }
-
-            // 速度和撞击呈斜角
-            FP64 sinv = -cosv;
-            FP64 bouncedVLen = bouncedV.Length();
-            bouncedVLen *= sinv;
-            FPVector3 offset = (1 + bounceCoefficient) * bouncedVLen * bouncedV.normalized;
+            FPVector3 bounceDir = bouncedV.normalized;
+            FPVector3 offset = (1 + bounceCoefficient) * bouncedVLen * bounceDir;
             linearV += offset;
         }
 

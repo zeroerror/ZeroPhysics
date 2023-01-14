@@ -16,6 +16,8 @@ namespace ZeroPhysics.Sample {
         public Transform boxRoot;
         Transform[] boxTfs;
 
+        public int physicsSimulateRate = 1;
+
         PhysicsWorld3DCore physicsCore;
 
         FP64 restoreTime;
@@ -59,7 +61,9 @@ namespace ZeroPhysics.Sample {
             restoreTime += FP64.ToFP64(dt);
             while (restoreTime >= intervalTime) {
                 restoreTime -= intervalTime;
-                physicsCore.Tick(intervalTime);
+                for (int i = 0; i < physicsSimulateRate; i++) {
+                    physicsCore.Tick(intervalTime);
+                }
             }
         }
 
@@ -184,6 +188,11 @@ namespace ZeroPhysics.Sample {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"摩擦系数(RBBOX):{firctionCoe_rbBox}", GUILayout.Width(200));
             firctionCoe_rbBox = GUILayout.HorizontalSlider(firctionCoe_rbBox, 0, 5, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"物理模拟倍速:{physicsSimulateRate}", GUILayout.Width(200));
+            physicsSimulateRate = (int)GUILayout.HorizontalSlider(physicsSimulateRate, 0, 10, GUILayout.Width(200));
             GUILayout.EndHorizontal();
         }
 
