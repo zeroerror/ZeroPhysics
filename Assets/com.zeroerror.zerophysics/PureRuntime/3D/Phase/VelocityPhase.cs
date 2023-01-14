@@ -28,19 +28,15 @@ namespace ZeroPhysics.Physics3D {
                 var linearV = rb.LinearV;
 
                 if (collisionService.HasCollision(rb)) {
+
                     // UnityEngine.Debug.Log($"弹力前 linearV {linearV}");
                     ApplyBounce(rb, dt, ref linearV);
                     // UnityEngine.Debug.Log($"弹力后 linearV {linearV}");
 
-                    // !!!避免无限极小反弹
-                    var newV = linearV + rb.OutForce * dt / rb.Mass;
-                    if (FPVector3.Dot(linearV, newV) < 0) {
-                        linearV = newV;
-                    }
-
                     // UnityEngine.Debug.Log($"摩擦力前 linearV {linearV}");
                     ApplyFriction(rb, dt, ref linearV);
                     // UnityEngine.Debug.Log($"摩擦力后 linearV {linearV}");
+
                 } else {
                     var v_offset = GetOffsetV_ByForce(rb.OutForce, rb.Mass, dt);
                     linearV += v_offset;
@@ -147,11 +143,6 @@ namespace ZeroPhysics.Physics3D {
 
         FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
             var force_pj = FPVector3.Dot(force, beHitDir);
-            // if (force_pj >= 0) {
-            //     // UnityEngine.Debug.Log($"Cant Erase Force");
-            //     return force;
-            // }
-
             return force - force_pj * beHitDir;
         }
 

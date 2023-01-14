@@ -16,7 +16,8 @@ namespace ZeroPhysics.Sample {
         public Transform boxRoot;
         Transform[] boxTfs;
 
-        public int physicsSimulateRate = 1;
+        public int maxSimulateRate = 10;
+        int physicsSimulateRate = 1;
 
         PhysicsWorld3DCore physicsCore;
 
@@ -192,7 +193,8 @@ namespace ZeroPhysics.Sample {
 
             GUILayout.BeginHorizontal();
             GUILayout.Label($"物理模拟倍速:{physicsSimulateRate}", GUILayout.Width(200));
-            physicsSimulateRate = (int)GUILayout.HorizontalSlider(physicsSimulateRate, 0, 10, GUILayout.Width(200));
+            physicsSimulateRate = (int)GUILayout.HorizontalSlider(physicsSimulateRate, 0, maxSimulateRate, GUILayout.Width(200));
+            physicsSimulateRate = physicsSimulateRate > maxSimulateRate ? maxSimulateRate : physicsSimulateRate;
             GUILayout.EndHorizontal();
         }
 
