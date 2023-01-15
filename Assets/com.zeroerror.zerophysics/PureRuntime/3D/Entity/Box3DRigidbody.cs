@@ -32,11 +32,21 @@ namespace ZeroPhysics.Physics3D {
 
         FP64 bounceCoefficient;
         public FP64 BounceCoefficient => bounceCoefficient;
-        public void SetBounceCoefficient(FP64 v) => bounceCoefficient = v;
+        public void SetBounceCoefficient(in FP64 v) {
+            bounceCoefficient = v;
+            epsilon_bounce = v * 4 * FP64.EN1;
+        }
+
+        FP64 epsilon_bounce;
+        public FP64 Epsilon_bounce => epsilon_bounce;
 
         PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
 
         ushort PhysicsBody3D.ID => instanceID;
+
+        FPVector3 mtv;
+        public FPVector3 MTV => mtv;
+        public void SetMTV(in FPVector3 v) => mtv = v;
 
         public Box3DRigidbody(Box3D box) {
             this.box = box;
@@ -46,8 +56,17 @@ namespace ZeroPhysics.Physics3D {
             return box.GetBoxType();
         }
 
+        public void AddMTV(in FPVector3 v) {
+            mtv += v;
+        }
+
+        public void ApplyMTV() {
+            box.SetCenter(box.Center + mtv);
+            mtv = FPVector3.Zero;
+        }
+
         public override string ToString() {
-            return $"BoxRB name:{name}  InstanceID:{instanceID}";
+            return $"BoxRB <Name>:{name}  <ID>:{instanceID}";
         }
 
     }

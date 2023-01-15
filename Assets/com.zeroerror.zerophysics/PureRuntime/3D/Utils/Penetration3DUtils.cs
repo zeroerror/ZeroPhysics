@@ -6,18 +6,6 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Penetration3DUtils {
 
-        public static FPVector3 PenetrationCorrection(Box3D box1, FP64 mtvCoe1, Box3D box2, FP64 mtvCoe2) {
-            var mtv = GetMTV(box1.GetModel(), box2.GetModel());
-            mtv *= FPUtils.mtv_multy;
-            var mtv1 = mtv * mtvCoe1;
-            var mtv2 = -mtv * mtvCoe2;
-            var newCenter1 = box1.Center + mtv1;
-            var newCenter2 = box2.Center + mtv2;
-            box1.SetCenter(newCenter1);
-            box2.SetCenter(newCenter2);
-            return mtv;
-        }
-
         public static FPVector3 GetMTV(Box3DModel model1, Box3DModel model2) {
             FP64 len_min = FP64.MaxValue;
             FPVector3 dir = FPVector3.Zero;

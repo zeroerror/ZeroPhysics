@@ -52,9 +52,9 @@ namespace ZeroPhysics.Physics3D {
         public void Tick(FP64 time) {
             forcePhase.Tick(time, gravity);
             velocityPhase.Tick(time);
+            transformPhase.Tick(time);
             intersectPhase.Tick(time);
             penetrationPhase.Tick(time);
-            transformPhase.Tick(time);
         }
 
     }

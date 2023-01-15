@@ -14,9 +14,9 @@ namespace ZeroPhysics.Generic
         public CollisionType CollisionType => collisionType;
         public void SetCollisionType(CollisionType v) => collisionType = v;
 
-        FPVector3 beHitDirA;
-        public FPVector3 BeHitDirA => beHitDirA;
-        public void SetBeHitDirA(FPVector3 v) => beHitDirA = v;
+        FPVector3 hitDirBA;
+        public FPVector3 HitDirBA => hitDirBA;
+        public void SetHitDirBA(FPVector3 v) => hitDirBA = v;
 
         FP64 firctionCoe_combined;
         public FP64 FirctionCoe_combined => firctionCoe_combined;
