@@ -15,15 +15,6 @@ namespace ZeroPhysics.Physics3D {
             this.physicsFacade = physicsFacade;
         }
 
-        // -----------------所有力都在ForcePhase 
-        // 重力：最先计算的力
-
-        // 外力，即上层调接口施加的力
-
-        // 弹力: 根据改变的速度量进行力的计算  得出力
-
-        // 摩擦力: 速度为0时为0，在速度不为0时根据其他所有力和速度方向计算，所以在力的最后一个计算  得出力
-
         public void Tick(in FP64 dt, in FPVector3 gravity) {
             var boxRBs = physicsFacade.boxRBs;
             var boxes = physicsFacade.boxes;
