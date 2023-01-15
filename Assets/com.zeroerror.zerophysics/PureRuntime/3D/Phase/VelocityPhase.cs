@@ -23,6 +23,7 @@ namespace ZeroPhysics.Physics3D {
             var collisionService = service.CollisionService;
             var rbBoxIDInfos = idService.boxRBIDInfos;
 
+            // ApplyForceHitErase(dt);
             for (int i = 0; i < rbBoxes.Length; i++) {
                 if (!rbBoxIDInfos[i]) continue;
                 var rb = rbBoxes[i];
@@ -32,8 +33,6 @@ namespace ZeroPhysics.Physics3D {
                 rb.SetLinearV(linearV);
             }
 
-            // OutForce's Velcotiy Influence Erase By Collsion First
-            // ApplyForceHitErase(dt);
             ApplyElasticCollision(dt);
             ApplyFriction(dt);
         }
@@ -46,6 +45,9 @@ namespace ZeroPhysics.Physics3D {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
                 || collision.CollisionType == CollisionType.Stay) {
+                    if (collision.FirctionCoe_combined == 0) {
+                        continue;
+                    }
                     FrictionUtils.ApplyFriction(collision, dt);
                 }
             }
@@ -72,7 +74,7 @@ namespace ZeroPhysics.Physics3D {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
                 || collision.CollisionType == CollisionType.Stay) {
-                    ElasticCollisionUtils.ApplyForceHitErase(collision, dt);
+                    ForceUtils.ApplyForceHitErase(collision, dt);
                 }
             }
         }

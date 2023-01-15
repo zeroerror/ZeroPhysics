@@ -8,67 +8,64 @@ namespace ZeroPhysics.Physics3D {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
 
-        public static void ApplyForceHitErase(CollisionModel collisionModel, in FP64 dt) {
-            var bodyA = collisionModel.bodyA;
-            var bodyB = collisionModel.bodyB;
-            FP64 m1 = FP64.Zero; ;
-            FP64 m2 = FP64.Zero; ;
-            FPVector3 v1 = FPVector3.Zero;
-            FPVector3 v2 = FPVector3.Zero;
-            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
-
-            if (bodyA is Box3DRigidbody rb_a) {
-                var outForce = GetErasedForce(rb_a.OutForce, bHitA_Dir);
-                rb_a.SetOutForce(outForce);
-                UnityEngine.Debug.Log($"outForce1 {outForce}");
-            }
-            if (bodyB is Box3DRigidbody rb_b) {
-                var outForce = GetErasedForce(rb_b.OutForce, -bHitA_Dir);
-                rb_b.SetOutForce(outForce);
-                UnityEngine.Debug.Log($"outForce2 {outForce}");
-            }
-        }
-
-        static FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
-            var force_pj = FPVector3.Dot(force, beHitDir);
-            var f = force - force_pj * beHitDir;
-            return f;
-        }
-
-        public static void ApplyElasticCollision(CollisionModel collisionModel, in FP64 dt) {
-            var bodyA = collisionModel.bodyA;
-            var bodyB = collisionModel.bodyB;
-            FP64 m1 = FP64.Zero; ;
-            FP64 m2 = FP64.Zero; ;
-            FPVector3 v1 = FPVector3.Zero;
-            FPVector3 v2 = FPVector3.Zero;
-            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
+        public static void ApplyElasticCollision(CollisionModel collision, in FP64 dt) {
+            var bodyA = collision.bodyA;
+            var bodyB = collision.bodyB;
+            FPVector3 hitDirBA = collision.HitDirBA;
 
             // RB & RB
-            // 根据动量守恒公式计算
             if (bodyA is Box3DRigidbody rbA && bodyB is Box3DRigidbody rbB) {
-                m1 = rbA.Mass;
-                m2 = rbB.Mass;
-                v1 = ((m1 - m2) * v1 + 2 * m2 * v2 / (m1 + m2)) / (m1 + m2);
-                v2 = ((m2 - m1) * v2 + 2 * m1 * v1 / (m1 + m2)) / (m1 + m2);
-                rbA.SetLinearV(v1);
-                rbB.SetLinearV(v2);
-                UnityEngine.Debug.Log($"v1:{v1} v2:{v2}");
+                // 根据动量守恒和动能守恒公式计算 
+                FP64 m1 = rbA.Mass;
+                FP64 m2 = rbB.Mass;
+                FPVector3 v1 = rbA.LinearV;
+
+                // 特殊条件规避运算
+                if (FPVector3.Dot(v1, hitDirBA) >= 0) {
+                    return;
+                }
+
+                FPVector3 v2 = rbB.LinearV;
+                // var m1Addm2 = m1 + m2;
+                // var m1Subm2 = m1 - m2;
+                // var va = (m1Subm2 * v1 + 2 * m2 * v2) / m1Addm2;
+                // var vb = (-m1Subm2 * v2 + 2 * m1 * v1) / m1Addm2;
+                var va = v1 + (1 + rbA.BounceCoefficient) * (v2 - v1) / (1 + m1 / m2);
+                var vb = v2 + (1 + rbB.BounceCoefficient) * (v1 - v2) / (1 + m2 / m1);
+                bool hasBouncedA = va != v1;
+                bool hasBouncedB = vb != v2;
+
+                // 弹力速度外力减益
+                if (hasBouncedA) {
+                    var dot = FPVector3.Dot(rbA.OutForce, hitDirBA);
+                    if (dot < 0) {
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, m1, dt);
+                        va += offsetV;
+                    }
+                }
+                if (hasBouncedB) {
+                    var dot = FPVector3.Dot(rbB.OutForce, -hitDirBA);
+                    if (dot < 0) {
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * -hitDirBA, m2, dt);
+                        vb += offsetV;
+                    }
+                }
+
+                rbA.SetLinearV(va);
+                rbB.SetLinearV(vb);
+                // UnityEngine.Debug.Log($"动态物体碰撞 va:{va} vb:{vb}");
             }
 
             // RB & Static
             if (bodyA is Box3DRigidbody rb_a) {
                 var v = rb_a.LinearV;
-                var v_bounced = ApplyBounce(bHitA_Dir, rb_a.BounceCoefficient, v);
-                var v_bounced_len = v_bounced.Length();
+                var v_bounced = ApplyBounce(hitDirBA, rb_a.BounceCoefficient, v);
+                // 弹力速度外力减益
                 bool hasBounced = v_bounced != v;
-                if (hasBounced && v_bounced_len < rb_a.Epsilon_bounce) {
-                    v_bounced = FPVector3.Zero;
-                }
                 if (hasBounced) {
-                    var dot = FPVector3.Dot(rb_a.OutForce, bHitA_Dir);
+                    var dot = FPVector3.Dot(rb_a.OutForce, hitDirBA);
                     if (dot < 0) {
-                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * bHitA_Dir, rb_a.Mass, dt);
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb_a.Mass, dt);
                         v_bounced += offsetV;
                     }
                 }
@@ -78,25 +75,21 @@ namespace ZeroPhysics.Physics3D {
             }
             if (bodyB is Box3DRigidbody rb_b) {
                 var v = rb_b.LinearV;
-                var aHitB_Dir = -bHitA_Dir;
-                var v_bounced = ApplyBounce(aHitB_Dir, rb_b.BounceCoefficient, v);
-                var v_bounced_len = v_bounced.Length();
+                var v_bounced = ApplyBounce(-hitDirBA, rb_b.BounceCoefficient, v);
+                // 弹力速度外力减益
                 bool hasBounced = v_bounced != v;
-                if (hasBounced && v_bounced_len < rb_b.Epsilon_bounce) {
-                    v_bounced = FPVector3.Zero;
-                }
                 if (hasBounced) {
-                    var dot = FPVector3.Dot(rb_b.OutForce, aHitB_Dir);
+                    var dot = FPVector3.Dot(rb_b.OutForce, -hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(rb_b.OutForce, rb_b.Mass, dt);
                         v_bounced += offsetV;
+                        UnityEngine.Debug.Log($"offsetV:{offsetV} v_bounced:{v_bounced}");
                     }
                 }
 
                 rb_b.SetLinearV(v_bounced);
                 return;
             }
-
         }
 
         static FPVector3 ApplyBounce(in FPVector3 beHitDir, in FP64 bounceCoefficient, in FPVector3 linearV) {

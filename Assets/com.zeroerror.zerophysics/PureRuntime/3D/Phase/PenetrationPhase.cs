@@ -57,9 +57,11 @@ namespace ZeroPhysics.Physics3D {
 
                     // 计算MTV
                     var mtv = Penetration3DUtils.GetMTV(rbBox1.GetModel(), rbBox2.GetModel());
-                    var mtv_half = mtv * FP64.Half;
+                    var mtv_half = mtv * FPUtils.epsilon_penetration_dynamic;
                     rb1.AddMTV(mtv_half);
                     rb2.AddMTV(-mtv_half);
+                    var beHitDir = mtv.normalized;
+                    collisionService.UpdateBHitA_Dir(rb1, rb2, beHitDir);
                 }
 
                 // 交叉恢复处理
@@ -96,9 +98,11 @@ namespace ZeroPhysics.Physics3D {
 
                 // 计算MTV
                 var mtv = Penetration3DUtils.GetMTV(rbBoxModel, box.GetModel());
-                var beHitDir = mtv.normalized;
                 rb.AddMTV(mtv);
-                collisionService.UpdateBHitA_Dir(rb, box, beHitDir);
+                if (mtv.Length() > FPUtils.epsilon_mtv) {
+                    var beHitDir = mtv.normalized;
+                    collisionService.UpdateBHitA_Dir(rb, box, beHitDir);
+                }
             }
         }
 
