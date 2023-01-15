@@ -19,14 +19,10 @@ namespace ZeroPhysics.Physics3D {
             // RB & Static
             if (bodyA is Box3DRigidbody rbA) {
                 ApplyFriction(rbA, u, hitDirBA, dt);
-                return;
             }
             if (bodyB is Box3DRigidbody rbB) {
-                ApplyFriction(rbB, u, hitDirBA, dt);
-                return;
+                ApplyFriction(rbB, u, -hitDirBA, dt);
             }
-            // RB & RB
-
         }
 
         static void ApplyFriction(Box3DRigidbody rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {
