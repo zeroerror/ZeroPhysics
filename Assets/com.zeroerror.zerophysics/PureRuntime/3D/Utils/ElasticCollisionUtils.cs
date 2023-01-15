@@ -15,7 +15,7 @@ namespace ZeroPhysics.Physics3D {
             FP64 m2 = FP64.Zero; ;
             FPVector3 v1 = FPVector3.Zero;
             FPVector3 v2 = FPVector3.Zero;
-            FPVector3 bHitA_Dir = collisionModel.BHitA_Dir;
+            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
 
             if (bodyA is Box3DRigidbody rb_a) {
                 var outForce = GetErasedForce(rb_a.OutForce, bHitA_Dir);
@@ -42,7 +42,7 @@ namespace ZeroPhysics.Physics3D {
             FP64 m2 = FP64.Zero; ;
             FPVector3 v1 = FPVector3.Zero;
             FPVector3 v2 = FPVector3.Zero;
-            FPVector3 bHitA_Dir = collisionModel.BHitA_Dir;
+            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
 
             // RB & RB
             // 根据动量守恒公式计算
@@ -62,13 +62,13 @@ namespace ZeroPhysics.Physics3D {
                 var v_bounced = ApplyBounce(bHitA_Dir, rb_a.BounceCoefficient, v);
                 var v_bounced_len = v_bounced.Length();
                 bool hasBounced = v_bounced != v;
-                if (hasBounced && v_bounced_len < rb_a.BounceCoefficient * FPUtils.epsilon_bounce) {
+                if (hasBounced && v_bounced_len < rb_a.Epsilon_bounce) {
                     v_bounced = FPVector3.Zero;
                 }
                 if (hasBounced) {
                     var dot = FPVector3.Dot(rb_a.OutForce, bHitA_Dir);
                     if (dot < 0) {
-                        var offsetV = GetOffsetV_ByForce(dot * bHitA_Dir, rb_a.Mass, dt);
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * bHitA_Dir, rb_a.Mass, dt);
                         v_bounced += offsetV;
                     }
                 }
@@ -82,13 +82,13 @@ namespace ZeroPhysics.Physics3D {
                 var v_bounced = ApplyBounce(aHitB_Dir, rb_b.BounceCoefficient, v);
                 var v_bounced_len = v_bounced.Length();
                 bool hasBounced = v_bounced != v;
-                if (hasBounced && v_bounced_len < rb_b.BounceCoefficient * FPUtils.epsilon_bounce) {
+                if (hasBounced && v_bounced_len < rb_b.Epsilon_bounce) {
                     v_bounced = FPVector3.Zero;
                 }
                 if (hasBounced) {
                     var dot = FPVector3.Dot(rb_b.OutForce, aHitB_Dir);
                     if (dot < 0) {
-                        var offsetV = GetOffsetV_ByForce(rb_b.OutForce, rb_b.Mass, dt);
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(rb_b.OutForce, rb_b.Mass, dt);
                         v_bounced += offsetV;
                     }
                 }
@@ -97,12 +97,6 @@ namespace ZeroPhysics.Physics3D {
                 return;
             }
 
-        }
-
-        public static FPVector3 GetOffsetV_ByForce(in FPVector3 f, in FP64 m, in FP64 t) {
-            var a = f / m;
-            var offset = a * t;
-            return offset;
         }
 
         static FPVector3 ApplyBounce(in FPVector3 beHitDir, in FP64 bounceCoefficient, in FPVector3 linearV) {

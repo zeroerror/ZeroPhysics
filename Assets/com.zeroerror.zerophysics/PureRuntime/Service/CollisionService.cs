@@ -116,7 +116,7 @@ namespace ZeroPhysics.Service {
                 return;
             }
 
-            collision.SetBHitA_Dir(bHitA_Dir);
+            collision.SetHitDirBA(bHitA_Dir);
         }
 
         ulong CombineDicKey(uint ida, uint idb) {
