@@ -40,14 +40,14 @@ namespace ZeroPhysics.Physics3D {
                     var dot = FPVector3.Dot(rbA.OutForce, hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, m1, dt);
-                        va += offsetV;
+                        va += 2 * offsetV;
                     }
                 }
                 if (hasBouncedB) {
                     var dot = FPVector3.Dot(rbB.OutForce, -hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(dot * -hitDirBA, m2, dt);
-                        vb += offsetV;
+                        vb += 2 * offsetV;
                     }
                 }
 
@@ -66,7 +66,7 @@ namespace ZeroPhysics.Physics3D {
                     var dot = FPVector3.Dot(rb_a.OutForce, hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb_a.Mass, dt);
-                        v_bounced += offsetV;
+                        v_bounced += 2 * offsetV;
                     }
                 }
 
@@ -82,8 +82,7 @@ namespace ZeroPhysics.Physics3D {
                     var dot = FPVector3.Dot(rb_b.OutForce, -hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(rb_b.OutForce, rb_b.Mass, dt);
-                        v_bounced += offsetV;
-                        UnityEngine.Debug.Log($"offsetV:{offsetV} v_bounced:{v_bounced}");
+                        v_bounced += 2 * offsetV;
                     }
                 }
 
