@@ -14,6 +14,9 @@ namespace ZeroPhysics.Service {
         }
 
         public void AddCollision(IPhysicsBody3D a, IPhysicsBody3D b) {
+            // 保证左边一定是RB
+            SwapRBToLeft(ref a, ref b);
+
             var ida = a.GetKey();
             var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
@@ -103,7 +106,7 @@ namespace ZeroPhysics.Service {
             return collisionDic.TryGetValue(dicKey, out collision) && collision.CollisionType != CollisionType.None;
         }
 
-        public void UpdateHitDirBA(IPhysicsBody3D a, IPhysicsBody3D b, in FPVector3 bHitA_Dir) {
+        public void UpdateHitDirBA(IPhysicsBody3D a, IPhysicsBody3D b, in FPVector3 hitDirBA) {
             var ida = a.GetKey();
             var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);
@@ -111,11 +114,11 @@ namespace ZeroPhysics.Service {
                 return;
             }
 
-            if (bHitA_Dir == FPVector3.Zero) {
+            if (hitDirBA == FPVector3.Zero) {
                 return;
             }
 
-            collision.SetHitDirBA(bHitA_Dir);
+            collision.SetHitDirBA(hitDirBA);
         }
 
         ulong CombineDicKey(uint ida, uint idb) {
@@ -134,6 +137,16 @@ namespace ZeroPhysics.Service {
             idb = ida ^ idb;
             ida = ida ^ idb;
             return true;
+        }
+
+        void SwapRBToLeft(ref IPhysicsBody3D bodyA, ref IPhysicsBody3D bodyB) {
+            byte typeA = (byte)bodyA.PhysicsType;
+            byte typeB = (byte)bodyB.PhysicsType;
+            if (typeB > typeA) {
+                IPhysicsBody3D temp = bodyA;
+                bodyA = bodyB;
+                bodyB = temp;
+            }
         }
 
     }

@@ -42,8 +42,12 @@ namespace ZeroPhysics.Physics3D {
         public bool IsTrigger => isTrigger;
         public void SetIsTrigger(bool v) => isTrigger = v;
 
-        public Box3D() {
+        public Box3D(in FPVector3 pos, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
             trans = new TransformComponent3D();
+            trans.SetCenter(pos);
+            trans.SetRotation(rotation);
+            trans.SetScale(scale);
+            this.size = size;
             model = new Box3DModel(trans, size);
         }
 
@@ -58,7 +62,7 @@ namespace ZeroPhysics.Physics3D {
 
 
         public override string ToString() {
-            return $"Box <Name>:{name}  <ID>:{instanceID}";
+            return $"<Name>:{name}  <ID>:{instanceID}";
         }
 
     }

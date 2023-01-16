@@ -20,7 +20,7 @@ namespace ZeroPhysics.Physics3D {
             var collisionService = service.CollisionService;
             var allCollision = collisionService.GetAllCollisions();
 
-            // ApplyForceHitErase(dt);
+            // ApplyForceHitErase(allCollision, dt);
             var rbBoxes = physicsFacade.boxRBs;
             var rbBoxIDInfos = idService.boxRBIDInfos;
             for (int i = 0; i < rbBoxes.Length; i++) {

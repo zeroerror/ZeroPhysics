@@ -40,14 +40,14 @@ namespace ZeroPhysics.Physics3D {
                     var dot = FPVector3.Dot(rbA.OutForce, hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, m1, dt);
-                        va += 2 * offsetV;
+                        va += offsetV;
                     }
                 }
                 if (hasBouncedB) {
                     var dot = FPVector3.Dot(rbB.OutForce, -hitDirBA);
                     if (dot < 0) {
                         var offsetV = ForceUtils.GetOffsetV_ByForce(dot * -hitDirBA, m2, dt);
-                        vb += 2 * offsetV;
+                        vb += offsetV;
                     }
                 }
 
@@ -57,36 +57,19 @@ namespace ZeroPhysics.Physics3D {
             }
 
             // RB & Static
-            if (bodyA is Box3DRigidbody rb_a) {
-                var v = rb_a.LinearV;
-                var v_bounced = ApplyBounce(hitDirBA, rb_a.BounceCoefficient, v);
+            if (bodyA is Box3DRigidbody rb) {
+                var v = rb.LinearV;
+                var v_bounced = ApplyBounce(hitDirBA, rb.BounceCoefficient, v);
                 // 弹力速度外力减益
-                bool hasBounced = v_bounced != v;
+                bool hasBounced = !FPUtils.IsNear(v_bounced, v, FP64.EN1);
                 if (hasBounced) {
-                    var dot = FPVector3.Dot(rb_a.OutForce, hitDirBA);
+                    var dot = FPVector3.Dot(rb.OutForce, hitDirBA);
                     if (dot < 0) {
-                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb_a.Mass, dt);
+                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb.Mass, dt);
                         v_bounced += 2 * offsetV;
                     }
                 }
-
-                rb_a.SetLinearV(v_bounced);
-                return;
-            }
-            if (bodyB is Box3DRigidbody rb_b) {
-                var v = rb_b.LinearV;
-                var v_bounced = ApplyBounce(-hitDirBA, rb_b.BounceCoefficient, v);
-                // 弹力速度外力减益
-                bool hasBounced = v_bounced != v;
-                if (hasBounced) {
-                    var dot = FPVector3.Dot(rb_b.OutForce, -hitDirBA);
-                    if (dot < 0) {
-                        var offsetV = ForceUtils.GetOffsetV_ByForce(rb_b.OutForce, rb_b.Mass, dt);
-                        v_bounced += 2 * offsetV;
-                    }
-                }
-
-                rb_b.SetLinearV(v_bounced);
+                rb.SetLinearV(v_bounced);
                 return;
             }
         }

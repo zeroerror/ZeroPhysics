@@ -55,7 +55,7 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public override string ToString() {
-            return $"BoxRB <Name>:{name}  <ID>:{box.InstanceID}";
+            return $"<Name>:{name}  <ID>:{box.InstanceID}";
         }
 
     }

@@ -6,7 +6,7 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Projection3DUtils {
 
-        public static FPVector2 GetProjectionSub(Box3DModel box, Axis3D axis) {
+        public static FPVector2 GetProjectionSub(Box3DModel box, in Axis3D axis) {
             FPVector3 axisOrigin = axis.origin;
             FPVector3 axisDir = axis.dir;
             FPVector3[] vertices = box.vertices;

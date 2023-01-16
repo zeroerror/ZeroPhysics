@@ -30,7 +30,7 @@ namespace ZeroPhysics.Physics3D {
                         var boxA = A.Box;
                         var boxB = B.Box;
                         var mtv = Penetration3DUtils.GetMTV(boxA.GetModel(), boxB.GetModel());
-                        mtv *= FPUtils.multy_penetration_dynamic;
+                        mtv *= FPUtils.multy_penetration_rbNrb;
                         // 计算MTV
                         if (mtv.Length() > FPUtils.epsilon_mtv) {
                             var hitDirBA = mtv.normalized;
@@ -50,9 +50,9 @@ namespace ZeroPhysics.Physics3D {
                     if (collision.bodyA is Box3DRigidbody rb && collision.bodyB is Box3D box) {
                         var boxA = rb.Box;
                         var mtv = Penetration3DUtils.GetMTV(boxA.GetModel(), box.GetModel());
-                        mtv *= FPUtils.multy_penetration_dynamic;
+                        mtv *= FPUtils.multy_penetration_rbNstatic;
                         // 计算MTV
-                        if (mtv.Length() > FPUtils.epsilon_mtv) {
+                        if (mtv.Length() >= FPUtils.epsilon_mtv) {
                             var hitDirBA = mtv.normalized;
                             collisionService.UpdateHitDirBA(rb, box, hitDirBA);
                         }
