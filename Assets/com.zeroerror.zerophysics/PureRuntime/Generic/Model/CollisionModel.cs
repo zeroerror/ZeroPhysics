@@ -7,8 +7,8 @@ namespace ZeroPhysics.Generic
     public class CollisionModel
     {
 
-        public PhysicsBody3D bodyA;
-        public PhysicsBody3D bodyB;
+        public IPhysicsBody3D bodyA;
+        public IPhysicsBody3D bodyB;
 
         CollisionType collisionType;
         public CollisionType CollisionType => collisionType;

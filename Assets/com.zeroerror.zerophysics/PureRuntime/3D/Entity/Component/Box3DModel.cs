@@ -1,11 +1,9 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D
-{
+namespace ZeroPhysics.Physics3D {
 
-    public class Box3DModel
-    {
+    public class Box3DModel {
 
         FPVector3 center;
         public FPVector3 Center => center;
@@ -46,8 +44,7 @@ namespace ZeroPhysics.Physics3D
         FPVector3 p6;
         FPVector3 p7;
 
-        public Box3DModel(TransformComponent3D trans, in FPVector3 size)
-        {
+        public Box3DModel(TransformComponent3D trans, in FPVector3 size) {
             this.vertices = new FPVector3[8];
             var scaledSize = trans.Scale * size;
             UpdateScaleAndSize(scaledSize);
@@ -55,53 +52,44 @@ namespace ZeroPhysics.Physics3D
             UpdateCenter(trans.Center);
         }
 
-        public void Update(TransformComponent3D trans, in FPVector3 size)
-        {
+        public void Update(TransformComponent3D trans, in FPVector3 size) {
             var scaledSize = trans.Scale * size;
             bool hasChangedSize = scaledSize != this.scaledSize;
-            if (hasChangedSize)
-            {
+            if (hasChangedSize) {
                 UpdateScaleAndSize(scaledSize);
             }
 
             bool hasRotated = rotation != trans.Rotation;
-            if (hasRotated)
-            {
+            if (hasRotated) {
                 UpdateRot(trans.Rotation);
             }
 
             bool hasMoved = center != trans.Center;
-            if (hasMoved)
-            {
+            if (hasMoved) {
                 UpdateCenter(trans.Center);
             }
         }
 
-        public BoxType GetBoxType()
-        {
+        public BoxType GetBoxType() {
             return rotation == FPQuaternion.Identity ? BoxType.AABB : BoxType.OBB;
         }
 
-        public FPVector2 GetAxisX_SelfProjectionSub()
-        {
+        public FPVector2 GetAxisX_SelfProjectionSub() {
             var halfX = scaledSize.x * FP64.Half;
             return new FPVector2(-halfX, halfX);
         }
 
-        public FPVector2 GetAxisY_SelfProjectionSub()
-        {
+        public FPVector2 GetAxisY_SelfProjectionSub() {
             var halfY = scaledSize.y * FP64.Half;
             return new FPVector2(-halfY, halfY);
         }
 
-        public FPVector2 GetAxisZ_SelfProjectionSub()
-        {
+        public FPVector2 GetAxisZ_SelfProjectionSub() {
             var halfZ = scaledSize.z * FP64.Half;
             return new FPVector2(-halfZ, halfZ);
         }
 
-        public Axis3D GetAxisX()
-        {
+        public Axis3D GetAxisX() {
             Axis3D axis = new Axis3D();
             axis.origin = center;
             var dir = FPVector3.Right;
@@ -110,8 +98,13 @@ namespace ZeroPhysics.Physics3D
             return axis;
         }
 
-        public Axis3D GetAxisY()
-        {
+        public FPVector3 GetXDir() {
+            var dir = FPVector3.Right;
+            if (rotation != FPQuaternion.Identity) dir = rotation * dir;
+            return dir;
+        }
+
+        public Axis3D GetAxisY() {
             Axis3D axis = new Axis3D();
             axis.origin = center;
             var dir = FPVector3.Up;
@@ -120,18 +113,30 @@ namespace ZeroPhysics.Physics3D
             return axis;
         }
 
-        public Axis3D GetAxisZ()
-        {
+        public FPVector3 GetYDir() {
+            var dir = FPVector3.Up;
+            if (rotation != FPQuaternion.Identity) dir = rotation * dir;
+            return dir;
+        }
+
+        public Axis3D GetAxisZ() {
             Axis3D axis = new Axis3D();
             axis.origin = center;
             var dir = FPVector3.Forward;
-            if (rotation != FPQuaternion.Identity) dir = rotation * dir;
+            if (rotation != FPQuaternion.Identity) {
+                dir = rotation * dir;
+            }
             axis.dir = dir;
             return axis;
         }
 
-        void UpdateScaleAndSize(in FPVector3 scaledSize)
-        {
+        public FPVector3 GetZDir() {
+            var dir = FPVector3.Forward;
+            if (rotation != FPQuaternion.Identity) dir = rotation * dir;
+            return dir;
+        }
+
+        void UpdateScaleAndSize(in FPVector3 scaledSize) {
             this.scaledSize = scaledSize;
             var halfScaledSize = scaledSize * FP64.Half;
             p0_aabb = new FPVector3(-halfScaledSize.x, halfScaledSize.y, halfScaledSize.z);
@@ -144,11 +149,9 @@ namespace ZeroPhysics.Physics3D
             p7_aabb = new FPVector3(halfScaledSize.x, -halfScaledSize.y, -halfScaledSize.z);
         }
 
-        void UpdateRot(in FPQuaternion rot)
-        {
+        void UpdateRot(in FPQuaternion rot) {
             this.rotation = rot;
-            if (rot != FPQuaternion.Identity)
-            {
+            if (rot != FPQuaternion.Identity) {
                 p0_rot = rot * p0_aabb;
                 p1_rot = rot * p1_aabb;
                 p2_rot = rot * p2_aabb;
@@ -157,9 +160,7 @@ namespace ZeroPhysics.Physics3D
                 p5_rot = rot * p5_aabb;
                 p6_rot = rot * p6_aabb;
                 p7_rot = rot * p7_aabb;
-            }
-            else
-            {
+            } else {
                 p0_rot = p0_aabb;
                 p1_rot = p1_aabb;
                 p2_rot = p2_aabb;
@@ -171,8 +172,7 @@ namespace ZeroPhysics.Physics3D
             }
         }
 
-        void UpdateCenter(in FPVector3 newCenter)
-        {
+        void UpdateCenter(in FPVector3 newCenter) {
             this.center = newCenter;
             p0 = p0_rot + newCenter;
             p1 = p1_rot + newCenter;

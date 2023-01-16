@@ -130,19 +130,19 @@ namespace ZeroPhysics.Physics3D {
             var axis = box.GetAxisX();
             var pjSub1 = box.GetAxisX_SelfProjectionSub();
             var pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2)) return false;
+            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             // - Axis y  
             axis = box.GetAxisY();
             pjSub1 = box.GetAxisY_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2)) return false;
+            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             // - Axis z
             axis = box.GetAxisZ();
             pjSub1 = box.GetAxisZ_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2)) return false;
+            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             return true;
         }
