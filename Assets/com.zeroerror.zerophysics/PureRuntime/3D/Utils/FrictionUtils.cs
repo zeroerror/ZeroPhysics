@@ -6,7 +6,7 @@ namespace ZeroPhysics.Physics3D {
 
     public static class FrictionUtils {
 
-        public static void ApplyFriction(CollisionModel collision, in FP64 dt) {
+        public static void ApplyFriction(in CollisionModel collision, in FP64 dt) {
             var bodyA = collision.bodyA;
             var bodyB = collision.bodyB;
             FP64 m1 = FP64.Zero; ;

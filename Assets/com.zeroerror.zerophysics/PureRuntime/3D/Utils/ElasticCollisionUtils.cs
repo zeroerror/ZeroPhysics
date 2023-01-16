@@ -8,7 +8,7 @@ namespace ZeroPhysics.Physics3D {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
 
-        public static void ApplyElasticCollision(CollisionModel collision, in FP64 dt) {
+        public static void ApplyElasticCollision(in CollisionModel collision, in FP64 dt) {
             var bodyA = collision.bodyA;
             var bodyB = collision.bodyB;
             FPVector3 hitDirBA = collision.HitDirBA;

@@ -65,7 +65,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirX1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirX2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($" dirX1{dirX1} dirX2{dirX2}");
                     return false;
                 }
             }
@@ -74,7 +73,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirX1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirY2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -83,7 +81,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirX1, dirZ2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirZ2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirZ2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -92,7 +89,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirY1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirX2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -101,7 +97,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirY1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirY2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -110,7 +105,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirY1, dirZ2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirZ2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirZ2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -119,7 +113,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirZ1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirZ1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirZ1, dirX2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -128,7 +121,6 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirZ1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirZ1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirZ1, dirY2);
                 if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                    UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                     return false;
                 }
             }
@@ -138,7 +130,6 @@ namespace ZeroPhysics.Physics3D {
                 if ((dirZ1 != dirZ2 && dirZ1 != -dirZ2)) {
                     axis.dir = FPVector3.Cross(dirZ1, dirZ2);
                     if (!HasIntersects_WithAxis(box1, box2, axis)) {
-                        UnityEngine.Debug.Log($"axis.dir {axis.dir}");
                         return false;
                     }
                 }

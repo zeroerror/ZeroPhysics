@@ -12,7 +12,7 @@ namespace ZeroPhysics.Physics3D {
             return offset;
         }
 
-        public static void ApplyForceHitErase(CollisionModel collisionModel, in FP64 dt) {
+        public static void ApplyForceHitErase(in CollisionModel collisionModel, in FP64 dt) {
             var bodyA = collisionModel.bodyA;
             var bodyB = collisionModel.bodyB;
             FP64 m1 = FP64.Zero; ;
