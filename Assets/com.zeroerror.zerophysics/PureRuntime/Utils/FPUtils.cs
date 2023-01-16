@@ -10,7 +10,7 @@ namespace ZeroPhysics.Utils {
         public static readonly FP64 epsilon_intersect = FP64.Epsilon;
         public static readonly FP64 epsilon_mtv = FP64.Epsilon;
         public static readonly FP64 epsilon_friction = FP64.EN1;
-        public static readonly FP64 epsilon_penetration_dynamic = FP64.Half + FP64.EN4;
+        public static readonly FP64 multy_penetration_dynamic = FP64.Half + FP64.EN4;
 
         public static bool IsNear(in FP64 v1, in FP64 v2, in FP64 epsilon) {
             return v1 < (v2 + epsilon) && v1 > (v2 - epsilon);

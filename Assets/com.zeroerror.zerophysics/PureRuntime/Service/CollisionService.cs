@@ -103,7 +103,7 @@ namespace ZeroPhysics.Service {
             return collisionDic.TryGetValue(dicKey, out collision) && collision.CollisionType != CollisionType.None;
         }
 
-        public void UpdateBHitA_Dir(IPhysicsBody3D a, IPhysicsBody3D b, in FPVector3 bHitA_Dir) {
+        public void UpdateHitDirBA(IPhysicsBody3D a, IPhysicsBody3D b, in FPVector3 bHitA_Dir) {
             var ida = a.GetKey();
             var idb = b.GetKey();
             var dicKey = CombineDicKey(ida, idb);

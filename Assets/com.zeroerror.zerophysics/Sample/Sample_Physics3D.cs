@@ -149,8 +149,9 @@ namespace ZeroPhysics.Sample {
             for (int i = 0; i < rbCount; i++) {
                 var tf = rbBoxTfs[i].transform;
                 var rb = setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                rb.Box.SetIsTrigger(tf.name == "trigger");
                 rb.name = $"RBBOX_{i}";
-                rb.Box.SetIsTrigger(true);
+                tf.name = $"RBBOX_{i}";
             }
             Debug.Log($"Total RBBox: {rbCount}");
 
@@ -162,7 +163,9 @@ namespace ZeroPhysics.Sample {
             for (int i = 0; i < boxCount; i++) {
                 var tf = boxTfs[i].transform;
                 var box = setterAPI.SpawnBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                box.SetIsTrigger(tf.name == "trigger");
                 box.name = $"Box_{i}";
+                tf.name = $"Box_{i}";
             }
             Debug.Log($"Total Box: {boxCount}");
         }

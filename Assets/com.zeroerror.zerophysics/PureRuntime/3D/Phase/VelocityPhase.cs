@@ -15,13 +15,14 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public void Tick(in FP64 dt) {
-            var rbBoxes = physicsFacade.boxRBs;
             var service = physicsFacade.Service;
             var idService = service.IDService;
             var collisionService = service.CollisionService;
-            var rbBoxIDInfos = idService.boxRBIDInfos;
+            var allCollision = collisionService.GetAllCollisions();
 
             // ApplyForceHitErase(dt);
+            var rbBoxes = physicsFacade.boxRBs;
+            var rbBoxIDInfos = idService.boxRBIDInfos;
             for (int i = 0; i < rbBoxes.Length; i++) {
                 if (!rbBoxIDInfos[i]) continue;
                 var rb = rbBoxes[i];
@@ -30,8 +31,6 @@ namespace ZeroPhysics.Physics3D {
                 linearV += offsetV;
                 rb.SetLinearV(linearV);
             }
-
-            var allCollision = collisionService.GetAllCollisions();
             ApplyElasticCollision(allCollision, dt);
             ApplyFriction(allCollision, dt);
         }
