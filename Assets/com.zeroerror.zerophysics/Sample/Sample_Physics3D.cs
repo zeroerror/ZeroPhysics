@@ -150,6 +150,7 @@ namespace ZeroPhysics.Sample {
                 var tf = rbBoxTfs[i].transform;
                 var rb = setterAPI.SpawnRBBox(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
                 rb.name = $"RBBOX_{i}";
+                rb.Box.SetIsTrigger(true);
             }
             Debug.Log($"Total RBBox: {rbCount}");
 

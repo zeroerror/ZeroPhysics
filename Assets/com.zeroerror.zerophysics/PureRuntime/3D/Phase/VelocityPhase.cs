@@ -1,8 +1,6 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
 using ZeroPhysics.Physics3D.Facade;
-using ZeroPhysics.Service;
-using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
@@ -33,14 +31,12 @@ namespace ZeroPhysics.Physics3D {
                 rb.SetLinearV(linearV);
             }
 
-            ApplyElasticCollision(dt);
-            ApplyFriction(dt);
+            var allCollision = collisionService.GetAllCollisions();
+            ApplyElasticCollision(allCollision, dt);
+            ApplyFriction(allCollision, dt);
         }
 
-        void ApplyFriction(in FP64 dt) {
-            var service = physicsFacade.Service;
-            var collisionService = service.CollisionService;
-            var allCollision = collisionService.GetAllCollisions();
+        void ApplyFriction(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
@@ -48,28 +44,28 @@ namespace ZeroPhysics.Physics3D {
                     if (collision.FirctionCoe_combined == 0) {
                         continue;
                     }
+                    if (collision.bodyA.IsTrigger || collision.bodyB.IsTrigger) {
+                        continue;
+                    }
                     FrictionUtils.ApplyFriction(collision, dt);
                 }
             }
         }
 
-        void ApplyElasticCollision(in FP64 dt) {
-            var service = physicsFacade.Service;
-            var collisionService = service.CollisionService;
-            var allCollision = collisionService.GetAllCollisions();
+        void ApplyElasticCollision(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
                 || collision.CollisionType == CollisionType.Stay) {
+                    if (collision.bodyA.IsTrigger || collision.bodyB.IsTrigger) {
+                        continue;
+                    }
                     ElasticCollisionUtils.ApplyElasticCollision(collision, dt);
                 }
             }
         }
 
-        void ApplyForceHitErase(in FP64 dt) {
-            var service = physicsFacade.Service;
-            var collisionService = service.CollisionService;
-            var allCollision = collisionService.GetAllCollisions();
+        void ApplyForceHitErase(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter

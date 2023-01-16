@@ -3,11 +3,10 @@ using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D {
 
-    public class Box3DRigidbody : PhysicsBody3D {
+    public class Box3DRigidbody : IPhysicsBody3D {
 
-        ushort instanceID;
-        public ushort InstanceID => instanceID;
-        public void SetInstanceID(ushort v) => instanceID = v;
+        public ushort InstanceID => box.InstanceID;
+        public void SetInstanceID(ushort v) => box.SetInstanceID(v);
 
         public string name;
 
@@ -38,9 +37,10 @@ namespace ZeroPhysics.Physics3D {
             bounceCoefficient = v;
         }
 
-        PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
-
-        ushort PhysicsBody3D.ID => instanceID;
+        // Interface
+        PhysicsType3D IPhysicsBody3D.PhysicsType => PhysicsType3D.Box3DRigidbody;
+        ushort IPhysicsBody3D.ID => InstanceID;
+        bool IPhysicsBody3D.IsTrigger => box.IsTrigger;
 
         FPVector3 mtv;
         public FPVector3 MTV => mtv;
@@ -64,7 +64,7 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public override string ToString() {
-            return $"BoxRB <Name>:{name}  <ID>:{instanceID}";
+            return $"BoxRB <Name>:{name}  <ID>:{box.InstanceID}";
         }
 
     }

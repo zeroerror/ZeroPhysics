@@ -3,7 +3,7 @@ using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D {
 
-    public class Box3D : PhysicsBody3D {
+    public class Box3D : IPhysicsBody3D {
 
         ushort instanceID;
         public ushort InstanceID => instanceID;
@@ -35,10 +35,12 @@ namespace ZeroPhysics.Physics3D {
         public FP64 FrictionCoe => frictionCoe;
         public void SetFirctionCoe(FP64 v) => frictionCoe = v;
 
-        PhysicsType3D PhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
+        PhysicsType3D IPhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
+        ushort IPhysicsBody3D.ID => instanceID;
 
-        ushort PhysicsBody3D.ID => instanceID;
-
+        bool isTrigger;
+        public bool IsTrigger => isTrigger;
+        public void SetIsTrigger(bool v) => isTrigger = v;
 
         public Box3D() {
             trans = new TransformComponent3D();

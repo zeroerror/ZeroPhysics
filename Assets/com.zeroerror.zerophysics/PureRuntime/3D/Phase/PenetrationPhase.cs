@@ -65,7 +65,9 @@ namespace ZeroPhysics.Physics3D {
                 }
 
                 // 交叉恢复处理
-                rb1.ApplyMTV();
+                if (!rb1.Box.IsTrigger) {
+                    rb1.ApplyMTV();
+                }
             }
 
         }
