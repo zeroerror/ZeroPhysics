@@ -12,12 +12,12 @@ namespace ZeroPhysics.Physics3D.Facade {
             this.physicsFacade = physicsFacade;
         }
 
-        public Box3D SpawnBox3D(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
-            Box3D box = new Box3D(center, rotation, scale, size);
-            box.SetCenter(center);
-            box.SetRotation(rotation);
-            box.SetScale(scale);
-            return box;
+        public Cube SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
+            Cube cube = new Cube(center, rotation, scale, size);
+            cube.SetCenter(center);
+            cube.SetRotation(rotation);
+            cube.SetScale(scale);
+            return cube;
         }
 
     }

@@ -21,49 +21,56 @@ namespace ZeroPhysics.Physics3D {
             var idService = service.IDService;
             var collisionService = service.CollisionService;
             var allCollision = collisionService.GetAllCollisions();
+
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
-                if (collision.CollisionType == CollisionType.Enter
-                || collision.CollisionType == CollisionType.Stay) {
-                    // --- RB & RB
-                    if (collision.bodyA is Box3DRigidbody A && collision.bodyB is Box3DRigidbody B) {
-                        var boxA = A.Box;
-                        var boxB = B.Box;
-                        var mtv = Penetration3DUtils.GetMTV(boxA.GetModel(), boxB.GetModel());
-                        mtv *= FPUtils.multy_penetration_rbNrb;
-                        // 计算MTV
-                        if (mtv.Length() > FPUtils.epsilon_mtv) {
-                            var hitDirBA = mtv.normalized;
-                            collisionService.UpdateHitDirBA(A, B, hitDirBA);
-                        }
-                        // NoTrigger之间才有摩擦力和交叉恢复
-                        if (!boxA.IsTrigger && !boxB.IsTrigger) {
-                            var firctionCoeA = boxA.FrictionCoe;
-                            var firctionCoeB = boxB.FrictionCoe;
-                            var firctionCoe_combined = firctionCoeA < firctionCoeB ? firctionCoeA : firctionCoeB;
-                            collision.SetFirctionCoe_combined(firctionCoe_combined);
-                            A.ApplyMTV(mtv);
-                            B.ApplyMTV(-mtv);
-                        }
+                    UnityEngine.Debug.Log($"collision {collision.bodyA} {collision.bodyB}");
+                if (collision.CollisionType != CollisionType.Enter && collision.CollisionType != CollisionType.Stay) {
+                    continue;
+                }
+
+                var bodyA = collision.bodyA;
+                var bodyB = collision.bodyB;
+
+                // --- RB & RB
+                if (bodyA is Rigidbody3D A && bodyB is Rigidbody3D B) {
+                    var boxA = A.Body;
+                    var boxB = B.Body;
+                    var mtv = Penetration3DUtils.GetMTV(boxA, boxB);
+                    mtv *= FPUtils.multy_penetration_rbNrb;
+                    // 计算MTV
+                    if (mtv.Length() > FPUtils.epsilon_mtv) {
+                        var hitDirBA = mtv.normalized;
+                        collisionService.UpdateHitDirBA(A, B, hitDirBA);
                     }
-                    // --- RB & Static
-                    if (collision.bodyA is Box3DRigidbody rb && collision.bodyB is Box3D box) {
-                        var boxA = rb.Box;
-                        var mtv = Penetration3DUtils.GetMTV(boxA.GetModel(), box.GetModel());
-                        mtv *= FPUtils.multy_penetration_rbNstatic;
-                        // 计算MTV
-                        if (mtv.Length() >= FPUtils.epsilon_mtv) {
-                            var hitDirBA = mtv.normalized;
-                            collisionService.UpdateHitDirBA(rb, box, hitDirBA);
-                        }
-                        // NoTrigger之间才有摩擦力和交叉恢复
-                        if (!boxA.IsTrigger && !box.IsTrigger) {
-                            var firctionCoeA = boxA.FrictionCoe;
-                            var firctionCoeB = box.FrictionCoe;
-                            var firctionCoe_combined = firctionCoeA < firctionCoeB ? firctionCoeA : firctionCoeB;
-                            collision.SetFirctionCoe_combined(firctionCoe_combined);
-                            rb.ApplyMTV(mtv);
-                        }
+                    // NoTrigger之间才有摩擦力和交叉恢复
+                    if (!boxA.IsTrigger && !boxB.IsTrigger) {
+                        var firctionCoeA = boxA.FrictionCoe;
+                        var firctionCoeB = boxB.FrictionCoe;
+                        var firctionCoe_combined = firctionCoeA < firctionCoeB ? firctionCoeA : firctionCoeB;
+                        collision.SetFirctionCoe_combined(firctionCoe_combined);
+                        A.ApplyMTV(mtv);
+                        B.ApplyMTV(-mtv);
+                    }
+                }
+
+                // --- RB & Static
+                if (bodyA is Rigidbody3D rb) {
+                    UnityEngine.Debug.Log($"RB & Static");
+                    var mtv = Penetration3DUtils.GetMTV(rb, bodyB);
+                    mtv *= FPUtils.multy_penetration_rbNstatic;
+                    // 计算MTV
+                    if (mtv.Length() >= FPUtils.epsilon_mtv) {
+                        var hitDirBA = mtv.normalized;
+                        collisionService.UpdateHitDirBA(rb, bodyB, hitDirBA);
+                    }
+                    // NoTrigger之间才有摩擦力和交叉恢复
+                    if (!bodyA.IsTrigger && !bodyB.IsTrigger) {
+                        var firctionCoeA = bodyA.FrictionCoe;
+                        var firctionCoeB = bodyB.FrictionCoe;
+                        var firctionCoe_combined = firctionCoeA < firctionCoeB ? firctionCoeA : firctionCoeB;
+                        collision.SetFirctionCoe_combined(firctionCoe_combined);
+                        rb.ApplyMTV(mtv);
                     }
                 }
             }

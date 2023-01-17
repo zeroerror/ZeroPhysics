@@ -6,11 +6,35 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Penetration3DUtils {
 
-        public static FPVector3 GetMTV(Box3DModel model1, Box3DModel model2) {
+        public static FPVector3 GetMTV(Rigidbody3D rb1, Rigidbody3D rb2) {
+            var body1 = rb1.Body;
+            var body2 = rb2.Body;
+            if (body1 is Cube cube1 && body2 is Cube cube2) {
+                return GetMTV(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle MTV");
+        }
+
+        public static FPVector3 GetMTV(Rigidbody3D rb, IPhysicsBody3D body) {
+            var rbBody = rb.Body;
+            if (rbBody is Cube cube1 && body is Cube cube2) {
+                return GetMTV(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle MTV");
+        }
+
+        public static FPVector3 GetMTV(IPhysicsBody3D body1, IPhysicsBody3D body2) {
+            if (body1 is Cube cube1 && body2 is Cube cube2) {
+                return GetMTV(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle MTV");
+        }
+
+        public static FPVector3 GetMTV(CubeModel model1, CubeModel model2) {
             FP64 len_min = FP64.MaxValue;
             FPVector3 dir = FPVector3.Zero;
 
-            // 针对Box，求 3 + 3 = 6 个面的法向量上的投影，即12次投影计算
+            // 针对Cube，求 3 + 3 = 6 个面的法向量上的投影，即12次投影计算
 
             var axis = model1.GetAxisX();
             var pjSub1 = model1.GetAxisX_SelfProjectionSub();
@@ -27,7 +51,7 @@ namespace ZeroPhysics.Physics3D {
             pjSub2 = Projection3DUtils.GetProjectionSub(model2, axis);
             UpdateMTV(ref len_min, ref dir, axis, pjSub1, pjSub2);
 
-            bool isBox1Aixs = dir != FPVector3.Zero;
+            bool isCube1Aixs = dir != FPVector3.Zero;
 
             axis = model2.GetAxisX();
             pjSub2 = model2.GetAxisX_SelfProjectionSub();
@@ -44,7 +68,7 @@ namespace ZeroPhysics.Physics3D {
             pjSub1 = Projection3DUtils.GetProjectionSub(model1, axis);
             UpdateMTV(ref len_min, ref dir, axis, pjSub1, pjSub2);
 
-            if (!isBox1Aixs) dir = -dir;
+            if (!isCube1Aixs) dir = -dir;
 
             return len_min * dir;
         }

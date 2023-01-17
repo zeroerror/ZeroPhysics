@@ -12,8 +12,8 @@ namespace ZeroPhysics.Sample
 
         bool canRun = false;
 
-        public Transform Boxes;
-        Box3D[] boxes;
+        public Transform Cubees;
+        Cube[] cubes;
         Transform[] boxTfs;
 
         int[] collsionArray;
@@ -22,50 +22,50 @@ namespace ZeroPhysics.Sample
 
         void Start()
         {
-            if (Boxes == null) return;
+            if (Cubees == null) return;
             canRun = true;
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
-            InitBox3Ds();
+            InitCubes();
         }
 
         void FixedUpdate()
         {
         }
 
-        void InitBox3Ds()
+        void InitCubes()
         {
-            var bcCount = Boxes.childCount;
+            var bcCount = Cubees.childCount;
             collsionArray = new int[bcCount];
             boxTfs = new Transform[bcCount];
             for (int i = 0; i < bcCount; i++)
             {
-                var bc = Boxes.GetChild(i);
+                var bc = Cubees.GetChild(i);
                 boxTfs[i] = bc;
             }
 
             var setterAPI = physicsCore.SetterAPI;
-            boxes = new Box3D[bcCount];
+            cubes = new Cube[bcCount];
             for (int i = 0; i < bcCount; i++)
             {
                 var bcTF = boxTfs[i].transform;
-                boxes[i] = setterAPI.SpawnBox(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
+                cubes[i] = setterAPI.SpawnCube(bcTF.position.ToFPVector3(), bcTF.rotation.ToFPQuaternion(), bcTF.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
             }
-            Debug.Log($"Total Box: {bcCount}");
+            Debug.Log($"Total Cube: {bcCount}");
         }
 
         public void OnDrawGizmos()
         {
             if (!canRun) return;
             if (boxTfs == null) return;
-            if (boxes == null) return;
+            if (cubes == null) return;
 
             // - Collision 
             for (int i = 0; i < collsionArray.Length; i++) { collsionArray[i] = 0; }
-            for (int i = 0; i < boxes.Length - 1; i++)
+            for (int i = 0; i < cubes.Length - 1; i++)
             {
-                for (int j = i + 1; j < boxes.Length; j++)
+                for (int j = i + 1; j < cubes.Length; j++)
                 {
-                    if (Intersect3DUtils.HasCollision(boxes[i], boxes[j])) { collsionArray[i] = 1; collsionArray[j] = 1; }
+                    if (Intersect3DUtils.HasCollision(cubes[i], cubes[j])) { collsionArray[i] = 1; collsionArray[j] = 1; }
                 }
             }
 
@@ -75,24 +75,23 @@ namespace ZeroPhysics.Sample
             axis3D.dir = FPVector3.UnitX;
             Gizmos.DrawLine((axis3D.origin - 100 * axis3D.dir).ToVector3(), (axis3D.origin + 100 * axis3D.dir).ToVector3());
 
-            // - Update And DrawBox
-            for (int i = 0; i < boxes.Length; i++)
+            // - Update And DrawCube
+            for (int i = 0; i < cubes.Length; i++)
             {
                 var bc = boxTfs[i];
-                var box = boxes[i];
-                UpdateBox(bc.transform, box);
+                var cube = cubes[i];
+                UpdateCube(bc.transform, cube);
                 Gizmos.color = Color.green;
-                box.DrawBoxPoint();
+                GizmosExtention.DrawPhysicsBody(cube);
                 if (collsionArray[i] == 1) Gizmos.color = Color.red;
-                box.DrawBoxBorder();
-                DrawProjectionSub(axis3D, box);
+                DrawProjectionSub(axis3D, cube);
             }
 
         }
 
-        void DrawProjectionSub(Axis3D axis3D, Box3D box)
+        void DrawProjectionSub(Axis3D axis3D, Cube cube)
         {
-            var model = box.GetModel();
+            var model = cube.GetModel();
             var proj = Projection3DUtils.GetProjectionSub(model, axis3D);
             Gizmos.color = Color.white;
             Gizmos.color = Color.black;
@@ -100,11 +99,11 @@ namespace ZeroPhysics.Sample
             Gizmos.DrawLine((axis3D.dir * proj.x + axis3D.origin).ToVector3(), (axis3D.dir * proj.y + axis3D.origin).ToVector3());
         }
 
-        void UpdateBox(Transform src, Box3D box)
+        void UpdateCube(Transform src, Cube cube)
         {
-            box.SetCenter(src.position.ToFPVector3());
-            box.SetScale(src.localScale.ToFPVector3());
-            box.SetRotation(src.rotation.ToFPQuaternion());
+            cube.SetCenter(src.position.ToFPVector3());
+            cube.SetScale(src.localScale.ToFPVector3());
+            cube.SetRotation(src.rotation.ToFPQuaternion());
         }
 
     }

@@ -13,12 +13,9 @@ namespace ZeroPhysics.Service {
             collisionDic = new Dictionary<ulong, CollisionModel>();
         }
 
-        public void AddCollision(IPhysicsBody3D a, IPhysicsBody3D b) {
-            // 保证左边一定是RB
-            SwapRBToLeft(ref a, ref b);
-
-            var ida = a.GetKey();
-            var idb = b.GetKey();
+        public void AddCollision(Rigidbody3D rb, IPhysicsBody3D body) {
+            var ida = rb.GetBodyKey();
+            var idb = body.GetBodyKey();
             var dicKey = CombineDicKey(ida, idb);
             bool getFromDic = collisionDic.TryGetValue(dicKey, out var collision);
             if (getFromDic && collision.CollisionType == CollisionType.Enter) {
@@ -30,21 +27,48 @@ namespace ZeroPhysics.Service {
             if (!getFromDic) {
                 // 添加Enter
                 collision = new CollisionModel();
-                collision.bodyA = a;
-                collision.bodyB = b;
+                collision.bodyA = rb.Body;
+                collision.bodyB = body;
                 collisionDic.Add(dicKey, collision);
             }
             if (!getFromDic || collision.CollisionType == CollisionType.None || collision.CollisionType == CollisionType.Exit) {
                 collision.SetCollisionType(CollisionType.Enter);
                 collisionDic[dicKey] = collision;
+                UnityEngine.Debug.Log($"Collision Enter ------------  rb: {rb} &&&&&&&& body {body}");
                 return;
-                // UnityEngine.Debug.Log($"Collision Enter ------------  A: {a} &&&&&&&& {b}");
             }
         }
 
-        public void RemoveCollision(IPhysicsBody3D a, IPhysicsBody3D b) {
-            var ida = a.GetKey();
-            var idb = b.GetKey();
+        public void AddCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
+            var ida = rb1.GetBodyKey();
+            var idb = rb2.GetBodyKey();
+            var dicKey = CombineDicKey(ida, idb);
+            SwapBiggerToLeft(ref ida, ref idb);
+            bool getFromDic = collisionDic.TryGetValue(dicKey, out var collision);
+            if (getFromDic && collision.CollisionType == CollisionType.Enter) {
+                collision.SetCollisionType(CollisionType.Stay);
+                collisionDic[dicKey] = collision;
+                // UnityEngine.Debug.Log($"Collision Stay ------------  A: {a} &&&&&&&& {b}");
+                return;
+            }
+            if (!getFromDic) {
+                // 添加Enter
+                collision = new CollisionModel();
+                collision.bodyA = rb1.Body;
+                collision.bodyB = rb2.Body;
+                collisionDic.Add(dicKey, collision);
+            }
+            if (!getFromDic || collision.CollisionType == CollisionType.None || collision.CollisionType == CollisionType.Exit) {
+                collision.SetCollisionType(CollisionType.Enter);
+                collisionDic[dicKey] = collision;
+                UnityEngine.Debug.Log($"Collision Enter ------------  rb: {rb1} &&&&&&&& body {rb2}");
+                return;
+            }
+        }
+
+        public void RemoveCollision(Rigidbody3D rb, IPhysicsBody3D body) {
+            var ida = rb.GetBodyKey();
+            var idb = body.GetBodyKey();
             var dicKey = CombineDicKey(ida, idb);
             if (!collisionDic.TryGetValue(dicKey, out var collision)) {
                 return;
@@ -53,12 +77,30 @@ namespace ZeroPhysics.Service {
             if (collision.CollisionType == CollisionType.Enter || collision.CollisionType == CollisionType.Stay) {
                 collision.SetCollisionType(CollisionType.Exit);
                 collisionDic[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Exit ------------  A: {a} &&&&&&&& {b}");
+                UnityEngine.Debug.Log($"Collision Exit ------------  rb: {rb} &&&&&&&& body: {body}");
             } else if (collision.CollisionType == CollisionType.Exit) {
                 collisionDic.Remove(dicKey);
-                // UnityEngine.Debug.Log($"Collision Dic Remove  ------------  A: {a} &&&&&&&& {b}");
+                UnityEngine.Debug.Log($"Collision Dic Remove ------------  rb: {rb} &&&&&&&& body: {body}");
+            }
+        }
+
+        public void RemoveCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
+            var ida = rb1.GetBodyKey();
+            var idb = rb2.GetBodyKey();
+            var dicKey = CombineDicKey(ida, idb);
+            SwapBiggerToLeft(ref ida, ref idb);
+            if (!collisionDic.TryGetValue(dicKey, out var collision)) {
+                return;
             }
 
+            if (collision.CollisionType == CollisionType.Enter || collision.CollisionType == CollisionType.Stay) {
+                collision.SetCollisionType(CollisionType.Exit);
+                collisionDic[dicKey] = collision;
+                UnityEngine.Debug.Log($"Collision Exit ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
+            } else if (collision.CollisionType == CollisionType.Exit) {
+                collisionDic.Remove(dicKey);
+                UnityEngine.Debug.Log($"Collision Dic Remove ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
+            }
         }
 
         public CollisionModel[] GetAllCollisions() {
@@ -69,9 +111,9 @@ namespace ZeroPhysics.Service {
             return infoArray;
         }
 
-        public void UpdateHitDirBA(IPhysicsBody3D a, IPhysicsBody3D b, in FPVector3 hitDirBA) {
-            var ida = a.GetKey();
-            var idb = b.GetKey();
+        public void UpdateHitDirBA(Rigidbody3D rb, IPhysicsBody3D body, in FPVector3 hitDirBA) {
+            var ida = rb.GetBodyKey();
+            var idb = body.GetBodyKey();
             var dicKey = CombineDicKey(ida, idb);
             if (!collisionDic.TryGetValue(dicKey, out var collision)) {
                 return;
@@ -85,8 +127,24 @@ namespace ZeroPhysics.Service {
             collisionDic[dicKey] = collision;
         }
 
-        ulong CombineDicKey(uint ida, uint idb) {
+        public void UpdateHitDirBA(Rigidbody3D rb1, Rigidbody3D rb2, in FPVector3 hitDirBA) {
+            var ida = rb1.GetBodyKey();
+            var idb = rb2.GetBodyKey();
+            var dicKey = CombineDicKey(ida, idb);
             SwapBiggerToLeft(ref ida, ref idb);
+            if (!collisionDic.TryGetValue(dicKey, out var collision)) {
+                return;
+            }
+
+            if (hitDirBA == FPVector3.Zero) {
+                return;
+            }
+
+            collision.SetHitDirBA(hitDirBA);
+            collisionDic[dicKey] = collision;
+        }
+
+        ulong CombineDicKey(uint ida, uint idb) {
             ulong key = (ulong)(idb);
             key |= (ulong)ida << 32;
             return key;
@@ -101,16 +159,6 @@ namespace ZeroPhysics.Service {
             idb = ida ^ idb;
             ida = ida ^ idb;
             return true;
-        }
-
-        void SwapRBToLeft(ref IPhysicsBody3D bodyA, ref IPhysicsBody3D bodyB) {
-            byte typeA = (byte)bodyA.PhysicsType;
-            byte typeB = (byte)bodyB.PhysicsType;
-            if (typeB > typeA) {
-                IPhysicsBody3D temp = bodyA;
-                bodyA = bodyB;
-                bodyB = temp;
-            }
         }
 
     }

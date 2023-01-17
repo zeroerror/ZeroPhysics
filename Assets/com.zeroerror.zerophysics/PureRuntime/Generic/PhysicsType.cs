@@ -1,11 +1,8 @@
 namespace ZeroPhysics.Generic {
 
     public enum PhysicsType3D : byte {
-
-        Box3D = 0,
-        Box3DRigidbody = 10,
-        Box3DRigidbody1,
-
+        Cube = 0,
+        RB = 10,
     }
 
     public static class PhysicsType3DExtensions {

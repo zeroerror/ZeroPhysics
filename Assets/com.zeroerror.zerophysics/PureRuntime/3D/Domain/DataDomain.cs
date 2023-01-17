@@ -1,45 +1,40 @@
 using System.Collections.Generic;
 using ZeroPhysics.Physics3D.Facade;
 
-namespace ZeroPhysics.Physics3D.Domain
-{
+namespace ZeroPhysics.Physics3D.Domain {
 
-    public class DataDomain
-    {
+    public class DataDomain {
 
         Physics3DFacade physicsFacade;
 
         public DataDomain() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
-        {
-            this.physicsFacade = physicsFacade ;
+        public void Inject(Physics3DFacade physicsFacade) {
+            this.physicsFacade = physicsFacade;
         }
 
-        public List<Box3D> GetAllBoxes()
-        {
-            var boxes = physicsFacade.boxes;
+        public List<Cube> GetAllCubees() {
+            var cubes = physicsFacade.cubes;
             var idService = physicsFacade.Service.IDService;
-            var infos = idService.boxIDInfos;
+            var infos = idService.cubeIDInfos;
             var len = infos.Length;
-            List<Box3D> all = new List<Box3D>();
-            for (int i = 0; i < len; i++)
-            {
-                if (infos[i]) all.Add(boxes[i]);
+            List<Cube> all = new List<Cube>();
+            for (int i = 0; i < len; i++) {
+                if (infos[i]) all.Add(cubes[i]);
             }
             return all;
         }
 
-        public List<Box3DRigidbody> GetAllRBBoxes()
-        {
-            var rbBoxes = physicsFacade.boxRBs;
+        public List<Rigidbody3D> GetAllRBs() {
+            var rbCubees = physicsFacade.rbs;
             var idService = physicsFacade.Service.IDService;
-            var infos = idService.boxRBIDInfos;
+            var infos = idService.rbIDInfos;
             var len = infos.Length;
-            List<Box3DRigidbody> all = new List<Box3DRigidbody>();
-            for (int i = 0; i < len; i++)
-            {
-                if (infos[i]) all.Add(rbBoxes[i]);
+            List<Rigidbody3D> all = new List<Rigidbody3D>();
+            for (int i = 0; i < len; i++) {
+                if (infos[i]) {
+                    all.Add(rbCubees[i]);
+                }
             }
             return all;
         }

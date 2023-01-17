@@ -12,12 +12,12 @@ namespace ZeroPhysics.Sample
 
         bool isRun = false;
 
-        Box2D[] allBoxes;
+        Rectangle[] allBoxes;
         Sphere2D[] allSpheres;
         Transform[] tfs;
         public Transform spheresAndBoxes;
 
-        public BoxType boxType;
+        public RectangleType rectangleType;
 
         int[] collsionArray;
 
@@ -35,18 +35,18 @@ namespace ZeroPhysics.Sample
                 tfs[i] = bc;
             }
 
-            allBoxes = new Box2D[bcCount];
+            allBoxes = new Rectangle[bcCount];
             allSpheres = new Sphere2D[bcCount];
-            int boxCount = 0;
+            int rectangleCount = 0;
             int sphereCount = 0;
             for (int i = 0; i < bcCount; i++)
             {
                 var bcTF = tfs[i].transform;
                 if (bcTF.GetComponent<BoxCollider>())
                 {
-                    allBoxes[i] = new Box2D(bcTF.position.ToFPVector2(), 1, 1, FP64.ToFP64(bcTF.rotation.eulerAngles.z), bcTF.localScale.ToFPVector2());
-                    allBoxes[i].SetBoxType(boxType);
-                    boxCount++;
+                    allBoxes[i] = new Rectangle(bcTF.position.ToFPVector2(), 1, 1, FP64.ToFP64(bcTF.rotation.eulerAngles.z), bcTF.localScale.ToFPVector2());
+                    allBoxes[i].SetRectangleType(rectangleType);
+                    rectangleCount++;
                 }
                 else if (bcTF.GetComponent<SphereCollider>())
                 {
@@ -54,7 +54,7 @@ namespace ZeroPhysics.Sample
                     sphereCount++;
                 }
             }
-            Debug.Log($"Total Box: {boxCount}");
+            Debug.Log($"Total Box: {rectangleCount}");
             Debug.Log($"Total Sphere: {sphereCount}");
         }
 
@@ -71,13 +71,13 @@ namespace ZeroPhysics.Sample
 
             for (int i = 0; i < allBoxes.Length - 1; i++)
             {
-                var box1 = allBoxes[i];
-                if (box1 == null) continue;
+                var rectangle1 = allBoxes[i];
+                if (rectangle1 == null) continue;
                 for (int j = i + 1; j < allBoxes.Length; j++)
                 {
-                    var box2 = allBoxes[j];
-                    if (box2 == null) continue;
-                    if (CollisionHelper2D.HasCollision(box1, box2))
+                    var rectangle2 = allBoxes[j];
+                    if (rectangle2 == null) continue;
+                    if (CollisionHelper2D.HasCollision(rectangle1, rectangle2))
                     {
                         collsionArray[i] = 1;
                         collsionArray[j] = 1;
@@ -107,9 +107,9 @@ namespace ZeroPhysics.Sample
                 if (sphere == null) continue;
                 for (int j = 0; j < allBoxes.Length; j++)
                 {
-                    var box = allBoxes[j];
-                    if (box == null) continue;
-                    if (CollisionHelper2D.HasCollision(sphere, box))
+                    var rectangle = allBoxes[j];
+                    if (rectangle == null) continue;
+                    if (CollisionHelper2D.HasCollision(sphere, rectangle))
                     {
                         collsionArray[i] = 1;
                         collsionArray[j] = 1;
@@ -120,12 +120,12 @@ namespace ZeroPhysics.Sample
             for (int i = 0; i < allBoxes.Length; i++)
             {
                 var bc = tfs[i];
-                var box = allBoxes[i];
-                if (box == null) continue;
-                UpdateBox(bc.transform, box);
+                var rectangle = allBoxes[i];
+                if (rectangle == null) continue;
+                UpdateBox(bc.transform, rectangle);
                 Gizmos.color = Color.green;
-                DrawBoxPoint(box);
-                if (collsionArray[i] == 1) { Gizmos.color = Color.red; DrawBoxBorder(box); }
+                DrawBoxPoint(rectangle);
+                if (collsionArray[i] == 1) { Gizmos.color = Color.red; DrawBoxBorder(rectangle); }
             }
 
             for (int i = 0; i < allSpheres.Length; i++)
@@ -145,19 +145,19 @@ namespace ZeroPhysics.Sample
 
         }
 
-        void DrawProjectionSub(Axis2D axis2D, Box2D box)
+        void DrawProjectionSub(Axis2D axis2D, Rectangle rectangle)
         {
-            var proj = box.GetProjectionSub(axis2D);
+            var proj = rectangle.GetProjectionSub(axis2D);
             Gizmos.color = Color.white;
             Gizmos.color = Color.black;
             Gizmos.DrawLine((axis2D.dir * proj.x + axis2D.center).ToVector2(), (axis2D.dir * proj.y + axis2D.center).ToVector2());
         }
 
-        void UpdateBox(Transform src, Box2D box)
+        void UpdateBox(Transform src, Rectangle rectangle)
         {
-            box.UpdateCenter(src.position.ToFPVector2());
-            box.UpdateScale(src.localScale.ToFPVector2());
-            box.UpdateRotAngle(FP64.ToFP64(src.rotation.eulerAngles.z));
+            rectangle.UpdateCenter(src.position.ToFPVector2());
+            rectangle.UpdateScale(src.localScale.ToFPVector2());
+            rectangle.UpdateRotAngle(FP64.ToFP64(src.rotation.eulerAngles.z));
         }
 
         void UpdateSphere(Transform src, Sphere2D sphere)
@@ -166,12 +166,12 @@ namespace ZeroPhysics.Sample
             sphere.UpdateScale(FP64.ToFP64(src.localScale.x));
         }
 
-        void DrawBoxPoint(Box2D box)
+        void DrawBoxPoint(Rectangle rectangle)
         {
-            var a = box.A.ToVector2();
-            var b = box.B.ToVector2();
-            var c = box.C.ToVector2();
-            var d = box.D.ToVector2();
+            var a = rectangle.A.ToVector2();
+            var b = rectangle.B.ToVector2();
+            var c = rectangle.C.ToVector2();
+            var d = rectangle.D.ToVector2();
             Gizmos.color = Color.red;
             float size = 0.08f;
             Gizmos.DrawSphere(a, size);
@@ -184,12 +184,12 @@ namespace ZeroPhysics.Sample
             Gizmos.color = Color.red;
         }
 
-        void DrawBoxBorder(Box2D box)
+        void DrawBoxBorder(Rectangle rectangle)
         {
-            var a = box.A.ToVector2();
-            var b = box.B.ToVector2();
-            var c = box.C.ToVector2();
-            var d = box.D.ToVector2();
+            var a = rectangle.A.ToVector2();
+            var b = rectangle.B.ToVector2();
+            var c = rectangle.C.ToVector2();
+            var d = rectangle.D.ToVector2();
             Gizmos.DrawLine(a, b);
             Gizmos.DrawLine(b, c);
             Gizmos.DrawLine(c, d);

@@ -16,16 +16,16 @@ namespace ZeroPhysics.Physics3D.API
             this.physicsFacade = physicsFacade;
         }
 
-        Box3DRigidbody ISetterAPI.SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Rigidbody3D ISetterAPI.SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
             var domain = physicsFacade.Domain.SpawnDomain;
-            return domain.SpawnRBBox(center, rotation, scale, size, 1);
+            return domain.SpawnRBCube(center, rotation, scale, size, 1);
         }
 
-        Box3D ISetterAPI.SpawnBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Cube ISetterAPI.SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
             var domain = physicsFacade.Domain.SpawnDomain;
-            return domain.SpawnBox(center, rotation, scale, size);
+            return domain.SpawnCube(center, rotation, scale, size);
         }
 
         Sphere3D ISetterAPI.SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)

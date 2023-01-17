@@ -25,7 +25,7 @@ namespace ZeroPhysics.Physics3D {
         SetterAPI setterAPI;
         public ISetterAPI SetterAPI => setterAPI;
 
-        public PhysicsWorld3DCore(FPVector3 gravity, int boxMax = 1000, int rbBoxMax = 1000, int sphereMax = 1000) {
+        public PhysicsWorld3DCore(FPVector3 gravity, int boxMax = 1000, int rbCubeMax = 1000, int sphereMax = 1000) {
             this.gravity = gravity;
 
             forcePhase = new ForcePhase();
@@ -37,7 +37,7 @@ namespace ZeroPhysics.Physics3D {
             getterAPI = new GetterAPI();
             setterAPI = new SetterAPI();
 
-            physicsFacade = new Physics3DFacade(boxMax, rbBoxMax, sphereMax);
+            physicsFacade = new Physics3DFacade(boxMax, rbCubeMax, sphereMax);
 
             forcePhase.Inject(physicsFacade);
             velocityPhase.Inject(physicsFacade);

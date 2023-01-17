@@ -3,13 +3,21 @@ using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D {
 
-    public class Box3D : IPhysicsBody3D {
-
-        ushort instanceID;
-        public ushort InstanceID => instanceID;
-        public void SetInstanceID(ushort v) => instanceID = v;
+    public class Cube : IPhysicsBody3D {
 
         public string name;
+
+        ushort bodyID;
+        public ushort BodyID => bodyID;
+        public void SetBodyID(ushort v) => bodyID = v;
+
+        bool isRB;
+        public bool IsRB => isRB;
+        public void SetIsRB(bool flag) => isRB = flag;
+
+        bool isTrigger;
+        public bool IsTrigger => isTrigger;
+        public void SetIsTrigger(bool v) => isTrigger = v;
 
         // ====== Component
         // - Trans
@@ -29,40 +37,37 @@ namespace ZeroPhysics.Physics3D {
         public FPVector3 Size => size;
         public void SetSize(in FPVector3 v) => size = v;
 
-        Box3DModel model;
+        CubeModel model;
 
         FP64 frictionCoe;
-        public FP64 FrictionCoe => frictionCoe;
-        public void SetFirctionCoe(FP64 v) => frictionCoe = v;
+        public void SetFirctionCoe(in FP64 v) => frictionCoe = v;
 
-        PhysicsType3D IPhysicsBody3D.PhysicsType => PhysicsType3D.Box3D;
-        ushort IPhysicsBody3D.ID => instanceID;
+        PhysicsType3D IPhysicsBody3D.PhysicsType => PhysicsType3D.Cube;
+        ushort IPhysicsBody3D.BodyID => bodyID;
+        FP64 IPhysicsBody3D.FrictionCoe => frictionCoe;
+        TransformComponent3D IPhysicsBody3D.Trans => trans;
 
-        bool isTrigger;
-        public bool IsTrigger => isTrigger;
-        public void SetIsTrigger(bool v) => isTrigger = v;
-
-        public Box3D(in FPVector3 pos, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
+        public Cube(in FPVector3 pos, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
             trans = new TransformComponent3D();
             trans.SetCenter(pos);
             trans.SetRotation(rotation);
             trans.SetScale(scale);
             this.size = size;
-            model = new Box3DModel(trans, size);
+            model = new CubeModel(trans, size);
         }
 
-        public BoxType GetBoxType() {
-            return trans.Rotation == FPQuaternion.Identity ? BoxType.AABB : BoxType.OBB;
+        public CubeType GetCubeType() {
+            return trans.Rotation == FPQuaternion.Identity ? CubeType.AABB : CubeType.OBB;
         }
 
-        public Box3DModel GetModel() {
+        public CubeModel GetModel() {
             model.Update(trans, size);
             return model;
         }
 
 
         public override string ToString() {
-            return $"<Name>:{name}  <ID>:{instanceID}";
+            return $"<Name>:{name}  <ID>:{bodyID}";
         }
 
     }

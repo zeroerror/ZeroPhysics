@@ -16,34 +16,33 @@ namespace ZeroPhysics.Physics3D.Domain
             this.physicsFacade = physicsFacade;
         }
 
-        public Box3D SpawnBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        public Rigidbody3D SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass)
         {
             var factory = physicsFacade.Factory;
-            var box = factory.SpawnBox3D(center, rotation, scale, size);
-
-            var idService = physicsFacade.Service.IDService;
-            var id = idService.FetchID_Box();
-            box.SetInstanceID(id);
-            // UnityEngine.Debug.Log($"SpawnBox {id}");
-            physicsFacade.boxes[id] = box;
-            return box;
-        }
-
-        public Box3DRigidbody SpawnRBBox(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass)
-        {
-            var factory = physicsFacade.Factory;
-            var box = factory.SpawnBox3D(center, rotation, scale, size);
-
-            Box3DRigidbody rb = new Box3DRigidbody(box);
+            var cube = SpawnCube(center, rotation, scale, size);
+            Rigidbody3D rb = new Rigidbody3D(cube);
             rb.SetMass(mass);
 
             var idService = physicsFacade.Service.IDService;
-            var id = idService.FetchID_BoxRB();
-            rb.SetInstanceID(id);
-            // UnityEngine.Debug.Log($"SpawnRBBox {id}");
+            var id = idService.FetchID_RB();
+            rb.SetRBID(id);
+            UnityEngine.Debug.Log($"Spawn RB--{id} Cube--{cube.BodyID}");
 
-            physicsFacade.boxRBs[id] = rb;
+            physicsFacade.rbs[id] = rb;
             return rb;
+        }
+
+        public Cube SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        {
+            var factory = physicsFacade.Factory;
+            var cube = factory.SpawnCube(center, rotation, scale, size);
+
+            var idService = physicsFacade.Service.IDService;
+            var id = idService.FetchID_Cube();
+            cube.SetBodyID(id);
+            physicsFacade.cubes[id] = cube;
+            UnityEngine.Debug.Log($"Spawn Cube--{id}");
+            return cube;
         }
 
         public Sphere3D SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)

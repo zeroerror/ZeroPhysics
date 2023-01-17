@@ -10,9 +10,9 @@ namespace ZeroPhysics.Physics3D.Facade
         public IDService IDService { get; private set; }
         public CollisionService CollisionService { get; private set; }
 
-        public AllService(int boxMax, int rbBoxMax, int sphereMax)
+        public AllService(int boxMax, int rbCubeMax, int sphereMax)
         {
-            IDService = new IDService(boxMax, rbBoxMax, sphereMax);
+            IDService = new IDService(boxMax, rbCubeMax, sphereMax);
             CollisionService = new CollisionService();
         }
 

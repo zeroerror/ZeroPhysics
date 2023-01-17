@@ -13,7 +13,7 @@ namespace ZeroPhysics.Sample
 
         bool isRun = false;
 
-        Box2D[] boxes;
+        Rectangle[] rectangles;
         BoxCollider[] bcs;
         public Transform Boxes;
 
@@ -30,12 +30,12 @@ namespace ZeroPhysics.Sample
                 bcs[i] = bc.GetComponent<BoxCollider>();
             }
 
-            boxes = new Box2D[bcCount];
+            rectangles = new Rectangle[bcCount];
             for (int i = 0; i < bcCount; i++)
             {
                 var bcTF = bcs[i].transform;
-                boxes[i] = new Box2D(bcTF.position.ToFPVector2(), 1, 1, FP64.ToFP64(bcTF.rotation.z), bcTF.localScale.ToFPVector2());
-                boxes[i].SetBoxType(BoxType.OBB);
+                rectangles[i] = new Rectangle(bcTF.position.ToFPVector2(), 1, 1, FP64.ToFP64(bcTF.rotation.z), bcTF.localScale.ToFPVector2());
+                rectangles[i].SetRectangleType(RectangleType.OBB);
             }
         }
 
@@ -43,17 +43,17 @@ namespace ZeroPhysics.Sample
         {
             if (!isRun) return;
             if (bcs == null) return;
-            if (boxes == null) return;
+            if (rectangles == null) return;
 
-            Dictionary<int, Box2D> collisionBoxDic = new Dictionary<int, Box2D>();
-            for (int i = 0; i < boxes.Length - 1; i++)
+            Dictionary<int, Rectangle> collisionBoxDic = new Dictionary<int, Rectangle>();
+            for (int i = 0; i < rectangles.Length - 1; i++)
             {
-                for (int j = i + 1; j < boxes.Length; j++)
+                for (int j = i + 1; j < rectangles.Length; j++)
                 {
-                    if (CollisionHelper2D.HasCollision(boxes[i], boxes[j]))
+                    if (CollisionHelper2D.HasCollision(rectangles[i], rectangles[j]))
                     {
-                        if (!collisionBoxDic.ContainsKey(i)) collisionBoxDic[i] = boxes[i];
-                        if (!collisionBoxDic.ContainsKey(j)) collisionBoxDic[j] = boxes[j];
+                        if (!collisionBoxDic.ContainsKey(i)) collisionBoxDic[i] = rectangles[i];
+                        if (!collisionBoxDic.ContainsKey(j)) collisionBoxDic[j] = rectangles[j];
                     }
                 }
             }
@@ -61,47 +61,47 @@ namespace ZeroPhysics.Sample
             Gizmos.DrawLine(Vector3.zero + Vector3.up * 10f, Vector3.zero + Vector3.down * 10f);
             Gizmos.DrawLine(Vector3.zero + Vector3.left * 10f, Vector3.zero + Vector3.right * 10f);
 
-            for (int i = 0; i < boxes.Length; i++)
+            for (int i = 0; i < rectangles.Length; i++)
             {
                 var bc = bcs[i];
-                var box = boxes[i];
-                UpdateBox(bc.transform, box);
+                var rectangle = rectangles[i];
+                UpdateBox(bc.transform, rectangle);
                 Gizmos.color = Color.green;
-                DrawBoxPoint(box);
+                DrawBoxPoint(rectangle);
                 if (collisionBoxDic.ContainsKey(i))
                 {
                     Gizmos.color = Color.red;
                 }
-                DrawBoxBorder(box);
+                DrawBoxBorder(rectangle);
             }
 
         }
 
-        void DrawBoxBorder(Box2D box)
+        void DrawBoxBorder(Rectangle rectangle)
         {
-            Gizmos.DrawLine(box.A.ToVector2(), (box.B.ToVector2()));
-            Gizmos.DrawLine(box.B.ToVector2(), (box.C.ToVector2()));
-            Gizmos.DrawLine(box.C.ToVector2(), (box.D.ToVector2()));
-            Gizmos.DrawLine(box.D.ToVector2(), (box.A.ToVector2()));
+            Gizmos.DrawLine(rectangle.A.ToVector2(), (rectangle.B.ToVector2()));
+            Gizmos.DrawLine(rectangle.B.ToVector2(), (rectangle.C.ToVector2()));
+            Gizmos.DrawLine(rectangle.C.ToVector2(), (rectangle.D.ToVector2()));
+            Gizmos.DrawLine(rectangle.D.ToVector2(), (rectangle.A.ToVector2()));
         }
 
-        void DrawBoxPoint(Box2D box)
+        void DrawBoxPoint(Rectangle rectangle)
         {
-            var a = box.A;
-            var b = box.B;
-            var c = box.C;
-            var d = box.D;
+            var a = rectangle.A;
+            var b = rectangle.B;
+            var c = rectangle.C;
+            var d = rectangle.D;
             Gizmos.DrawSphere(a.ToVector2(), 0.1f);
             Gizmos.DrawSphere(b.ToVector2(), 0.1f);
             Gizmos.DrawSphere(c.ToVector2(), 0.1f);
             Gizmos.DrawSphere(d.ToVector2(), 0.1f);
         }
 
-        void UpdateBox(Transform src, Box2D box)
+        void UpdateBox(Transform src, Rectangle rectangle)
         {
-            box.UpdateCenter(src.position.ToFPVector2());
-            box.UpdateScale(src.localScale.ToFPVector2());
-            box.UpdateRotAngle(FP64.ToFP64(src.rotation.eulerAngles.z));
+            rectangle.UpdateCenter(src.position.ToFPVector2());
+            rectangle.UpdateScale(src.localScale.ToFPVector2());
+            rectangle.UpdateRotAngle(FP64.ToFP64(src.rotation.eulerAngles.z));
         }
     }
 

@@ -1,48 +1,46 @@
-using System.Collections.Generic;
-
 namespace ZeroPhysics.Service
 {
 
     public class IDService
     {
 
-        public bool[] boxIDInfos;
-        public bool[] boxRBIDInfos;
+        public bool[] cubeIDInfos;
+        public bool[] rbIDInfos;
         public bool[] sphereIDInfos;
 
-        public IDService(int sBoxMax, int rbBoxMax, int sphereMax)
+        public IDService(int sCubeMax, int rbCubeMax, int sphereMax)
         {
-            boxIDInfos = new bool[sBoxMax];
-            boxRBIDInfos = new bool[rbBoxMax];
+            cubeIDInfos = new bool[sCubeMax];
+            rbIDInfos = new bool[rbCubeMax];
             sphereIDInfos = new bool[sphereMax];
         }
 
-        public ushort FetchID_Box()
+        public ushort FetchID_Cube()
         {
-            for (ushort i = 0; i < boxIDInfos.Length; i++)
+            for (ushort i = 0; i < cubeIDInfos.Length; i++)
             {
-                if (!boxIDInfos[i])
+                if (!cubeIDInfos[i])
                 {
-                    boxIDInfos[i] = true;
+                    cubeIDInfos[i] = true;
                     return i;
                 }
             }
 
-            throw new System.Exception($"IDService: Box ID Run Out!");
+            throw new System.Exception($"IDService: Cube ID Run Out!");
         }
 
-        public ushort FetchID_BoxRB()
+        public ushort FetchID_RB()
         {
-            for (ushort i = 0; i < boxRBIDInfos.Length; i++)
+            for (ushort i = 0; i < rbIDInfos.Length; i++)
             {
-                if (!boxRBIDInfos[i])
+                if (!rbIDInfos[i])
                 {
-                    boxRBIDInfos[i] = true;
+                    rbIDInfos[i] = true;
                     return i;
                 }
             }
 
-            throw new System.Exception($"IDService: BoxRB ID Run Out!");
+            throw new System.Exception($"IDService: RB ID Run Out!");
         }
 
         public ushort FetchID_Sphere()
@@ -59,14 +57,14 @@ namespace ZeroPhysics.Service
             throw new System.Exception($"IDService: Sphere ID Run Out!");
         }
 
-        public void PutBackID_Box(int id)
+        public void PutBackID_Cube(int id)
         {
-            boxIDInfos[id] = false;
+            cubeIDInfos[id] = false;
         }
 
-        public void PutBackID_RBBox(int id)
+        public void PutBackID_RBCube(int id)
         {
-            boxRBIDInfos[id] = false;
+            rbIDInfos[id] = false;
         }
 
         public void PutBackID_Sphere(int id)

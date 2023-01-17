@@ -3,7 +3,7 @@ using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics3D {
 
-    public class Box3DModel {
+    public class CubeModel {
 
         FPVector3 center;
         public FPVector3 Center => center;
@@ -44,7 +44,7 @@ namespace ZeroPhysics.Physics3D {
         FPVector3 p6;
         FPVector3 p7;
 
-        public Box3DModel(TransformComponent3D trans, in FPVector3 size) {
+        public CubeModel(TransformComponent3D trans, in FPVector3 size) {
             this.vertices = new FPVector3[8];
             var scaledSize = trans.Scale * size;
             UpdateScaleAndSize(scaledSize);
@@ -70,8 +70,8 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        public BoxType GetBoxType() {
-            return rotation == FPQuaternion.Identity ? BoxType.AABB : BoxType.OBB;
+        public CubeType GetCubeType() {
+            return rotation == FPQuaternion.Identity ? CubeType.AABB : CubeType.OBB;
         }
 
         public FPVector2 GetAxisX_SelfProjectionSub() {

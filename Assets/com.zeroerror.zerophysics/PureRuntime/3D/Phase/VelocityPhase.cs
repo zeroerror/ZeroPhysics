@@ -21,11 +21,11 @@ namespace ZeroPhysics.Physics3D {
             var allCollision = collisionService.GetAllCollisions();
 
             // ApplyForceHitErase(allCollision, dt);
-            var rbBoxes = physicsFacade.boxRBs;
-            var rbBoxIDInfos = idService.boxRBIDInfos;
-            for (int i = 0; i < rbBoxes.Length; i++) {
-                if (!rbBoxIDInfos[i]) continue;
-                var rb = rbBoxes[i];
+            var rbCubees = physicsFacade.rbs;
+            var rbCubeIDInfos = idService.rbIDInfos;
+            for (int i = 0; i < rbCubees.Length; i++) {
+                if (!rbCubeIDInfos[i]) continue;
+                var rb = rbCubees[i];
                 var linearV = rb.LinearV;
                 var offsetV = ForceUtils.GetOffsetV_ByForce(rb.OutForce, rb.Mass, dt);
                 linearV += offsetV;

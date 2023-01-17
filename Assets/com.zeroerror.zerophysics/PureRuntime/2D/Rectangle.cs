@@ -4,14 +4,14 @@ using ZeroPhysics.Generic;
 namespace ZeroPhysics.Physics2D
 {
 
-    public class Box2D
+    public class Rectangle
     {
 
         #region [Field]
 
-        BoxType boxType;
-        public BoxType BoxType => boxType;
-        public void SetBoxType(BoxType v) => boxType = v;
+        RectangleType rectangleType;
+        public RectangleType RectangleType => rectangleType;
+        public void SetRectangleType(RectangleType v) => rectangleType = v;
 
         // - Position
         FPVector2 center;
@@ -64,7 +64,7 @@ namespace ZeroPhysics.Physics2D
 
         #endregion
 
-        public Box2D(FPVector2 center, FP64 width, FP64 height, FP64 deg, FPVector2 scale)
+        public Rectangle(FPVector2 center, FP64 width, FP64 height, FP64 deg, FPVector2 scale)
         {
             UpdateWidth(width);
             UpdateHeight(height);

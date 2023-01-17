@@ -14,17 +14,18 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public void Tick(in FP64 time) {
-            // --- Box
-            var rbBoxes = physicsFacade.boxRBs;
-            var rbBoxInfos = physicsFacade.Service.IDService.boxRBIDInfos;
-            for (int i = 0; i < rbBoxes.Length; i++) {
-                if (!rbBoxInfos[i]) continue;
-                var rb = rbBoxes[i];
-                var box = rb.Box;
-                var center = box.Center;
+            // --- Cube
+            var rbCubees = physicsFacade.rbs;
+            var rbCubeInfos = physicsFacade.Service.IDService.rbIDInfos;
+            for (int i = 0; i < rbCubees.Length; i++) {
+                if (!rbCubeInfos[i]) continue;
+                var rb = rbCubees[i];
+                var body = rb.Body;
+                var trans = body.Trans;
+                var center = trans.Center;
                 var offset = rb.LinearV * time;
                 center += offset;
-                box.SetCenter(center);
+                trans.SetCenter(center);
             }
         }
 

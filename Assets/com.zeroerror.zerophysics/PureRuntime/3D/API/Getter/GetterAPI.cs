@@ -18,16 +18,16 @@ namespace ZeroPhysics.Physics3D.API
             this.physicsFacade = physicsFacade;
         }
 
-        List<Box3D> IGetterAPI.GetAllBoxes()
+        List<Cube> IGetterAPI.GetAllCubes()
         {
             var domain = physicsFacade.Domain.DataDomain;
-            return domain.GetAllBoxes();
+            return domain.GetAllCubees();
         }
 
-        List<Box3DRigidbody> IGetterAPI.GetAllBoxRBs()
+        List<Rigidbody3D> IGetterAPI.GetAllCubeRBs()
         {
             var domain = physicsFacade.Domain.DataDomain;
-            return domain.GetAllRBBoxes();
+            return domain.GetAllRBs();
         }
 
         CollisionModel[] IGetterAPI.GetCollisionInfos()

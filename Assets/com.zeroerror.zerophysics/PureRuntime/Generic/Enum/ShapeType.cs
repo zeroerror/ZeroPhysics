@@ -3,7 +3,7 @@ namespace ZeroPhysics.Generic
 
     public enum ShapeType
     {
-        Box,
+        Cube,
         Sphere,
         Capsule,
         Cylinder

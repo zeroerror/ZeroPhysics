@@ -1,7 +1,7 @@
 namespace ZeroPhysics.Generic
 {
 
-    public enum BoxType
+    public enum CubeType
     {
         AABB,
         OBB

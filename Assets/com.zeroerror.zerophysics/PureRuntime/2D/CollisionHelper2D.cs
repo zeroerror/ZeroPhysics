@@ -7,14 +7,14 @@ namespace ZeroPhysics.Physics2D
     public static class CollisionHelper2D
     {
 
-        public static bool HasCollision(Box2D box1, Box2D box2)
+        public static bool HasCollision(Rectangle rectangle1, Rectangle rectangle2)
         {
-            if (box1.BoxType == BoxType.OBB || box2.BoxType == BoxType.OBB)
+            if (rectangle1.RectangleType == RectangleType.OBB || rectangle2.RectangleType == RectangleType.OBB)
             {
-                return HasCollision_OBB(box1, box2);
+                return HasCollision_OBB(rectangle1, rectangle2);
             }
 
-            return HasCollision_AABB(box1, box2);
+            return HasCollision_AABB(rectangle1, rectangle2);
         }
 
         public static bool HasCollision(Sphere2D sphere1, Sphere2D sphere2)
@@ -27,26 +27,26 @@ namespace ZeroPhysics.Physics2D
             return (xDiff * xDiff + yDiff * yDiff) <= (radiusSum * radiusSum);
         }
 
-        public static bool HasCollision(Sphere2D sphere, Box2D box)
+        public static bool HasCollision(Sphere2D sphere, Rectangle rectangle)
         {
-            if (!HasCollision(sphere.Box, box)) return false;
-            if (sphere.HasCollisionWithSphere(box.A)) return true;
-            if (sphere.HasCollisionWithSphere(box.B)) return true;
-            if (sphere.HasCollisionWithSphere(box.C)) return true;
-            if (sphere.HasCollisionWithSphere(box.D)) return true;
+            if (!HasCollision(sphere.Box, rectangle)) return false;
+            if (sphere.HasCollisionWithSphere(rectangle.A)) return true;
+            if (sphere.HasCollisionWithSphere(rectangle.B)) return true;
+            if (sphere.HasCollisionWithSphere(rectangle.C)) return true;
+            if (sphere.HasCollisionWithSphere(rectangle.D)) return true;
 
-            var axisX = box.GetAxisX();
-            var axisX_PjSub1 = box.GetAxisX_SelfProjectionSub();
+            var axisX = rectangle.GetAxisX();
+            var axisX_PjSub1 = rectangle.GetAxisX_SelfProjectionSub();
             var axisX_PjSub2 = sphere.GetProjectionSub(axisX);
             var spherePjCenter_X = (axisX_PjSub2.x + axisX_PjSub2.y) / 2;
             bool xOverlapCenter = spherePjCenter_X > axisX_PjSub1.x && spherePjCenter_X < axisX_PjSub1.y;
 
             // - AABB: 经前置条件过滤后, 以Box的2个轴做投影,若出现SphereCenter的投影在Box投影内，则必定碰撞
-            if (box.BoxType == BoxType.AABB) return xOverlapCenter;
+            if (rectangle.RectangleType == RectangleType.AABB) return xOverlapCenter;
 
             // - OBB: 经前置条件过滤后, 以Box的2个轴做投影,若出现SphereCenter的投影在Box投影内, 只要另外一个轴上的投影有相交，则必定碰撞
-            var axisY = box.GetAxisY();
-            var axisY_PjSub1 = box.GetAxisY_SelfProjectionSub();
+            var axisY = rectangle.GetAxisY();
+            var axisY_PjSub1 = rectangle.GetAxisY_SelfProjectionSub();
             var axisY_PjSub2 = sphere.GetProjectionSub(axisY);
             if (xOverlapCenter)
             {
@@ -58,12 +58,12 @@ namespace ZeroPhysics.Physics2D
             return yOverlapCenter && !(axisX_PjSub1.y < axisX_PjSub2.x || axisX_PjSub1.x > axisX_PjSub2.y);
         }
 
-        static bool HasCollision_AABB(Box2D box1, Box2D box2)
+        static bool HasCollision_AABB(Rectangle rectangle1, Rectangle rectangle2)
         {
-            var ltPos1 = box1.A;
-            var rbPos1 = box1.C;
-            var ltPos2 = box2.A;
-            var rbPos2 = box2.C;
+            var ltPos1 = rectangle1.A;
+            var rbPos1 = rectangle1.C;
+            var ltPos2 = rectangle2.A;
+            var rbPos2 = rectangle2.C;
             // - Axis x
             var diff_x1 = ltPos1.x - rbPos2.x;
             var diff_x2 = rbPos1.x - ltPos2.x;
@@ -92,38 +92,38 @@ namespace ZeroPhysics.Physics2D
             return hasCollisionX && hasCollisionY;
         }
 
-        static bool HasCollision_OBB(Box2D box1, Box2D box2)
+        static bool HasCollision_OBB(Rectangle rectangle1, Rectangle rectangle2)
         {
-            var box1_projSub = box1.GetAxisX_SelfProjectionSub();
-            var box2_projSub = box2.GetProjectionSub(box1.GetAxisX());
-            if (box1_projSub.y < box2_projSub.x) return false;
-            if (box1_projSub.x > box2_projSub.y) return false;
+            var rectangle1_projSub = rectangle1.GetAxisX_SelfProjectionSub();
+            var rectangle2_projSub = rectangle2.GetProjectionSub(rectangle1.GetAxisX());
+            if (rectangle1_projSub.y < rectangle2_projSub.x) return false;
+            if (rectangle1_projSub.x > rectangle2_projSub.y) return false;
 
-            box1_projSub = box1.GetAxisY_SelfProjectionSub();
-            box2_projSub = box2.GetProjectionSub(box1.GetAxisY());
-            if (box1_projSub.y < box2_projSub.x) return false;
-            if (box1_projSub.x > box2_projSub.y) return false;
+            rectangle1_projSub = rectangle1.GetAxisY_SelfProjectionSub();
+            rectangle2_projSub = rectangle2.GetProjectionSub(rectangle1.GetAxisY());
+            if (rectangle1_projSub.y < rectangle2_projSub.x) return false;
+            if (rectangle1_projSub.x > rectangle2_projSub.y) return false;
 
-            box2_projSub = box2.GetAxisX_SelfProjectionSub();
-            box1_projSub = box1.GetProjectionSub(box2.GetAxisX());
-            if (box1_projSub.y < box2_projSub.x) return false;
-            if (box1_projSub.x > box2_projSub.y) return false;
+            rectangle2_projSub = rectangle2.GetAxisX_SelfProjectionSub();
+            rectangle1_projSub = rectangle1.GetProjectionSub(rectangle2.GetAxisX());
+            if (rectangle1_projSub.y < rectangle2_projSub.x) return false;
+            if (rectangle1_projSub.x > rectangle2_projSub.y) return false;
 
-            box2_projSub = box2.GetAxisY_SelfProjectionSub();
-            box1_projSub = box1.GetProjectionSub(box2.GetAxisY());
-            if (box1_projSub.y < box2_projSub.x) return false;
-            if (box1_projSub.x > box2_projSub.y) return false;
+            rectangle2_projSub = rectangle2.GetAxisY_SelfProjectionSub();
+            rectangle1_projSub = rectangle1.GetProjectionSub(rectangle2.GetAxisY());
+            if (rectangle1_projSub.y < rectangle2_projSub.x) return false;
+            if (rectangle1_projSub.x > rectangle2_projSub.y) return false;
 
             return true;
         }
 
-        public static void GetOBBMinMaxPos(Box2D box, ref FPVector2 pos_minX, ref FPVector2 pos_maxX, ref FPVector2 pox_minY, ref FPVector2 pos_maxY)
+        public static void GetOBBMinMaxPos(Rectangle rectangle, ref FPVector2 pos_minX, ref FPVector2 pos_maxX, ref FPVector2 pox_minY, ref FPVector2 pos_maxY)
         {
-            var a = box.A;
-            var b = box.B;
-            var c = box.C;
-            var d = box.D;
-            var rotAngle = box.Rotation;
+            var a = rectangle.A;
+            var b = rectangle.B;
+            var c = rectangle.C;
+            var d = rectangle.D;
+            var rotAngle = rectangle.Rotation;
             var count = (int)(rotAngle / 90);
             bool isPositive = rotAngle > 0;
             if (count == 0)

@@ -14,7 +14,7 @@ namespace ZeroPhysics.Physics3D {
             FPVector3 hitDirBA = collision.HitDirBA;
 
             // RB & RB
-            if (bodyA is Box3DRigidbody rbA && bodyB is Box3DRigidbody rbB) {
+            if (bodyA is Rigidbody3D rbA && bodyB is Rigidbody3D rbB) {
                 // 根据动量守恒和动能守恒公式计算 
                 FP64 m1 = rbA.Mass;
                 FP64 m2 = rbB.Mass;
@@ -57,7 +57,7 @@ namespace ZeroPhysics.Physics3D {
             }
 
             // RB & Static
-            if (bodyA is Box3DRigidbody rb) {
+            if (bodyA is Rigidbody3D rb) {
                 var v = rb.LinearV;
                 var v_bounced = ApplyBounce(hitDirBA, rb.BounceCoefficient, v);
                 // 弹力速度外力减益

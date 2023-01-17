@@ -1,11 +1,9 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics2D
-{
+namespace ZeroPhysics.Physics2D {
 
-    public class Sphere2D
-    {
+    public class Sphere2D {
 
         #region [Field]
 
@@ -24,49 +22,43 @@ namespace ZeroPhysics.Physics2D
         FP64 radius;
         public FP64 Radius => radius;
 
-        Box2D box;
-        public Box2D Box => box;
+        Rectangle rectangle;
+        public Rectangle Box => rectangle;
 
         #endregion
 
-        public Sphere2D(FPVector2 center, FP64 radius, FP64 rotAngle, FP64 scale)
-        {
-            box = new Box2D(center, radius, radius, 0, new FPVector2(scale, scale));
-            box.SetBoxType(BoxType.AABB);
+        public Sphere2D(FPVector2 center, FP64 radius, FP64 rotAngle, FP64 scale) {
+            rectangle = new Rectangle(center, radius, radius, 0, new FPVector2(scale, scale));
+            rectangle.SetRectangleType(RectangleType.AABB);
             UpdateCenter(center);
             UpdateRadius(radius);
             UpdateRotAngle(rotAngle);
             UpdateScale(scale);
         }
 
-        public void UpdateCenter(FPVector2 v)
-        {
+        public void UpdateCenter(FPVector2 v) {
             center = v;
-            box.UpdateCenter(center);
+            rectangle.UpdateCenter(center);
         }
 
-        public void UpdateScale(FP64 v)
-        {
+        public void UpdateScale(FP64 v) {
             scale = v;
             radius_scaled = radius * v;
-            box.UpdateScale(new FPVector2(v, v));
+            rectangle.UpdateScale(new FPVector2(v, v));
         }
 
-        public void UpdateRadius(FP64 v)
-        {
+        public void UpdateRadius(FP64 v) {
             radius = v;
             FP64 len = v * 2;
-            box.UpdateWidth(len);
-            box.UpdateHeight(len);
+            rectangle.UpdateWidth(len);
+            rectangle.UpdateHeight(len);
         }
 
-        public void UpdateRotAngle(FP64 v)
-        {
+        public void UpdateRotAngle(FP64 v) {
             rotAngle = v;
         }
 
-        public FPVector2 GetProjectionSub(Axis2D axis)
-        {
+        public FPVector2 GetProjectionSub(Axis2D axis) {
             var axisCenter = axis.center;
             var axisDir = axis.dir;
             var p0 = FPVector2.Project(center - axisCenter, axisDir).Length();
@@ -74,8 +66,7 @@ namespace ZeroPhysics.Physics2D
             return sub;
         }
 
-        public bool HasCollisionWithSphere(FPVector2 tarPos)
-        {
+        public bool HasCollisionWithSphere(FPVector2 tarPos) {
             var xDiff = center.x - tarPos.x;
             var yDiff = center.y - tarPos.y;
             return (xDiff * xDiff + yDiff * yDiff) <= (radius * radius);

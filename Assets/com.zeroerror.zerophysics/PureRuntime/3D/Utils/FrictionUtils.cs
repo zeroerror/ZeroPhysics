@@ -17,15 +17,15 @@ namespace ZeroPhysics.Physics3D {
             FP64 u = collision.FirctionCoe_combined;
 
             // RB & Static
-            if (bodyA is Box3DRigidbody rbA) {
+            if (bodyA is Rigidbody3D rbA) {
                 ApplyFriction(rbA, u, hitDirBA, dt);
             }
-            if (bodyB is Box3DRigidbody rbB) {
+            if (bodyB is Rigidbody3D rbB) {
                 ApplyFriction(rbB, u, -hitDirBA, dt);
             }
         }
 
-        static void ApplyFriction(Box3DRigidbody rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {
+        static void ApplyFriction(Rigidbody3D rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {
             FPVector3 linearV = rb.LinearV;
             FP64 linearVLen = linearV.Length();
 

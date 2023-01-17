@@ -6,10 +6,10 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Projection3DUtils {
 
-        public static FPVector2 GetProjectionSub(Box3DModel box, in Axis3D axis) {
+        public static FPVector2 GetProjectionSub(CubeModel cube, in Axis3D axis) {
             FPVector3 axisOrigin = axis.origin;
             FPVector3 axisDir = axis.dir;
-            FPVector3[] vertices = box.vertices;
+            FPVector3[] vertices = cube.vertices;
             Span<FP64> pArray = new FP64[8];
             for (int i = 0; i < vertices.Length; i++) {
                 pArray[i] = FPVector3.Dot(vertices[i] - axisOrigin, axisDir);

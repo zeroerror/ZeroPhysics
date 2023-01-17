@@ -1,15 +1,19 @@
 using UnityEngine;
 using ZeroPhysics.Physics3D;
 
-namespace ZeroPhysics.Extensions
-{
+namespace ZeroPhysics.Extensions {
 
-    public static class GizmosExtention
-    {
+    public static class GizmosExtention {
 
-        public static void DrawBoxBorder(this Box3D box)
-        {
-            var model = box.GetModel();
+        public static void DrawPhysicsBody(IPhysicsBody3D body) {
+            if (body is Cube cube) {
+                DrawCubeBorder(cube);
+                DrawCubePoint(cube);
+            }
+        }
+
+        public static void DrawCubeBorder(Cube cube) {
+            var model = cube.GetModel();
             var vertices = model.vertices.ToVector3Array();
             Gizmos.DrawLine(vertices[0], vertices[1]);
             Gizmos.DrawLine(vertices[0], vertices[2]);
@@ -27,9 +31,8 @@ namespace ZeroPhysics.Extensions
             Gizmos.DrawLine(vertices[3], vertices[7]);
         }
 
-        public static void DrawBoxPoint(this Box3D box, float size = 0.1f)
-        {
-            var model = box.GetModel();
+        public static void DrawCubePoint(Cube cube, float size = 0.1f) {
+            var model = cube.GetModel();
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(model.Min.ToVector3(), size);
             Gizmos.DrawSphere(model.Max.ToVector3(), size);

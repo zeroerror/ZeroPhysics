@@ -5,19 +5,17 @@ using ZeroPhysics.Physics3D;
 using ZeroPhysics.Generic;
 using ZeroPhysics.Extensions;
 
-namespace ZeroPhysics.Sample
-{
+namespace ZeroPhysics.Sample {
 
-    public class Sample_Physics3D_Raycast : MonoBehaviour
-    {
+    public class Sample_Physics3D_Raycast : MonoBehaviour {
 
         public Transform rayStart;
         public Transform rayEnd;
 
         public Transform boxRoot;
-        public BoxType boxType;
+        public CubeType boxType;
         Transform[] box_tfs;
-        Box3D[] boxes;
+        Cube[] cubes;
 
         public Transform sphereRoot;
         Transform[] sphere_tfs;
@@ -27,8 +25,7 @@ namespace ZeroPhysics.Sample
 
         PhysicsWorld3DCore physicsCore;
 
-        void Start()
-        {
+        void Start() {
             if (boxRoot == null) return;
             if (sphereRoot == null) return;
             isRun = true;
@@ -36,32 +33,28 @@ namespace ZeroPhysics.Sample
 
             var count = boxRoot.childCount;
             box_tfs = new Transform[count];
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 box_tfs[i] = boxRoot.GetChild(i);
             }
 
             var setterAPI = physicsCore.SetterAPI;
-            boxes = new Box3D[count];
-            for (int i = 0; i < count; i++)
-            {
+            cubes = new Cube[count];
+            for (int i = 0; i < count; i++) {
                 var tf = box_tfs[i].transform;
                 var pos = tf.position.ToFPVector3();
                 var rotation = tf.rotation.ToFPQuaternion();
                 var localScale = tf.localScale.ToFPVector3();
-                boxes[i] = setterAPI.SpawnBox(pos, rotation, localScale, Vector3.one.ToFPVector3());
+                cubes[i] = setterAPI.SpawnCube(pos, rotation, localScale, Vector3.one.ToFPVector3());
             }
-            Debug.Log($"Total Box: {count}");
+            Debug.Log($"Total Cube: {count}");
 
             count = sphereRoot.childCount;
             sphere_tfs = new Transform[count];
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 sphere_tfs[i] = sphereRoot.GetChild(i);
             }
             spheres = new Sphere3D[count];
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 var tf = sphere_tfs[i].transform;
                 var pos = tf.position.ToFPVector3();
                 var rotation = tf.rotation.ToFPQuaternion();
@@ -82,8 +75,7 @@ namespace ZeroPhysics.Sample
         bool[] collisionList_sphere = new bool[100];
         List<Vector3> hitPointList = new List<Vector3>();
 
-        public void OnDrawGizmos()
-        {
+        public void OnDrawGizmos() {
             if (!isRun) return;
             for (int i = 0; i < collisionList_box.Length; i++) { collisionList_box[i] = false; }
             for (int i = 0; i < collisionList_sphere.Length; i++) { collisionList_sphere[i] = false; }
@@ -98,36 +90,30 @@ namespace ZeroPhysics.Sample
 
             bool hasCollision = false;
 
-            // - Box
-            for (int i = 0; i < boxes.Length; i++)
-            {
-                var b = boxes[i];
-                UpdateBox(box_tfs[i], b);
-                if (Raycast3DUtils.RayBoxWithPoints(ray, b.GetModel(), out var p1, out var p2))
-                {
+            // - Cube
+            for (int i = 0; i < cubes.Length; i++) {
+                var b = cubes[i];
+                UpdateCube(box_tfs[i], b);
+                if (Raycast3DUtils.RayCubeWithPoints(ray, b.GetModel(), out var p1, out var p2)) {
                     collisionList_box[i] = true;
                     if (p1 != FPVector3.Zero) hitPointList.Add(p1.ToVector3());
                     if (p2 != FPVector3.Zero) hitPointList.Add(p2.ToVector3());
                     hasCollision = true;
                 }
             }
-            for (int i = 0; i < boxes.Length; i++)
-            {
+            for (int i = 0; i < cubes.Length; i++) {
                 Gizmos.color = Color.green;
                 if (collisionList_box[i]) Gizmos.color = Color.red;
-                boxes[i].DrawBoxBorder();
+                GizmosExtention.DrawPhysicsBody(cubes[i]);
             }
 
             // - Sphere
-            for (int i = 0; i < spheres.Length; i++)
-            {
+            for (int i = 0; i < spheres.Length; i++) {
                 var s = spheres[i];
                 UpdateSphere3D(sphere_tfs[i], s);
-                if (Raycast3DUtils.RayWithSphere(ray, s, out var hps))
-                {
+                if (Raycast3DUtils.RayWithSphere(ray, s, out var hps)) {
                     collisionList_sphere[i] = true;
-                    hps.ForEach((p) =>
-                    {
+                    hps.ForEach((p) => {
                         hitPointList.Add(p.ToVector3());
                     });
                     hasCollision = true;
@@ -135,10 +121,8 @@ namespace ZeroPhysics.Sample
             }
 
             Gizmos.color = Color.red;
-            for (int i = 0; i < spheres.Length; i++)
-            {
-                if (collisionList_sphere[i])
-                {
+            for (int i = 0; i < spheres.Length; i++) {
+                if (collisionList_sphere[i]) {
                     DrawSphere3D(spheres[i]);
                 }
             }
@@ -150,25 +134,21 @@ namespace ZeroPhysics.Sample
 
             // - Hit Points
             Gizmos.color = Color.white;
-            hitPointList.ForEach((p) =>
-            {
+            hitPointList.ForEach((p) => {
                 Gizmos.DrawSphere(p, 0.08f);
             });
         }
-        void UpdateBox(Transform src, Box3D box)
-        {
-            box.SetCenter(src.position.ToFPVector3());
-            box.SetScale(src.localScale.ToFPVector3());
-            box.SetRotation(src.rotation.ToFPQuaternion());
+        void UpdateCube(Transform src, Cube cube) {
+            cube.SetCenter(src.position.ToFPVector3());
+            cube.SetScale(src.localScale.ToFPVector3());
+            cube.SetRotation(src.rotation.ToFPQuaternion());
         }
 
-        void DrawSphere3D(Sphere3D sphere)
-        {
+        void DrawSphere3D(Sphere3D sphere) {
             Gizmos.DrawSphere(sphere.Center.ToVector3(), sphere.Radius_scaled.AsFloat());
         }
 
-        void UpdateSphere3D(Transform src, Sphere3D sphere)
-        {
+        void UpdateSphere3D(Transform src, Sphere3D sphere) {
             sphere.SetCenter(src.position.ToFPVector3());
             sphere.SetScale(src.localScale.ToFPVector3());
         }

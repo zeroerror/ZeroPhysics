@@ -8,8 +8,8 @@ namespace ZeroPhysics.Physics3D.API
     public interface IGetterAPI
     {
 
-        List<Box3DRigidbody> GetAllBoxRBs();
-        List<Box3D> GetAllBoxes();
+        List<Rigidbody3D> GetAllCubeRBs();
+        List<Cube> GetAllCubes();
         CollisionModel[] GetCollisionInfos();
 
     }

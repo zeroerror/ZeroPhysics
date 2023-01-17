@@ -6,16 +6,43 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Intersect3DUtils {
 
-        public static bool HasCollision(Box3D box1, Box3D box2) {
-            if (box1.GetBoxType() == BoxType.OBB || box2.GetBoxType() == BoxType.OBB) return HasCollision_OBB(box1.GetModel(), box2.GetModel());
-            else return HasCollision_AABB(box1.GetModel(), box2.GetModel());
+        public static bool HasCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
+            var rbBody1 = rb1.Body;
+            var rbBody2 = rb2.Body;
+            if (rbBody1 is Cube cube1 && rbBody2 is Cube cube2) {
+                return HasCollision(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle Collision");
         }
 
-        public static bool HasCollision_AABB(in Box3DModel box1, in Box3DModel box2) {
-            var min1 = box1.Min;
-            var max1 = box1.Max;
-            var min2 = box2.Min;
-            var max2 = box2.Max;
+        public static bool HasCollision(Rigidbody3D rb, IPhysicsBody3D body) {
+            var rbBody = rb.Body;
+            if (rbBody is Cube cube1 && body is Cube cube2) {
+                return HasCollision(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle Collision");
+        }
+
+        public static bool HasCollision(IPhysicsBody3D body1, IPhysicsBody3D body2) {
+            if (body1 is Cube cube1 && body2 is Cube cube2) {
+                return HasCollision(cube1, cube2);
+            }
+            throw new System.Exception($"Not Handle Collision");
+        }
+
+        public static bool HasCollision(Cube cube1, Cube cube2) {
+            if (cube1.GetCubeType() == CubeType.OBB || cube2.GetCubeType() == CubeType.OBB) {
+                return HasCollision_OBB(cube1.GetModel(), cube2.GetModel());
+            } else {
+                return HasCollision_AABB(cube1.GetModel(), cube2.GetModel());
+            }
+        }
+
+        public static bool HasCollision_AABB(in CubeModel cube1, in CubeModel cube2) {
+            var min1 = cube1.Min;
+            var max1 = cube1.Max;
+            var min2 = cube2.Min;
+            var max2 = cube2.Max;
 
             return HasCollision_AABB(min1, max1, min2, max2);
         }
@@ -27,44 +54,44 @@ namespace ZeroPhysics.Physics3D {
             return hasIntersectX && hasIntersectY && hasIntersectZ;
         }
 
-        public static bool HasCollision_OBB(in Box3DModel box1, in Box3DModel box2) {
+        public static bool HasCollision_OBB(in CubeModel cube1, in CubeModel cube2) {
             // - 6 Axis
-            if (!HasIntersectsWithAxisX_LeftBox(box1, box2)) {
+            if (!HasIntersectsWithAxisX_LeftCube(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftBox(box1, box2)) {
+            if (!HasIntersectsWithAxisY_LeftCube(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftBox(box1, box2)) {
+            if (!HasIntersectsWithAxisZ_LeftCube(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisX_LeftBox(box2, box1)) {
+            if (!HasIntersectsWithAxisX_LeftCube(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftBox(box2, box1)) {
+            if (!HasIntersectsWithAxisY_LeftCube(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftBox(box2, box1)) {
+            if (!HasIntersectsWithAxisZ_LeftCube(cube2, cube1)) {
                 return false;
             }
 
             // - 9 Axis
             Axis3D axis = new Axis3D();
-            var dirX1 = box1.GetXDir();
-            var dirY1 = box1.GetYDir();
-            var dirZ1 = box1.GetZDir();
-            var dirX2 = box2.GetXDir();
-            var dirY2 = box2.GetYDir();
-            var dirZ2 = box2.GetZDir();
-            var min1 = box1.Min;
-            var max1 = box1.Max;
-            var min2 = box2.Min;
-            var max2 = box2.Max;
+            var dirX1 = cube1.GetXDir();
+            var dirY1 = cube1.GetYDir();
+            var dirZ1 = cube1.GetZDir();
+            var dirX2 = cube2.GetXDir();
+            var dirY2 = cube2.GetYDir();
+            var dirZ2 = cube2.GetZDir();
+            var min1 = cube1.Min;
+            var max1 = cube1.Max;
+            var min2 = cube2.Min;
+            var max2 = cube2.Max;
 
             // - x Cross x
             if (!FPUtils.IsNear(dirX1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirX2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -72,7 +99,7 @@ namespace ZeroPhysics.Physics3D {
             // - x Cross y
             if (!FPUtils.IsNear(dirX1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirY2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -80,7 +107,7 @@ namespace ZeroPhysics.Physics3D {
             // - x Cross z
             if (!FPUtils.IsNear(dirX1, dirZ2, FP64.EN4) && !FPUtils.IsNear(dirX1, -dirZ2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirX1, dirZ2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -88,7 +115,7 @@ namespace ZeroPhysics.Physics3D {
             // - y Cross x
             if (!FPUtils.IsNear(dirY1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirX2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -96,7 +123,7 @@ namespace ZeroPhysics.Physics3D {
             // - y Cross y
             if (!FPUtils.IsNear(dirY1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirY2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -104,7 +131,7 @@ namespace ZeroPhysics.Physics3D {
             // - y Cross z
             if (!FPUtils.IsNear(dirY1, dirZ2, FP64.EN4) && !FPUtils.IsNear(dirY1, -dirZ2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirY1, dirZ2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -112,7 +139,7 @@ namespace ZeroPhysics.Physics3D {
             // - z Cross x
             if (!FPUtils.IsNear(dirZ1, dirX2, FP64.EN4) && !FPUtils.IsNear(dirZ1, -dirX2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirZ1, dirX2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -120,7 +147,7 @@ namespace ZeroPhysics.Physics3D {
             // - z Cross y
             if (!FPUtils.IsNear(dirZ1, dirY2, FP64.EN4) && !FPUtils.IsNear(dirZ1, -dirY2, FP64.EN4)) {
                 axis.dir = FPVector3.Cross(dirZ1, dirY2);
-                if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                     return false;
                 }
             }
@@ -129,7 +156,7 @@ namespace ZeroPhysics.Physics3D {
             if (!FPUtils.IsNear(dirZ1, dirZ2, FP64.EN4) && !FPUtils.IsNear(dirZ1, -dirZ2, FP64.EN4)) {
                 if ((dirZ1 != dirZ2 && dirZ1 != -dirZ2)) {
                     axis.dir = FPVector3.Cross(dirZ1, dirZ2);
-                    if (!HasIntersects_WithAxis(box1, box2, axis)) {
+                    if (!HasIntersects_WithAxis(cube1, cube2, axis)) {
                         return false;
                     }
                 }
@@ -138,38 +165,38 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        internal static bool HasIntersectsWithAxisX_LeftBox(in Box3DModel box1, in Box3DModel box2) {
-            var b1AxisX = box1.GetAxisX();
-            var box1_projSub = box1.GetAxisX_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(box2, b1AxisX);
-            return OBBHasIntersects(box1_projSub, box2_projSub);
+        internal static bool HasIntersectsWithAxisX_LeftCube(in CubeModel cube1, in CubeModel cube2) {
+            var b1AxisX = cube1.GetAxisX();
+            var cube1_projSub = cube1.GetAxisX_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisX);
+            return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisY_LeftBox(in Box3DModel box1, in Box3DModel box2) {
-            var b1AxisY = box1.GetAxisY();
-            var box1_projSub = box1.GetAxisY_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(box2, b1AxisY);
-            return OBBHasIntersects(box1_projSub, box2_projSub);
+        internal static bool HasIntersectsWithAxisY_LeftCube(in CubeModel cube1, in CubeModel cube2) {
+            var b1AxisY = cube1.GetAxisY();
+            var cube1_projSub = cube1.GetAxisY_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisY);
+            return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisZ_LeftBox(in Box3DModel box1, in Box3DModel box2) {
-            var b1AxisZ = box1.GetAxisZ();
-            var box1_projSub = box1.GetAxisZ_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(box2, b1AxisZ);
-            return OBBHasIntersects(box1_projSub, box2_projSub);
+        internal static bool HasIntersectsWithAxisZ_LeftCube(in CubeModel cube1, in CubeModel cube2) {
+            var b1AxisZ = cube1.GetAxisZ();
+            var cube1_projSub = cube1.GetAxisZ_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisZ);
+            return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersects_WithAxis(in Box3DModel model1, in Box3DModel model2, in Axis3D axis) {
-            var box1_projSub = Projection3DUtils.GetProjectionSub(model1, axis);
+        internal static bool HasIntersects_WithAxis(in CubeModel model1, in CubeModel model2, in Axis3D axis) {
+            var cube1_projSub = Projection3DUtils.GetProjectionSub(model1, axis);
             var box2_projSub = Projection3DUtils.GetProjectionSub(model2, axis);
-            return OBBHasIntersects(box1_projSub, box2_projSub);
+            return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool IsInsideBox(in Box3DModel model, FPVector3 point, in FP64 epsilon) {
+        internal static bool IsInsideCube(in CubeModel model, FPVector3 point, in FP64 epsilon) {
             var px = point.x;
             var py = point.y;
             var pz = point.z;
-            if (model.GetBoxType() == BoxType.AABB) {
+            if (model.GetCubeType() == CubeType.AABB) {
                 var min = model.Min;
                 var max = model.Max;
                 return px >= (min.x - epsilon) && px <= (max.x + epsilon)

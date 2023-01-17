@@ -21,10 +21,10 @@ namespace ZeroPhysics.Physics3D {
             FPVector3 v2 = FPVector3.Zero;
             FPVector3 bHitA_Dir = collisionModel.HitDirBA;
 
-            if (bodyA is Box3DRigidbody rb_a) {
+            if (bodyA is Rigidbody3D rb_a) {
                 var outForce = GetErasedForce(rb_a.OutForce, bHitA_Dir);
             }
-            if (bodyB is Box3DRigidbody rb_b) {
+            if (bodyB is Rigidbody3D rb_b) {
                 var outForce = GetErasedForce(rb_b.OutForce, -bHitA_Dir);
             }
         }
