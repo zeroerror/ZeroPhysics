@@ -91,7 +91,7 @@ namespace ZeroPhysics.Physics3D {
                     if (collision.bodyA.IsTrigger || collision.bodyB.IsTrigger) {
                         continue;
                     }
-                    ElasticCollisionUtils.ApplyElasticCollision_RS(collision, dt);
+                    ElasticCollisionUtils.ApplyElasticCollision_RR(collision, dt);
                 }
             }
         }

@@ -21,7 +21,7 @@ namespace ZeroPhysics.Physics3D.API
         List<Cube> IGetterAPI.GetAllCubes()
         {
             var domain = physicsFacade.Domain.DataDomain;
-            return domain.GetAllCubees();
+            return domain.GetAllCubes();
         }
 
         List<Rigidbody3D> IGetterAPI.GetAllCubeRBs()

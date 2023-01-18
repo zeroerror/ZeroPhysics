@@ -13,7 +13,7 @@ namespace ZeroPhysics.Physics3D.Domain {
             this.physicsFacade = physicsFacade;
         }
 
-        public List<Cube> GetAllCubees() {
+        public List<Cube> GetAllCubes() {
             var cubes = physicsFacade.cubes;
             var idService = physicsFacade.Service.IDService;
             var infos = idService.cubeIDInfos;

@@ -26,6 +26,10 @@ namespace ZeroPhysics.Physics3D {
         }
 
         static void ApplyFriction(Rigidbody3D rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {
+            if (beHitDir == FPVector3.Zero) {
+                return;
+            }
+
             FPVector3 linearV = rb.LinearV;
             FP64 linearVLen = linearV.Length();
 
@@ -40,13 +44,16 @@ namespace ZeroPhysics.Physics3D {
 
             // 计算摩擦力
             var frictionOffsetV = ForceUtils.GetOffsetV_ByForce(frictionForce, rb.Mass, dt);
-            var offsetLen = frictionOffsetV.Length();
-            if (offsetLen > linearVLen - FPUtils.epsilon_friction) {
-                // UnityEngine.Debug.Log($"摩擦力 停下");
+            if (frictionOffsetV == FPVector3.Zero) {
+                return;
+            }
+            linearV += frictionOffsetV;
+            var cosFlag = FPVector3.Dot(frictionOffsetV, linearV);
+            if (cosFlag > 0) {
                 linearV = FPVector3.Zero;
+                UnityEngine.Debug.Log($"摩擦力 停下 ");
             } else {
-                // UnityEngine.Debug.Log($"摩擦力 减速 {frictionOffsetV}");
-                linearV += frictionOffsetV;
+                UnityEngine.Debug.Log($"摩擦力 减速 {frictionOffsetV}");
             }
 
             rb.SetLinearV(linearV);
