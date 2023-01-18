@@ -72,26 +72,19 @@ namespace ZeroPhysics.Sample {
             if (!canRun) return;
             if (rbTFs == null) return;
             if (cubeTFs == null) return;
-            
+
             // - Collsion Info
-            var collisionInfos = physicsCore.GetterAPI.GetCollisionInfos();
+            var collisions_RS = physicsCore.GetterAPI.GetAllCollisions_RS();
             // Debug.Log($"碰撞事件数量: {collisionInfos.Length}");
-            for (int i = 0; i < collisionInfos.Length; i++) {
-                var collision = collisionInfos[i];
+            for (int i = 0; i < collisions_RS.Length; i++) {
+                var collision = collisions_RS[i];
                 var body_a = collision.bodyA;
                 var body_b = collision.bodyB;
                 var type_a = body_a.PhysicsType;
                 var type_b = body_b.PhysicsType;
-                if (type_a == PhysicsType3D.Cube && type_b == PhysicsType3D.RB) {
-                    var cube = body_a as Cube;
-                    var rb = body_a as Rigidbody3D;
-                    OnCollision(cube, rb, collision);
-                }
-                if (type_b == PhysicsType3D.Cube && type_a == PhysicsType3D.RB) {
-                    var rb = body_a as Rigidbody3D;
-                    var cube = body_b as Cube;
-                    OnCollision(cube, rb, collision);
-                }
+                var rb = body_a.RB;
+                var cube = body_b as Cube;
+                OnCollision(cube, rb, collision);
             }
         }
 
@@ -109,7 +102,6 @@ namespace ZeroPhysics.Sample {
 
         void OnCollsionStay(Cube cube, Rigidbody3D boxRB) {
             // UnityEngine.Debug.Log($" OnCollsionStay : cube:{cube.name} boxRB:{boxRB.name} ");
-
         }
 
         void OnCollsionExit(Cube cube, Rigidbody3D boxRB) {

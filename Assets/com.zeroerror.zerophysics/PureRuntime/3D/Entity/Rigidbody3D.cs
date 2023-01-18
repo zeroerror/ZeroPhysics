@@ -8,10 +8,8 @@ namespace ZeroPhysics.Physics3D {
         ushort rbID;
         public ushort RBID => rbID;
         public void SetRBID(ushort v) => rbID = v;
-        
-        public string name;
 
-        PhysicsType3D PhysicsType => PhysicsType3D.RB;
+        public string name;
 
         IPhysicsBody3D body;
         public IPhysicsBody3D Body => body;
@@ -41,21 +39,17 @@ namespace ZeroPhysics.Physics3D {
         }
 
         public void ApplyMTV(in FPVector3 mtv) {
-            if (body is Cube cube) {
-                cube.SetCenter(cube.Center + mtv);
-                return;
-            }
+            var trans = body.Trans;
+            body.Trans.SetCenter(trans.Center + mtv);
         }
 
         public uint GetBodyKey() {
-            byte t = (byte)PhysicsType;
             uint key = (uint)rbID;
-            key |= (uint)t << 16;
             return key;
         }
 
         public override string ToString() {
-            return $"<Name>:{name}  <ID>:{rbID}";
+            return $"Rigidbody === <Name>:{name}  <ID>:{rbID}";
         }
 
     }

@@ -13,9 +13,7 @@ namespace ZeroPhysics.Physics3D {
 
         void SetIsTrigger(bool flag);
         bool IsTrigger { get; }
-
-        bool IsRB { get; }
-        void SetIsRB(bool flag);
+        Rigidbody3D RB { get; }
 
         FP64 FrictionCoe { get; }
         void SetFirctionCoe(in FP64 v);

@@ -10,7 +10,7 @@ namespace ZeroPhysics.Physics3D.API
 
         List<Rigidbody3D> GetAllCubeRBs();
         List<Cube> GetAllCubes();
-        CollisionModel[] GetCollisionInfos();
+        CollisionModel[] GetAllCollisions_RS();
 
     }
 

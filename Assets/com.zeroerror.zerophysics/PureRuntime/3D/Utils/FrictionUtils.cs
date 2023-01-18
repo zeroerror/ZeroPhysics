@@ -6,23 +6,23 @@ namespace ZeroPhysics.Physics3D {
 
     public static class FrictionUtils {
 
-        public static void ApplyFriction(in CollisionModel collision, in FP64 dt) {
+        public static void ApplyFriction_RS(in CollisionModel collision, in FP64 dt) {
             var bodyA = collision.bodyA;
-            var bodyB = collision.bodyB;
-            FP64 m1 = FP64.Zero; ;
-            FP64 m2 = FP64.Zero; ;
-            FPVector3 v1 = FPVector3.Zero;
-            FPVector3 v2 = FPVector3.Zero;
             FPVector3 hitDirBA = collision.HitDirBA;
             FP64 u = collision.FirctionCoe_combined;
+            var rbA = bodyA.RB;
+            ApplyFriction(rbA, u, hitDirBA, dt);
+        }
 
-            // RB & Static
-            if (bodyA is Rigidbody3D rbA) {
-                ApplyFriction(rbA, u, hitDirBA, dt);
-            }
-            if (bodyB is Rigidbody3D rbB) {
-                ApplyFriction(rbB, u, -hitDirBA, dt);
-            }
+        public static void ApplyFriction_RR(in CollisionModel collision, in FP64 dt) {
+            var bodyA = collision.bodyA;
+            var bodyB = collision.bodyB;
+            FPVector3 hitDirBA = collision.HitDirBA;
+            FP64 u = collision.FirctionCoe_combined;
+            var rbA = bodyA.RB;
+            var rbB = bodyB.RB;
+            ApplyFriction(rbA, u, hitDirBA, dt);
+            ApplyFriction(rbB, u, hitDirBA, dt);
         }
 
         static void ApplyFriction(Rigidbody3D rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {

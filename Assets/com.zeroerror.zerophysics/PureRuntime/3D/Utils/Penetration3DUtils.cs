@@ -6,31 +6,28 @@ namespace ZeroPhysics.Physics3D {
 
     public static class Penetration3DUtils {
 
-        public static FPVector3 GetMTV(Rigidbody3D rb1, Rigidbody3D rb2) {
+        public static FPVector3 GetMTV_RR(Rigidbody3D rb1, Rigidbody3D rb2) {
             var body1 = rb1.Body;
             var body2 = rb2.Body;
             if (body1 is Cube cube1 && body2 is Cube cube2) {
-                return GetMTV(cube1, cube2);
+                return GetMTV_SS(cube1, cube2);
             }
             throw new System.Exception($"Not Handle MTV");
         }
 
-        public static FPVector3 GetMTV(Rigidbody3D rb, IPhysicsBody3D body) {
+        public static FPVector3 GetMTV_RS(Rigidbody3D rb, IPhysicsBody3D body) {
             var rbBody = rb.Body;
-            if (rbBody is Cube cube1 && body is Cube cube2) {
-                return GetMTV(cube1, cube2);
-            }
-            throw new System.Exception($"Not Handle MTV");
+            return GetMTV_SS(rbBody, body);
         }
 
-        public static FPVector3 GetMTV(IPhysicsBody3D body1, IPhysicsBody3D body2) {
+        public static FPVector3 GetMTV_SS(IPhysicsBody3D body1, IPhysicsBody3D body2) {
             if (body1 is Cube cube1 && body2 is Cube cube2) {
-                return GetMTV(cube1, cube2);
+                return GetMTV_Cube(cube1.GetModel(), cube2.GetModel());
             }
             throw new System.Exception($"Not Handle MTV");
         }
 
-        public static FPVector3 GetMTV(CubeModel model1, CubeModel model2) {
+        public static FPVector3 GetMTV_Cube(CubeModel model1, CubeModel model2) {
             FP64 len_min = FP64.MaxValue;
             FPVector3 dir = FPVector3.Zero;
 

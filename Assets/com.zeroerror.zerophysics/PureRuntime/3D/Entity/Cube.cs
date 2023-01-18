@@ -11,9 +11,9 @@ namespace ZeroPhysics.Physics3D {
         public ushort BodyID => bodyID;
         public void SetBodyID(ushort v) => bodyID = v;
 
-        bool isRB;
-        public bool IsRB => isRB;
-        public void SetIsRB(bool flag) => isRB = flag;
+        Rigidbody3D rb;
+        public Rigidbody3D RB => rb;
+        public void SetRB(Rigidbody3D v) => rb = v;
 
         bool isTrigger;
         public bool IsTrigger => isTrigger;
@@ -67,7 +67,7 @@ namespace ZeroPhysics.Physics3D {
 
 
         public override string ToString() {
-            return $"<Name>:{name}  <ID>:{bodyID}";
+            return $"Cube === <Name>:{name} <ID>:{bodyID}";
         }
 
     }

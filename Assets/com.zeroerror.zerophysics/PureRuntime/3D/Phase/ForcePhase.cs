@@ -19,12 +19,8 @@ namespace ZeroPhysics.Physics3D {
             var rbs = physicsFacade.rbs;
             var service = physicsFacade.Service;
             var idService = service.IDService;
-            var collisionService = service.CollisionService;
-
             var rbInfos = idService.rbIDInfos;
-            var cubeInfos = idService.cubeIDInfos;
 
-            UnityEngine.Debug.Log($"rbs {rbs.Length}");
             for (int i = 0; i < rbs.Length; i++) {
                 if (!rbInfos[i]) continue;
 

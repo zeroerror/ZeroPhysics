@@ -8,11 +8,30 @@ namespace ZeroPhysics.Physics3D {
 
         static readonly FP64 Bounce_Epsilon = FP64.EN1;
 
-        public static void ApplyElasticCollision(in CollisionModel collision, in FP64 dt) {
+        public static void ApplyElasticCollision_RS(in CollisionModel collision, in FP64 dt) {
+            var bodyA = collision.bodyA;
+            var bodyB = collision.bodyB;
+            var rb = bodyA.RB;
+            var hitDirBA = collision.HitDirBA;
+            var v = rb.LinearV;
+            var v_bounced = ApplyBounce(hitDirBA, rb.BounceCoefficient, v);
+            // 弹力速度外力减益
+            var hasBounced = !FPUtils.IsNear(v_bounced, v, FP64.EN1);
+            if (hasBounced) {
+                var dot = FPVector3.Dot(rb.OutForce, hitDirBA);
+                if (dot < 0) {
+                    var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb.Mass, dt);
+                    v_bounced += 2 * offsetV;
+                }
+            }
+            rb.SetLinearV(v_bounced);
+            return;
+        }
+
+        public static void ApplyElasticCollision_RR(in CollisionModel collision, in FP64 dt) {
             var bodyA = collision.bodyA;
             var bodyB = collision.bodyB;
             FPVector3 hitDirBA = collision.HitDirBA;
-
             // RB & RB
             if (bodyA is Rigidbody3D rbA && bodyB is Rigidbody3D rbB) {
                 // 根据动量守恒和动能守恒公式计算 
@@ -54,23 +73,6 @@ namespace ZeroPhysics.Physics3D {
                 rbA.SetLinearV(va);
                 rbB.SetLinearV(vb);
                 // UnityEngine.Debug.Log($"动态物体碰撞 va:{va} vb:{vb}");
-            }
-
-            // RB & Static
-            if (bodyA is Rigidbody3D rb) {
-                var v = rb.LinearV;
-                var v_bounced = ApplyBounce(hitDirBA, rb.BounceCoefficient, v);
-                // 弹力速度外力减益
-                bool hasBounced = !FPUtils.IsNear(v_bounced, v, FP64.EN1);
-                if (hasBounced) {
-                    var dot = FPVector3.Dot(rb.OutForce, hitDirBA);
-                    if (dot < 0) {
-                        var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb.Mass, dt);
-                        v_bounced += 2 * offsetV;
-                    }
-                }
-                rb.SetLinearV(v_bounced);
-                return;
             }
         }
 

@@ -37,11 +37,11 @@ namespace ZeroPhysics.Physics3D {
                     }
                     var rb2 = rbs[j];
                     if (!Intersect3DUtils.HasCollision(rb1, rb2)) {
-                        collisionService.RemoveCollision(rb1, rb2);
+                        collisionService.RemoveCollision_RR(rb1, rb2);
                         continue;
                     }
 
-                    collisionService.AddCollision(rb1, rb2);
+                    collisionService.AddCollision_RR(rb1, rb2);
                 }
 
             }
@@ -62,11 +62,11 @@ namespace ZeroPhysics.Physics3D {
                     continue;
                 }
                 if (!Intersect3DUtils.HasCollision(rb, cube)) {
-                    collisionService.RemoveCollision(rb, cube);
+                    collisionService.RemoveCollision_RS(rb, cube);
                     continue;
                 }
 
-                collisionService.AddCollision(rb, cube);
+                collisionService.AddCollision_RS(rb, cube);
             }
         }
 
