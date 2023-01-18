@@ -57,7 +57,7 @@ namespace ZeroPhysics.Physics3D {
                 var bodyB = collision.bodyB;
                 var rbA = bodyA.RB;
                 var rbB = bodyB.RB;
-                var mtv = Penetration3DUtils.GetMTV_SS(bodyA, bodyB);
+                var mtv = Penetration3DUtils.GetMTV(bodyA, bodyB);
                 mtv *= FPUtils.multy_penetration_rbNrb;
                 // 计算MTV
                 if (mtv.Length() > FPUtils.epsilon_mtv) {

@@ -10,17 +10,17 @@ namespace ZeroPhysics.Physics3D {
             var body1 = rb1.Body;
             var body2 = rb2.Body;
             if (body1 is Cube cube1 && body2 is Cube cube2) {
-                return GetMTV_SS(cube1, cube2);
+                return GetMTV(cube1, cube2);
             }
             throw new System.Exception($"Not Handle MTV");
         }
 
         public static FPVector3 GetMTV_RS(Rigidbody3D rb, IPhysicsBody3D body) {
             var rbBody = rb.Body;
-            return GetMTV_SS(rbBody, body);
+            return GetMTV(rbBody, body);
         }
 
-        public static FPVector3 GetMTV_SS(IPhysicsBody3D body1, IPhysicsBody3D body2) {
+        public static FPVector3 GetMTV(IPhysicsBody3D body1, IPhysicsBody3D body2) {
             if (body1 is Cube cube1 && body2 is Cube cube2) {
                 return GetMTV_Cube(cube1.GetModel(), cube2.GetModel());
             }
