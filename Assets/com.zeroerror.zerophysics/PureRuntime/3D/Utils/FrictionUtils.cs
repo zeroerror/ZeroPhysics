@@ -22,7 +22,7 @@ namespace ZeroPhysics.Physics3D {
             var rbA = bodyA.RB;
             var rbB = bodyB.RB;
             ApplyFriction(rbA, u, hitDirBA, dt);
-            ApplyFriction(rbB, u, hitDirBA, dt);
+            ApplyFriction(rbB, u, -hitDirBA, dt);
         }
 
         static void ApplyFriction(Rigidbody3D rb, in FP64 u, in FPVector3 beHitDir, in FP64 dt) {
@@ -58,7 +58,6 @@ namespace ZeroPhysics.Physics3D {
 
             rb.SetLinearV(linearV);
         }
-
         static FPVector3 GetFrictionDir(in FPVector3 linearV, in FPVector3 beHitDir) {
             var crossAxis = FPVector3.Cross(linearV, beHitDir);
             crossAxis.Normalize();

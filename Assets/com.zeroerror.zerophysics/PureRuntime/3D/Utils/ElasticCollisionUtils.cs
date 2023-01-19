@@ -6,7 +6,22 @@ namespace ZeroPhysics.Physics3D {
 
     public static class ElasticCollisionUtils {
 
-        static readonly FP64 Bounce_Epsilon = FP64.EN1;
+        public static void ApplyElasticCollision_RR(in CollisionModel collision, in FP64 dt) {
+            var bodyA = collision.bodyA;
+            var bodyB = collision.bodyB;
+            var rbA = bodyA.RB;
+            var rbB = bodyB.RB;
+            FPVector3 hitDirBA = collision.HitDirBA;
+            FP64 m1 = rbA.Mass;
+            FP64 m2 = rbB.Mass;
+            FPVector3 v1 = rbA.LinearV;
+            FPVector3 v2 = rbB.LinearV;
+            var va = v1 + (1 + rbA.BounceCoefficient) * (v2 - v1) / (1 + m1 / m2);
+            var vb = v2 + (1 + rbB.BounceCoefficient) * (v1 - v2) / (1 + m2 / m1);
+            rbA.SetLinearV(va);
+            rbB.SetLinearV(vb);
+            // UnityEngine.Debug.Log($"动态物体碰撞 va:{va} vb:{vb}");
+        }
 
         public static void ApplyElasticCollision_RS(in CollisionModel collision, in FP64 dt) {
             var bodyA = collision.bodyA;
@@ -26,28 +41,6 @@ namespace ZeroPhysics.Physics3D {
             }
             rb.SetLinearV(v_bounced);
             return;
-        }
-
-        public static void ApplyElasticCollision_RR(in CollisionModel collision, in FP64 dt) {
-            var bodyA = collision.bodyA;
-            var bodyB = collision.bodyB;
-            var rbA = bodyA.RB;
-            var rbB = bodyB.RB;
-            FPVector3 hitDirBA = collision.HitDirBA;
-            FP64 m1 = rbA.Mass;
-            FP64 m2 = rbB.Mass;
-            FPVector3 v1 = rbA.LinearV;
-            // 特殊条件规避运算
-            if (FPVector3.Dot(v1, hitDirBA) >= 0) {
-                return;
-            }
-
-            FPVector3 v2 = rbB.LinearV;
-            var va = v1 + (1 + rbA.BounceCoefficient) * (v2 - v1) / (1 + m1 / m2);
-            var vb = v2 + (1 + rbB.BounceCoefficient) * (v1 - v2) / (1 + m2 / m1);
-            rbA.SetLinearV(va);
-            rbB.SetLinearV(vb);
-            // UnityEngine.Debug.Log($"动态物体碰撞 va:{va} vb:{vb}");
         }
 
         static FPVector3 ApplyBounce(in FPVector3 beHitDir, in FP64 bounceCoefficient, in FPVector3 linearV) {

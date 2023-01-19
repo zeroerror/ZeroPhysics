@@ -22,6 +22,7 @@ namespace ZeroPhysics.Physics3D {
             var allCollision_RS = collisionService.GetAllCollisions_RS();
             var allCollision_RR = collisionService.GetAllCollisions_RR();
 
+            ApplyForceHitErase(allCollision_RR, dt);
             var rbCubees = physicsFacade.rbs;
             var rbCubeIDInfos = idService.rbIDInfos;
             for (int i = 0; i < rbCubees.Length; i++) {
@@ -96,13 +97,12 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        [Obsolete]
         void ApplyForceHitErase(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
                 || collision.CollisionType == CollisionType.Stay) {
-                    ForceUtils.ApplyForceHitErase(collision, dt);
+                    ForceUtils.ApplyForceHitErase_RR(collision, dt);
                 }
             }
         }

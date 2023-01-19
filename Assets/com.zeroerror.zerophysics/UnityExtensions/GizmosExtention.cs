@@ -6,10 +6,16 @@ namespace ZeroPhysics.Extensions {
     public static class GizmosExtention {
 
         public static void DrawPhysicsBody(IPhysicsBody3D body) {
+            var rb = body.RB;
+            var color = Gizmos.color;
+            if (rb != null && rb.IsDirty) {
+                Gizmos.color = Color.red;
+            }
             if (body is Cube cube) {
                 DrawCubeBorder(cube);
                 DrawCubePoint(cube);
             }
+            Gizmos.color = color;
         }
 
         public static void DrawCubeBorder(Cube cube) {
