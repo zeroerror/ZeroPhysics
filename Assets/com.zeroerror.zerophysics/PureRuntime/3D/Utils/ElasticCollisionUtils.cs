@@ -12,15 +12,20 @@ namespace ZeroPhysics.Physics3D {
             var rbA = bodyA.RB;
             var rbB = bodyB.RB;
             FPVector3 hitDirBA = collision.HitDirBA;
+            FPVector3 hitDirAB = -hitDirBA;
             FP64 m1 = rbA.Mass;
             FP64 m2 = rbB.Mass;
             FPVector3 v1 = rbA.LinearV;
             FPVector3 v2 = rbB.LinearV;
-            var va = v1 + (1 + rbA.BounceCoefficient) * (v2 - v1) / (1 + m1 / m2);
-            var vb = v2 + (1 + rbB.BounceCoefficient) * (v1 - v2) / (1 + m2 / m1);
-            rbA.SetLinearV(va);
-            rbB.SetLinearV(vb);
-            // UnityEngine.Debug.Log($"动态物体碰撞 va:{va} vb:{vb}");
+            var v1_hitProj = FPVector3.Dot(v1, hitDirAB) * hitDirAB;
+            var v2_hitProj = FPVector3.Dot(v2, hitDirBA) * hitDirBA;
+            var v1_component = v1_hitProj + (1 + rbA.BounceCoefficient) * (v2_hitProj - v1_hitProj) / (1 + m1 / m2);
+            var v2_component = v2_hitProj + (1 + rbB.BounceCoefficient) * (v1_hitProj - v2_hitProj) / (1 + m2 / m1);
+            v1 = v1 - v1_hitProj + v1_component;
+            v2 = v2 - v2_hitProj + v2_component;
+            rbA.SetLinearV(v1);
+            rbB.SetLinearV(v2);
+            // UnityEngine.Debug.Log($"动态物体碰撞 v1:{v1} v2:{v2}");
         }
 
         public static void ApplyElasticCollision_RS(in CollisionModel collision, in FP64 dt) {

@@ -25,6 +25,18 @@ namespace ZeroPhysics.Physics3D {
             rbB.SetOutForce(GetErasedForce(rbB.OutForce, -bHitA_Dir));
         }
 
+        public static void ApplyForceHitErase_RS(in CollisionModel collisionModel, in FP64 dt) {
+            var rb = collisionModel.bodyA.RB;
+            var body = collisionModel.bodyB;
+            FP64 m1 = FP64.Zero; ;
+            FP64 m2 = FP64.Zero; ;
+            FPVector3 v1 = FPVector3.Zero;
+            FPVector3 v2 = FPVector3.Zero;
+            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
+
+            rb.SetOutForce(GetErasedForce(rb.OutForce, bHitA_Dir));
+        }
+
         static FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
             var force_pj = FPVector3.Dot(force, beHitDir);
             var f = force - force_pj * beHitDir;

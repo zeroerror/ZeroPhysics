@@ -22,7 +22,7 @@ namespace ZeroPhysics.Physics3D {
             var allCollision_RS = collisionService.GetAllCollisions_RS();
             var allCollision_RR = collisionService.GetAllCollisions_RR();
 
-            ApplyForceHitErase(allCollision_RR, dt);
+            ApplyForceHitErase_RS(allCollision_RS, dt);
             var rbCubees = physicsFacade.rbs;
             var rbCubeIDInfos = idService.rbIDInfos;
             for (int i = 0; i < rbCubees.Length; i++) {
@@ -33,10 +33,10 @@ namespace ZeroPhysics.Physics3D {
                 linearV += offsetV;
                 rb.SetLinearV(linearV);
             }
-            ApplyElasticCollision_RS(allCollision_RS, dt);
             ApplyElasticCollision_RR(allCollision_RR, dt);
-            ApplyFriction_RS(allCollision_RS, dt);
+            ApplyElasticCollision_RS(allCollision_RS, dt);
             ApplyFriction_RR(allCollision_RR, dt);
+            ApplyFriction_RS(allCollision_RS, dt);
         }
 
         void ApplyFriction_RS(CollisionModel[] allCollision_RS, in FP64 dt) {
@@ -97,12 +97,22 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        void ApplyForceHitErase(CollisionModel[] allCollision, in FP64 dt) {
+        void ApplyForceHitErase_RR(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
                 var collision = allCollision[i];
                 if (collision.CollisionType == CollisionType.Enter
                 || collision.CollisionType == CollisionType.Stay) {
                     ForceUtils.ApplyForceHitErase_RR(collision, dt);
+                }
+            }
+        }
+
+        void ApplyForceHitErase_RS(CollisionModel[] allCollision, in FP64 dt) {
+            for (int i = 0; i < allCollision.Length; i++) {
+                var collision = allCollision[i];
+                if (collision.CollisionType == CollisionType.Enter
+                || collision.CollisionType == CollisionType.Stay) {
+                    ForceUtils.ApplyForceHitErase_RS(collision, dt);
                 }
             }
         }
