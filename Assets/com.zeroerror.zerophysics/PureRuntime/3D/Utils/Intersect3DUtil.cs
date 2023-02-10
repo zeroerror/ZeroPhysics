@@ -4,7 +4,7 @@ using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
-    public static class Intersect3DUtils {
+    public static class Intersect3DUtil {
 
         public static bool HasCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
             var rbBody1 = rb1.Body;

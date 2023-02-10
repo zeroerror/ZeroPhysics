@@ -13,7 +13,7 @@ namespace ZeroPhysics.Sample
         bool isRun = false;
 
         Rectangle[] allBoxes;
-        Sphere2D[] allSpheres;
+        Circle[] allSpheres;
         Transform[] tfs;
         public Transform spheresAndBoxes;
 
@@ -36,7 +36,7 @@ namespace ZeroPhysics.Sample
             }
 
             allBoxes = new Rectangle[bcCount];
-            allSpheres = new Sphere2D[bcCount];
+            allSpheres = new Circle[bcCount];
             int rectangleCount = 0;
             int sphereCount = 0;
             for (int i = 0; i < bcCount; i++)
@@ -50,7 +50,7 @@ namespace ZeroPhysics.Sample
                 }
                 else if (bcTF.GetComponent<SphereCollider>())
                 {
-                    allSpheres[i] = new Sphere2D(bcTF.position.ToFPVector2(), FP64.ToFP64(bcTF.GetComponent<SphereCollider>().radius), FP64.ToFP64(bcTF.rotation.eulerAngles.z), FP64.ToFP64(bcTF.localScale.x));
+                    allSpheres[i] = new Circle(bcTF.position.ToFPVector2(), FP64.ToFP64(bcTF.GetComponent<SphereCollider>().radius), FP64.ToFP64(bcTF.rotation.eulerAngles.z), FP64.ToFP64(bcTF.localScale.x));
                     sphereCount++;
                 }
             }
@@ -77,7 +77,7 @@ namespace ZeroPhysics.Sample
                 {
                     var rectangle2 = allBoxes[j];
                     if (rectangle2 == null) continue;
-                    if (CollisionHelper2D.HasCollision(rectangle1, rectangle2))
+                    if (IntersectUtil2D.HasCollision(rectangle1, rectangle2))
                     {
                         collsionArray[i] = 1;
                         collsionArray[j] = 1;
@@ -93,7 +93,7 @@ namespace ZeroPhysics.Sample
                 {
                     var sphere2 = allSpheres[j];
                     if (sphere2 == null) continue;
-                    if (CollisionHelper2D.HasCollision(sphere1, sphere2))
+                    if (IntersectUtil2D.HasCollision(sphere1, sphere2))
                     {
                         collsionArray[i] = 1;
                         collsionArray[j] = 1;
@@ -109,7 +109,7 @@ namespace ZeroPhysics.Sample
                 {
                     var rectangle = allBoxes[j];
                     if (rectangle == null) continue;
-                    if (CollisionHelper2D.HasCollision(sphere, rectangle))
+                    if (IntersectUtil2D.HasCollision(sphere, rectangle))
                     {
                         collsionArray[i] = 1;
                         collsionArray[j] = 1;
@@ -160,7 +160,7 @@ namespace ZeroPhysics.Sample
             rectangle.UpdateRotAngle(FP64.ToFP64(src.rotation.eulerAngles.z));
         }
 
-        void UpdateSphere(Transform src, Sphere2D sphere)
+        void UpdateSphere(Transform src, Circle sphere)
         {
             sphere.UpdateCenter(src.position.ToFPVector2());
             sphere.UpdateScale(FP64.ToFP64(src.localScale.x));
@@ -196,7 +196,7 @@ namespace ZeroPhysics.Sample
             Gizmos.DrawLine(d, a);
         }
 
-        void DrawSphereBorder(Sphere2D sphere)
+        void DrawSphereBorder(Circle sphere)
         {
             Gizmos.DrawSphere(sphere.Center.ToVector2(), sphere.Radius.AsFloat());
         }

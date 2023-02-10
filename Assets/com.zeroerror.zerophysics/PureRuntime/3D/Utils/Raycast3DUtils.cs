@@ -130,19 +130,19 @@ namespace ZeroPhysics.Physics3D {
             var axis = cube.GetAxisX();
             var pjSub1 = cube.GetAxisX_SelfProjectionSub();
             var pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             // - Axis y  
             axis = cube.GetAxisY();
             pjSub1 = cube.GetAxisY_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             // - Axis z
             axis = cube.GetAxisZ();
             pjSub1 = cube.GetAxisZ_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtils.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
 
             return true;
         }
@@ -167,13 +167,13 @@ namespace ZeroPhysics.Physics3D {
             FP64 t = FPVector3.Dot(min - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             t = FPVector3.Dot(max - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             // AxisY's Two Planes
@@ -181,13 +181,13 @@ namespace ZeroPhysics.Physics3D {
             t = FPVector3.Dot(min - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             t = FPVector3.Dot(max - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             // AxisZ's Two Planes
@@ -195,13 +195,13 @@ namespace ZeroPhysics.Physics3D {
             t = FPVector3.Dot(min - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             t = FPVector3.Dot(max - ro, d) / FPVector3.Dot(rd, d);
             if (t > 0 && t <= rl) {
                 var r = ro + t * rd;
-                if (Intersect3DUtils.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
+                if (Intersect3DUtil.IsInsideCube(cube, r, FP64.Epsilon)) hitPoints.Add(r);
             }
 
             return hitPoints.Count != 0;

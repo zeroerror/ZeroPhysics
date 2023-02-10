@@ -3,7 +3,7 @@ using ZeroPhysics.Generic;
 
 namespace ZeroPhysics.Physics2D {
 
-    public class Sphere2D {
+    public class Circle {
 
         #region [Field]
 
@@ -27,7 +27,7 @@ namespace ZeroPhysics.Physics2D {
 
         #endregion
 
-        public Sphere2D(FPVector2 center, FP64 radius, FP64 rotAngle, FP64 scale) {
+        public Circle(FPVector2 center, FP64 radius, FP64 rotAngle, FP64 scale) {
             rectangle = new Rectangle(center, radius, radius, 0, new FPVector2(scale, scale));
             rectangle.SetRectangleType(RectangleType.AABB);
             UpdateCenter(center);
