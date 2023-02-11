@@ -25,6 +25,13 @@ namespace ZeroPhysics.Sample {
         FP64 intervalTime;
 
         void Start() {
+            // Simplex simplex = new Simplex();
+            // simplex.Add(new FPVector3(0, 2, 0));
+            // simplex.Add(new FPVector3(2, 0, 0));
+            // simplex.Add(new FPVector3(-1, 0, 0));
+            // var res = simplex.IsInsideSimplex(new FPVector3(-111, 0, 0));
+            // Debug.Log($"res {res}");
+
             if (rbRoot == null) return;
             canRun = true;
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));

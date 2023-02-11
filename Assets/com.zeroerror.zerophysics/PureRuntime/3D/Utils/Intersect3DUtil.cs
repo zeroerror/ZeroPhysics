@@ -301,8 +301,61 @@ namespace ZeroPhysics.Physics3D {
 
         #endregion
 
-        // public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, FPVector3 dir) {
+        // public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 startDir) {
+        //     Simplex simplex = new Simplex();
+        //     FPVector3 subPoint = GetMinkowskiSubPoint(vertices1, vertices2, startDir);
+        //     simplex.Add(subPoint);
+        //     int count = 0;
+        //     FPVector3 curDir = -startDir;
+        //     while (true) {
+        //         count++;
+        //         if (count > 100) {
+        //             return false;
+        //         }
+
+        //         subPoint = GetMinkowskiSubPoint(vertices1, vertices2, curDir);
+        //         FP64 dot = FPVector3.Dot(subPoint, curDir);
+        //         if (dot <= 0) {
+        //             return false;
+        //         }
+
+        //         simplex.Add(subPoint);
+
+        //         if (simplex.Count == 2) {
+        //             curDir = simplex.GetNormal();
+        //         } else if (simplex.Count == 3) {
+        //             if (simplex.){
+
+        //             }else{
+
+        //             }
+        //         }
+        //     }
         // }
+
+        static FPVector3 GetMinkowskiSubPoint(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 dir) {
+            FPVector3 supportPoint1 = GetSupportPoint(vertices1, dir);
+            FPVector3 supportPoint2 = GetSupportPoint(vertices2, dir);
+            FPVector3 point = supportPoint1 = supportPoint2;
+            return point;
+        }
+
+        static FPVector3 GetSupportPoint(FPVector3[] vertices, in FPVector3 dir) {
+            var len = vertices.Length;
+            var v0 = vertices[0];
+            var farthestVectice = v0;
+            var biggestCosValue = FPVector3.Dot(v0, dir);
+            for (int i = 1; i < len; i++) {
+                var v = vertices[i];
+                var cosV = FPVector3.Dot(v, dir);
+                if (biggestCosValue < cosV) {
+                    biggestCosValue = cosV;
+                    farthestVectice = v;
+                }
+            }
+            return farthestVectice;
+        }
+
 
     }
 
