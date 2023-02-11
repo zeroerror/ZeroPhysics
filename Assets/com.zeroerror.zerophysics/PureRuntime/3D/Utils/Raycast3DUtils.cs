@@ -122,6 +122,10 @@ namespace ZeroPhysics.Physics3D {
         }
 
         static bool RayWithCube(CubeModel cube, Ray3D ray) {
+            bool HasCrossSub(in FPVector2 sub1, in FPVector2 sub2, in FP64 epsilon) {
+                return !(sub1.y < sub2.x - epsilon || sub2.y < sub1.x - epsilon);
+            }
+
             var rayOrigin = ray.origin;
             var rayDir = ray.dir;
             var rayLen = ray.length;
@@ -130,19 +134,19 @@ namespace ZeroPhysics.Physics3D {
             var axis = cube.GetAxisX();
             var pjSub1 = cube.GetAxisX_SelfProjectionSub();
             var pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!HasCrossSub(pjSub1, pjSub2, 0)) return false;
 
             // - Axis y  
             axis = cube.GetAxisY();
             pjSub1 = cube.GetAxisY_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!HasCrossSub(pjSub1, pjSub2, 0)) return false;
 
             // - Axis z
             axis = cube.GetAxisZ();
             pjSub1 = cube.GetAxisZ_SelfProjectionSub();
             pjSub2 = ray.GetProjectionSub(axis);
-            if (!Intersect3DUtil.HasIntersects(pjSub1, pjSub2, 0)) return false;
+            if (!HasCrossSub(pjSub1, pjSub2, 0)) return false;
 
             return true;
         }

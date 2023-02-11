@@ -30,6 +30,8 @@ namespace ZeroPhysics.Physics3D {
             throw new System.Exception($"Not Handle Collision");
         }
 
+        #region [ Cube ]
+
         public static bool HasCollision(Cube cube1, Cube cube2) {
             if (cube1.GetCubeType() == CubeType.OBB || cube2.GetCubeType() == CubeType.OBB) {
                 return HasCollision_OBB(cube1.GetModel(), cube2.GetModel());
@@ -56,22 +58,22 @@ namespace ZeroPhysics.Physics3D {
 
         public static bool HasCollision_OBB(in CubeModel cube1, in CubeModel cube2) {
             // - 6 Axis
-            if (!HasIntersectsWithAxisX_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisX(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisY(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisZ(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisX_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisX(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisY(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisZ(cube2, cube1)) {
                 return false;
             }
 
@@ -165,24 +167,24 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        internal static bool HasIntersectsWithAxisX_LeftCube(in CubeModel cube1, in CubeModel cube2) {
-            var b1AxisX = cube1.GetAxisX();
-            var cube1_projSub = cube1.GetAxisX_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisX);
+        internal static bool HasIntersectsWithAxisX(in CubeModel srcCube, in CubeModel cube) {
+            var b1AxisX = srcCube.GetAxisX();
+            var cube1_projSub = srcCube.GetAxisX_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisX);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisY_LeftCube(in CubeModel cube1, in CubeModel cube2) {
-            var b1AxisY = cube1.GetAxisY();
-            var cube1_projSub = cube1.GetAxisY_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisY);
+        internal static bool HasIntersectsWithAxisY(in CubeModel srcCube, in CubeModel cube) {
+            var b1AxisY = srcCube.GetAxisY();
+            var cube1_projSub = srcCube.GetAxisY_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisY);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisZ_LeftCube(in CubeModel cube1, in CubeModel cube2) {
+        internal static bool HasIntersectsWithAxisZ(in CubeModel cube1, in CubeModel cube) {
             var b1AxisZ = cube1.GetAxisZ();
             var cube1_projSub = cube1.GetAxisZ_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisZ);
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisZ);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
@@ -226,13 +228,11 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        public static bool HasIntersects(in FPVector2 sub1, in FPVector2 sub2, in FP64 epsilon) {
-            return !(sub1.y < sub2.x - epsilon || sub2.y < sub1.x - epsilon);
-        }
-
         public static bool OBBHasIntersects(in FPVector2 sub1, in FPVector2 sub2) {
             return !(sub1.y < sub2.x - FPUtils.epsilon_intersect || sub2.y < sub1.x - FPUtils.epsilon_intersect);
         }
+
+        #endregion
 
         #region [Intersect]
 
@@ -300,6 +300,9 @@ namespace ZeroPhysics.Physics3D {
         }
 
         #endregion
+
+        // public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, FPVector3 dir) {
+        // }
 
     }
 
