@@ -25,12 +25,13 @@ namespace ZeroPhysics.Physics3D {
 
         public static bool HasCollision(IPhysicsBody3D body1, IPhysicsBody3D body2) {
             if (body1 is Cube cube1 && body2 is Cube cube2) {
-                return HasCollision(cube1, cube2);
+                return HasCollision_GJK(cube1.GetModel().vertices, cube2.GetModel().vertices, cube2.Center - cube1.Center);
+                // return HasCollision(cube1, cube2);
             }
             throw new System.Exception($"Not Handle Collision");
         }
 
-        #region [ Cube ]
+        #region [ --- Cube --- ]
 
         public static bool HasCollision(Cube cube1, Cube cube2) {
             if (cube1.GetCubeType() == CubeType.OBB || cube2.GetCubeType() == CubeType.OBB) {
@@ -234,7 +235,7 @@ namespace ZeroPhysics.Physics3D {
 
         #endregion
 
-        #region [Intersect]
+        #region [ --- Intersect --- ]
 
         static bool HasIntersectXX(in FPVector3 min1, in FPVector3 max1, in FPVector3 min2, in FPVector3 max2) {
             var diff1 = min1.x - max2.x;
@@ -301,37 +302,40 @@ namespace ZeroPhysics.Physics3D {
 
         #endregion
 
-        // public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 startDir) {
-        //     Simplex simplex = new Simplex();
-        //     FPVector3 subPoint = GetMinkowskiSubPoint(vertices1, vertices2, startDir);
-        //     simplex.Add(subPoint);
-        //     int count = 0;
-        //     FPVector3 curDir = -startDir;
-        //     while (true) {
-        //         count++;
-        //         if (count > 100) {
-        //             return false;
-        //         }
+        #region [ --- GJK --- ]
 
-        //         subPoint = GetMinkowskiSubPoint(vertices1, vertices2, curDir);
-        //         FP64 dot = FPVector3.Dot(subPoint, curDir);
-        //         if (dot <= 0) {
-        //             return false;
-        //         }
+        public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 startDir) {
+            Simplex simplex = new Simplex();
+            FPVector3 subPoint = GetMinkowskiSubPoint(vertices1, vertices2, startDir);
+            simplex.Add(subPoint);
+            int count = 0;
+            FPVector3 curDir = -startDir;
+            while (true) {
+                count++;
+                if (count > 100) {
+                    return false;
+                }
 
-        //         simplex.Add(subPoint);
+                subPoint = GetMinkowskiSubPoint(vertices1, vertices2, curDir);
+                FP64 dot = FPVector3.Dot(subPoint, curDir);
+                if (dot <= 0) {
+                    return false;
+                }
 
-        //         if (simplex.Count == 2) {
-        //             curDir = simplex.GetNormal();
-        //         } else if (simplex.Count == 3) {
-        //             if (simplex.){
+                simplex.Add(subPoint);
 
-        //             }else{
-
-        //             }
-        //         }
-        //     }
-        // }
+                if (simplex.Count == 2) {
+                    curDir = simplex.GetNormal();
+                } else if (simplex.Count == 3) {
+                    if (simplex.IsInsideSimplex(FPVector3.Zero)) {
+                        return true;
+                    } else {
+                        simplex.LeaveTwoPoints();
+                        curDir = simplex.GetNormal();
+                    }
+                }
+            }
+        }
 
         static FPVector3 GetMinkowskiSubPoint(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 dir) {
             FPVector3 supportPoint1 = GetSupportPoint(vertices1, dir);
@@ -356,6 +360,7 @@ namespace ZeroPhysics.Physics3D {
             return farthestVectice;
         }
 
+        #endregion
 
     }
 

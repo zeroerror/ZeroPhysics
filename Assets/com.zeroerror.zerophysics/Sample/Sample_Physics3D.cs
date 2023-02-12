@@ -10,10 +10,8 @@ namespace ZeroPhysics.Sample {
 
         bool canRun = false;
 
-        public Transform rbRoot;
         Transform[] rbTFs;
 
-        public Transform cubeRoot;
         Transform[] cubeTFs;
 
         public int maxSimulateRate = 10;
@@ -25,21 +23,16 @@ namespace ZeroPhysics.Sample {
         FP64 intervalTime;
 
         void Start() {
-            // Simplex simplex = new Simplex();
-            // simplex.Add(new FPVector3(0, 2, 0));
-            // simplex.Add(new FPVector3(2, 0, 0));
-            // simplex.Add(new FPVector3(-1, 0, 0));
-            // var res = simplex.IsInsideSimplex(new FPVector3(-111, 0, 0));
-            // Debug.Log($"res {res}");
 
-            if (rbRoot == null) return;
             canRun = true;
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
             InitCubes();
             intervalTime = 1 / FP64.ToFP64(60);
+
         }
 
         void Update() {
+
             if (!canRun) return;
             if (rbTFs == null) return;
             if (cubeTFs == null) return;
@@ -62,6 +55,7 @@ namespace ZeroPhysics.Sample {
                 cube.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
             }
             FixedUpdate_Physics();
+
         }
 
         void FixedUpdate_Physics() {
@@ -142,11 +136,16 @@ namespace ZeroPhysics.Sample {
         void InitCubes() {
             var setterAPI = physicsCore.SetterAPI;
 
-            var rbCount = rbRoot.childCount;
+            var rbGos = GameObject.FindGameObjectsWithTag("RB");
+            var cubeGos = GameObject.FindGameObjectsWithTag("Cube");
+
+            // - Physics RB
+            var rbCount = rbGos.Length;
             rbTFs = new Transform[rbCount];
             for (int i = 0; i < rbCount; i++) {
-                rbTFs[i] = rbRoot.GetChild(i);
+                rbTFs[i] = rbGos[i].transform;
             }
+
             for (int i = 0; i < rbCount; i++) {
                 var tf = rbTFs[i].transform;
                 var rb = setterAPI.SpawnRBCube(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
@@ -156,10 +155,11 @@ namespace ZeroPhysics.Sample {
             }
             Debug.Log($"Total RBCube: {rbCount}");
 
-            var boxCount = cubeRoot.childCount;
+            // - Physics Cube
+            var boxCount = cubeGos.Length;
             cubeTFs = new Transform[boxCount];
             for (int i = 0; i < boxCount; i++) {
-                cubeTFs[i] = cubeRoot.GetChild(i);
+                cubeTFs[i] = cubeGos[i].transform;
             }
             for (int i = 0; i < boxCount; i++) {
                 var tf = cubeTFs[i].transform;
