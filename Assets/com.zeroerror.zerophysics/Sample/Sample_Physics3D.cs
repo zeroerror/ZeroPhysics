@@ -10,6 +10,9 @@ namespace ZeroPhysics.Sample {
 
         bool canRun = false;
 
+        [Header("打印调试信息")]
+        public bool debugMode;
+
         Transform[] rbTFs;
 
         Transform[] cubeTFs;
@@ -28,7 +31,11 @@ namespace ZeroPhysics.Sample {
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
             InitCubes();
             intervalTime = 1 / FP64.ToFP64(60);
+            Logger.isEnable = debugMode;
+        }
 
+        void OnDestroy() {
+            Logger.isEnable = false;
         }
 
         void Update() {
@@ -100,15 +107,15 @@ namespace ZeroPhysics.Sample {
         }
 
         void OnCollsionEnter(Cube cube, Rigidbody3D boxRB) {
-            // UnityEngine.Debug.Log($" OnCollsionEnter : cube:{cube.name} boxRB:{boxRB.name} ");
+            // Logger.Log($" OnCollsionEnter : cube:{cube.name} boxRB:{boxRB.name} ");
         }
 
         void OnCollsionStay(Cube cube, Rigidbody3D boxRB) {
-            // UnityEngine.Debug.Log($" OnCollsionStay : cube:{cube.name} boxRB:{boxRB.name} ");
+            // Logger.Log($" OnCollsionStay : cube:{cube.name} boxRB:{boxRB.name} ");
         }
 
         void OnCollsionExit(Cube cube, Rigidbody3D boxRB) {
-            // UnityEngine.Debug.Log($" OnCollsionExit : cube:{cube.name} boxRB:{boxRB.name} ");
+            // Logger.Log($" OnCollsionExit : cube:{cube.name} boxRB:{boxRB.name} ");
         }
 
         #endregion

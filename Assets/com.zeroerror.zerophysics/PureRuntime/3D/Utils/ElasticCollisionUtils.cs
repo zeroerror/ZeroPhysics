@@ -25,7 +25,7 @@ namespace ZeroPhysics.Physics3D {
             v2 = v2 - v2_hitProj + v2_component;
             rbA.SetLinearV(v1);
             rbB.SetLinearV(v2);
-            // UnityEngine.Debug.Log($"动态物体碰撞 v1:{v1} v2:{v2}");
+            // Logger.Log($"动态物体碰撞 v1:{v1} v2:{v2}");
         }
 
         public static void ApplyElasticCollision_RS(in CollisionModel collision, in FP64 dt) {

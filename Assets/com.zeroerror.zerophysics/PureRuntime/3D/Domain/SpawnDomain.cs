@@ -23,7 +23,7 @@ namespace ZeroPhysics.Physics3D.Domain {
             rb.SetRBID(id);
             cube.SetRB(rb);
 
-            UnityEngine.Debug.Log($"Spawn RBCube--{id}");
+            Logger.Log($"Spawn RBCube--{id}");
 
             physicsFacade.rbs[id] = rb;
             return rb;
@@ -37,7 +37,7 @@ namespace ZeroPhysics.Physics3D.Domain {
             var id = idService.FetchID_Cube();
             cube.SetBodyID(id);
             physicsFacade.cubes[id] = cube;
-            UnityEngine.Debug.Log($"Spawn Cube--{id}");
+            Logger.Log($"Spawn Cube--{id}");
             return cube;
         }
 

@@ -14,7 +14,7 @@ namespace ZeroPhysics.Physics3D {
             var rb = bodyA.RB;
 
             if (hitDirBA == FPVector3.Zero) {
-                UnityEngine.Debug.Log($"111");
+                Logger.Log($"111");
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace ZeroPhysics.Physics3D {
             var cosFlag = FPVector3.Dot(frictionOffsetV, linearV);
             if (cosFlag > FP64.EN4) {
                 linearV = FPVector3.Zero;
-                UnityEngine.Debug.Log($"{rb} 摩擦力 停下");
+                Logger.Log($"{rb} 摩擦力 停下");
             }
 
             rb.SetLinearV(linearV);
@@ -59,17 +59,22 @@ namespace ZeroPhysics.Physics3D {
             // 1. 相对运动
             var vA = rbA.LinearV;
             var vB = rbB.LinearV;
+            if (vA == FPVector3.Zero && vB == FPVector3.Zero) {
+                return;
+            }
+
             var v1_proj = FPVector3.Dot(vA, hitDirAB);
             var v2_proj = FPVector3.Dot(vB, hitDirBA);
             var totalVProj = v1_proj + v2_proj;
             if (totalVProj <= 0) {
-                UnityEngine.Debug.Log($"相对运动为 分离，无摩擦力作用");
-                UnityEngine.Debug.Log($"rbA{rbA} rbB{rbB} ");
-                UnityEngine.Debug.Log($"v1{vA} v2{vB}");
-                UnityEngine.Debug.Log($"hitDirAB{hitDirAB} hitDirBA{hitDirBA}");
-                UnityEngine.Debug.Log($"v1_proj{v1_proj} v2_proj{v2_proj} ");
+                Logger.Log($"相对运动为 分离，无摩擦力作用");
+                Logger.Log($"rbA{rbA} rbB{rbB} ");
+                Logger.Log($"v1{vA} v2{vB}");
+                Logger.Log($"hitDirAB{hitDirAB} hitDirBA{hitDirBA}");
+                Logger.Log($"v1_proj{v1_proj} v2_proj{v2_proj} ");
                 return;
             }
+            
             // 2. 力的大小
             var outF1 = rbA.OutForce;
             var outF2 = rbB.OutForce;
@@ -77,10 +82,10 @@ namespace ZeroPhysics.Physics3D {
             var outF2_proj = FPVector3.Dot(outF2, hitDirBA);
             var totalFProj = outF1_proj + outF2_proj;
             if (totalFProj <= 0) {
-                UnityEngine.Debug.Log($"挤压力为0，无摩擦力作用");
-                UnityEngine.Debug.Log($"outF1{outF1} hitDirAB{hitDirAB} ");
-                UnityEngine.Debug.Log($"outF2{outF2} hitDirBA{hitDirBA} ");
-                UnityEngine.Debug.Log($"outF1_proj{outF1_proj} outF2_proj{outF2_proj} ");
+                Logger.Log($"挤压力为0，无摩擦力作用");
+                Logger.Log($"outF1{outF1} hitDirAB{hitDirAB} ");
+                Logger.Log($"outF2{outF2} hitDirBA{hitDirBA} ");
+                Logger.Log($"outF1_proj{outF1_proj} outF2_proj{outF2_proj} ");
                 return;
             }
             // 3. 计算摩擦力方向
@@ -100,11 +105,11 @@ namespace ZeroPhysics.Physics3D {
             FPVector3 frictionForceB = f * frictionDirB;
             var frictionOffsetVA = ForceUtils.GetOffsetV_ByForce(frictionForceA, rbA.Mass, dt);
             var frictionOffsetVB = ForceUtils.GetOffsetV_ByForce(frictionForceB, rbB.Mass, dt);
-            UnityEngine.Debug.Log($" frictionDirA {frictionDirA} frictionDirB {frictionDirB} ");
-            UnityEngine.Debug.Log($"得出摩擦力大小 f{f}  矢量frictionForceA {frictionForceA} 矢量frictionForceB {frictionForceB}");
-            UnityEngine.Debug.Log($"得出摩擦力Offset frictionOffsetVA {frictionOffsetVA} frictionOffsetVB {frictionOffsetVB}");
-            UnityEngine.Debug.Log($" vA {vA} vB {vB} dot {dot}");
-            UnityEngine.Debug.Log($" v1_fricProj {v1_fricProj} v2_fricProj {v2_fricProj} ");
+            Logger.Log($" frictionDirA {frictionDirA} frictionDirB {frictionDirB} ");
+            Logger.Log($"得出摩擦力大小 f{f}  矢量frictionForceA {frictionForceA} 矢量frictionForceB {frictionForceB}");
+            Logger.Log($"得出摩擦力Offset frictionOffsetVA {frictionOffsetVA} frictionOffsetVB {frictionOffsetVB}");
+            Logger.Log($" vA {vA} vB {vB} dot {dot}");
+            Logger.Log($" v1_fricProj {v1_fricProj} v2_fricProj {v2_fricProj} ");
             vA -= frictionOffsetVA;
             vB -= frictionOffsetVB;
             rbA.SetLinearV(vA);

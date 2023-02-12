@@ -23,7 +23,7 @@ namespace ZeroPhysics.Service {
             if (getFromDic && collision.CollisionType == CollisionType.Enter) {
                 collision.SetCollisionType(CollisionType.Stay);
                 collisionDic_RS[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Stay ------------  {rb} &&&&&&&& {body}");
+                // Logger.Log($"Collision Stay ------------  {rb} &&&&&&&& {body}");
                 return;
             }
             if (!getFromDic) {
@@ -36,7 +36,7 @@ namespace ZeroPhysics.Service {
             if (!getFromDic || collision.CollisionType == CollisionType.None || collision.CollisionType == CollisionType.Exit) {
                 collision.SetCollisionType(CollisionType.Enter);
                 collisionDic_RS[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Enter ------------   {rb} &&&&&&&& {body}");
+                // Logger.Log($"Collision Enter ------------   {rb} &&&&&&&& {body}");
                 return;
             }
         }
@@ -50,7 +50,7 @@ namespace ZeroPhysics.Service {
             if (getFromDic && collision.CollisionType == CollisionType.Enter) {
                 collision.SetCollisionType(CollisionType.Stay);
                 collisionDic_RR[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Stay ------------  {rb1} &&&&&&&& {rb2}");
+                // Logger.Log($"Collision Stay ------------  {rb1} &&&&&&&& {rb2}");
                 return;
             }
             if (!getFromDic) {
@@ -63,7 +63,7 @@ namespace ZeroPhysics.Service {
             if (!getFromDic || collision.CollisionType == CollisionType.None || collision.CollisionType == CollisionType.Exit) {
                 collision.SetCollisionType(CollisionType.Enter);
                 collisionDic_RR[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Enter ------------  rb: {rb1} &&&&&&&& body {rb2}");
+                // Logger.Log($"Collision Enter ------------  rb: {rb1} &&&&&&&& body {rb2}");
                 return;
             }
         }
@@ -79,10 +79,10 @@ namespace ZeroPhysics.Service {
             if (collision.CollisionType == CollisionType.Enter || collision.CollisionType == CollisionType.Stay) {
                 collision.SetCollisionType(CollisionType.Exit);
                 collisionDic_RS[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Exit ------------  rb: {rb} &&&&&&&& body: {body}");
+                // Logger.Log($"Collision Exit ------------  rb: {rb} &&&&&&&& body: {body}");
             } else if (collision.CollisionType == CollisionType.Exit) {
                 collisionDic_RS.Remove(dicKey);
-                // UnityEngine.Debug.Log($"Collision Dic Remove ------------  rb: {rb} &&&&&&&& body: {body}");
+                // Logger.Log($"Collision Dic Remove ------------  rb: {rb} &&&&&&&& body: {body}");
             }
         }
 
@@ -98,10 +98,10 @@ namespace ZeroPhysics.Service {
             if (collision.CollisionType == CollisionType.Enter || collision.CollisionType == CollisionType.Stay) {
                 collision.SetCollisionType(CollisionType.Exit);
                 collisionDic_RR[dicKey] = collision;
-                // UnityEngine.Debug.Log($"Collision Exit ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
+                // Logger.Log($"Collision Exit ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
             } else if (collision.CollisionType == CollisionType.Exit) {
                 collisionDic_RR.Remove(dicKey);
-                // UnityEngine.Debug.Log($"Collision Dic Remove ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
+                // Logger.Log($"Collision Dic Remove ------------  rb1: {rb1} &&&&&&&& rb2: {rb2}");
             }
         }
 
