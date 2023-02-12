@@ -50,7 +50,7 @@ namespace ZeroPhysics.Sample
             {
                 for (int j = i + 1; j < rectangles.Length; j++)
                 {
-                    if (CollisionHelper2D.HasCollision(rectangles[i], rectangles[j]))
+                    if (IntersectUtil2D.HasCollision(rectangles[i], rectangles[j]))
                     {
                         if (!collisionBoxDic.ContainsKey(i)) collisionBoxDic[i] = rectangles[i];
                         if (!collisionBoxDic.ContainsKey(j)) collisionBoxDic[j] = rectangles[j];

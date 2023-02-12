@@ -65,7 +65,7 @@ namespace ZeroPhysics.Sample
             {
                 for (int j = i + 1; j < cubes.Length; j++)
                 {
-                    if (Intersect3DUtils.HasCollision(cubes[i], cubes[j])) { collsionArray[i] = 1; collsionArray[j] = 1; }
+                    if (Intersect3DUtil.HasCollision(cubes[i], cubes[j])) { collsionArray[i] = 1; collsionArray[j] = 1; }
                 }
             }
 

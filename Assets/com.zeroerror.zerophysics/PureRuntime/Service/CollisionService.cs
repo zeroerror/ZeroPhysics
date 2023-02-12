@@ -23,7 +23,7 @@ namespace ZeroPhysics.Service {
             if (getFromDic && collision.CollisionType == CollisionType.Enter) {
                 collision.SetCollisionType(CollisionType.Stay);
                 collisionDic_RS[dicKey] = collision;
-                // // UnityEngine.Debug.Log($"Collision Stay ------------  A: {a} &&&&&&&& {b}");
+                // UnityEngine.Debug.Log($"Collision Stay ------------  {rb} &&&&&&&& {body}");
                 return;
             }
             if (!getFromDic) {
@@ -50,7 +50,7 @@ namespace ZeroPhysics.Service {
             if (getFromDic && collision.CollisionType == CollisionType.Enter) {
                 collision.SetCollisionType(CollisionType.Stay);
                 collisionDic_RR[dicKey] = collision;
-                // // UnityEngine.Debug.Log($"Collision Stay ------------  A: {a} &&&&&&&& {b}");
+                // UnityEngine.Debug.Log($"Collision Stay ------------  {rb1} &&&&&&&& {rb2}");
                 return;
             }
             if (!getFromDic) {

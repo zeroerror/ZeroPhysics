@@ -28,6 +28,7 @@ namespace ZeroPhysics.Physics3D {
                 var rb = rbs[i];
                 ApplyGravity(gravity, rb, ref outForce);
                 rb.SetOutForce(outForce);
+                rb.SetDirtyOutForce(outForce);
             }
         }
 

@@ -67,6 +67,8 @@ namespace ZeroPhysics.Physics3D {
 
             if (!isCube1Aixs) dir = -dir;
 
+            len_min -= FPUtils.epsilon_mtv;
+            len_min = len_min < 0 ? 0 : len_min;
             return len_min * dir;
         }
 

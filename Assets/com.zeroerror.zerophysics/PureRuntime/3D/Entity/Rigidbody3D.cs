@@ -22,13 +22,19 @@ namespace ZeroPhysics.Physics3D {
         public FPVector3 OutForce => outForce;
         public void SetOutForce(in FPVector3 v) => outForce = v;
 
+        FPVector3 dirtyOutForce;
+        internal FPVector3 DirtyOutForce => dirtyOutForce;
+        internal void SetDirtyOutForce(in FPVector3 v) => dirtyOutForce = v;
+
         FP64 mass;
         public FP64 Mass => mass;
         public void SetMass(in FP64 v) => mass = v;
 
         FPVector3 linearV;
         public FPVector3 LinearV => linearV;
-        public void SetLinearV(in FPVector3 v) => linearV = v;
+        public void SetLinearV(in FPVector3 v) {
+            linearV = v;
+        }
 
         FP64 bounceCoefficient;
         public FP64 BounceCoefficient => bounceCoefficient;
@@ -37,6 +43,10 @@ namespace ZeroPhysics.Physics3D {
         public Rigidbody3D(IPhysicsBody3D body) {
             this.body = body;
         }
+
+        bool isDirty;
+        public bool IsDirty => isDirty;
+        public void SetIsDirty(bool v) => isDirty = v;
 
         public void ApplyMTV(in FPVector3 mtv) {
             var trans = body.Trans;

@@ -36,7 +36,7 @@ namespace ZeroPhysics.Physics3D {
                         continue;
                     }
                     var rb2 = rbs[j];
-                    if (!Intersect3DUtils.HasCollision(rb1, rb2)) {
+                    if (!Intersect3DUtil.HasCollision(rb1, rb2)) {
                         collisionService.RemoveCollision_RR(rb1, rb2);
                         continue;
                     }
@@ -61,7 +61,7 @@ namespace ZeroPhysics.Physics3D {
                 if(cube.IsTrigger){
                     continue;
                 }
-                if (!Intersect3DUtils.HasCollision(rb, cube)) {
+                if (!Intersect3DUtil.HasCollision(rb, cube)) {
                     collisionService.RemoveCollision_RS(rb, cube);
                     continue;
                 }

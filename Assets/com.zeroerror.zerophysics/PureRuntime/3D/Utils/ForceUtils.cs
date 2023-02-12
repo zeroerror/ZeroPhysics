@@ -12,24 +12,23 @@ namespace ZeroPhysics.Physics3D {
             return offset;
         }
 
-        public static void ApplyForceHitErase(in CollisionModel collisionModel, in FP64 dt) {
-            var bodyA = collisionModel.bodyA;
-            var bodyB = collisionModel.bodyB;
-            FP64 m1 = FP64.Zero; ;
-            FP64 m2 = FP64.Zero; ;
-            FPVector3 v1 = FPVector3.Zero;
-            FPVector3 v2 = FPVector3.Zero;
+        public static void ApplyForceHitErase_RR(in CollisionModel collisionModel, in FP64 dt) {
+            var rbA = collisionModel.bodyA.RB;
+            var rbB = collisionModel.bodyB.RB;
             FPVector3 bHitA_Dir = collisionModel.HitDirBA;
-
-            if (bodyA is Rigidbody3D rb_a) {
-                var outForce = GetErasedForce(rb_a.OutForce, bHitA_Dir);
-            }
-            if (bodyB is Rigidbody3D rb_b) {
-                var outForce = GetErasedForce(rb_b.OutForce, -bHitA_Dir);
-            }
+            rbA.SetOutForce(GetErasedForce(rbA.OutForce, bHitA_Dir));
+            rbB.SetOutForce(GetErasedForce(rbB.OutForce, -bHitA_Dir));
         }
 
-        static FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
+        public static void ApplyForceHitErase_RS(in CollisionModel collisionModel, in FP64 dt) {
+            var rb = collisionModel.bodyA.RB;
+            var body = collisionModel.bodyB;
+            FPVector3 bHitA_Dir = collisionModel.HitDirBA;
+            FPVector3 dirtyOutForce = GetErasedForce(rb.OutForce, bHitA_Dir);
+            rb.SetDirtyOutForce(dirtyOutForce);
+        }
+
+        public static FPVector3 GetErasedForce(in FPVector3 force, in FPVector3 beHitDir) {
             var force_pj = FPVector3.Dot(force, beHitDir);
             var f = force - force_pj * beHitDir;
             return f;

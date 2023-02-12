@@ -4,7 +4,7 @@ using ZeroPhysics.Utils;
 
 namespace ZeroPhysics.Physics3D {
 
-    public static class Intersect3DUtils {
+    public static class Intersect3DUtil {
 
         public static bool HasCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
             var rbBody1 = rb1.Body;
@@ -25,10 +25,13 @@ namespace ZeroPhysics.Physics3D {
 
         public static bool HasCollision(IPhysicsBody3D body1, IPhysicsBody3D body2) {
             if (body1 is Cube cube1 && body2 is Cube cube2) {
-                return HasCollision(cube1, cube2);
+                return HasCollision_GJK(cube1.GetModel().vertices, cube2.GetModel().vertices, cube2.Center - cube1.Center);
+                // return HasCollision(cube1, cube2);
             }
             throw new System.Exception($"Not Handle Collision");
         }
+
+        #region [ --- Cube --- ]
 
         public static bool HasCollision(Cube cube1, Cube cube2) {
             if (cube1.GetCubeType() == CubeType.OBB || cube2.GetCubeType() == CubeType.OBB) {
@@ -56,22 +59,22 @@ namespace ZeroPhysics.Physics3D {
 
         public static bool HasCollision_OBB(in CubeModel cube1, in CubeModel cube2) {
             // - 6 Axis
-            if (!HasIntersectsWithAxisX_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisX(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisY(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftCube(cube1, cube2)) {
+            if (!HasIntersectsWithAxisZ(cube1, cube2)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisX_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisX(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisY_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisY(cube2, cube1)) {
                 return false;
             }
-            if (!HasIntersectsWithAxisZ_LeftCube(cube2, cube1)) {
+            if (!HasIntersectsWithAxisZ(cube2, cube1)) {
                 return false;
             }
 
@@ -165,24 +168,24 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        internal static bool HasIntersectsWithAxisX_LeftCube(in CubeModel cube1, in CubeModel cube2) {
-            var b1AxisX = cube1.GetAxisX();
-            var cube1_projSub = cube1.GetAxisX_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisX);
+        internal static bool HasIntersectsWithAxisX(in CubeModel srcCube, in CubeModel cube) {
+            var b1AxisX = srcCube.GetAxisX();
+            var cube1_projSub = srcCube.GetAxisX_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisX);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisY_LeftCube(in CubeModel cube1, in CubeModel cube2) {
-            var b1AxisY = cube1.GetAxisY();
-            var cube1_projSub = cube1.GetAxisY_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisY);
+        internal static bool HasIntersectsWithAxisY(in CubeModel srcCube, in CubeModel cube) {
+            var b1AxisY = srcCube.GetAxisY();
+            var cube1_projSub = srcCube.GetAxisY_SelfProjectionSub();
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisY);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisZ_LeftCube(in CubeModel cube1, in CubeModel cube2) {
+        internal static bool HasIntersectsWithAxisZ(in CubeModel cube1, in CubeModel cube) {
             var b1AxisZ = cube1.GetAxisZ();
             var cube1_projSub = cube1.GetAxisZ_SelfProjectionSub();
-            var box2_projSub = Projection3DUtils.GetProjectionSub(cube2, b1AxisZ);
+            var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisZ);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
@@ -226,15 +229,13 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        public static bool HasIntersects(in FPVector2 sub1, in FPVector2 sub2, in FP64 epsilon) {
-            return !(sub1.y < sub2.x - epsilon || sub2.y < sub1.x - epsilon);
-        }
-
         public static bool OBBHasIntersects(in FPVector2 sub1, in FPVector2 sub2) {
             return !(sub1.y < sub2.x - FPUtils.epsilon_intersect || sub2.y < sub1.x - FPUtils.epsilon_intersect);
         }
 
-        #region [Intersect]
+        #endregion
+
+        #region [ --- Intersect --- ]
 
         static bool HasIntersectXX(in FPVector3 min1, in FPVector3 max1, in FPVector3 min2, in FPVector3 max2) {
             var diff1 = min1.x - max2.x;
@@ -297,6 +298,66 @@ namespace ZeroPhysics.Physics3D {
             var diff2 = min2.z - max1.z;
             bool hasIntersect = !(diff1 > FPUtils.epsilon_intersect || diff2 > FPUtils.epsilon_intersect);
             return hasIntersect;
+        }
+
+        #endregion
+
+        #region [ --- GJK --- ]
+
+        public static bool HasCollision_GJK(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 startDir) {
+            Simplex simplex = new Simplex();
+            FPVector3 subPoint = GetMinkowskiSubPoint(vertices1, vertices2, startDir);
+            simplex.Add(subPoint);
+            int count = 0;
+            FPVector3 curDir = -startDir;
+            while (true) {
+                count++;
+                if (count > 100) {
+                    return false;
+                }
+
+                subPoint = GetMinkowskiSubPoint(vertices1, vertices2, curDir);
+                FP64 dot = FPVector3.Dot(subPoint, curDir);
+                if (dot <= 0) {
+                    return false;
+                }
+
+                simplex.Add(subPoint);
+
+                if (simplex.Count == 2) {
+                    curDir = simplex.GetNormal();
+                } else if (simplex.Count == 3) {
+                    if (simplex.IsInsideSimplex(FPVector3.Zero)) {
+                        return true;
+                    } else {
+                        simplex.LeaveTwoPoints();
+                        curDir = simplex.GetNormal();
+                    }
+                }
+            }
+        }
+
+        static FPVector3 GetMinkowskiSubPoint(FPVector3[] vertices1, FPVector3[] vertices2, in FPVector3 dir) {
+            FPVector3 supportPoint1 = GetSupportPoint(vertices1, dir);
+            FPVector3 supportPoint2 = GetSupportPoint(vertices2, dir);
+            FPVector3 point = supportPoint1 = supportPoint2;
+            return point;
+        }
+
+        static FPVector3 GetSupportPoint(FPVector3[] vertices, in FPVector3 dir) {
+            var len = vertices.Length;
+            var v0 = vertices[0];
+            var farthestVectice = v0;
+            var biggestCosValue = FPVector3.Dot(v0, dir);
+            for (int i = 1; i < len; i++) {
+                var v = vertices[i];
+                var cosV = FPVector3.Dot(v, dir);
+                if (biggestCosValue < cosV) {
+                    biggestCosValue = cosV;
+                    farthestVectice = v;
+                }
+            }
+            return farthestVectice;
         }
 
         #endregion

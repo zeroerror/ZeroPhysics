@@ -10,10 +10,8 @@ namespace ZeroPhysics.Sample {
 
         bool canRun = false;
 
-        public Transform rbRoot;
         Transform[] rbTFs;
 
-        public Transform cubeRoot;
         Transform[] cubeTFs;
 
         public int maxSimulateRate = 10;
@@ -25,22 +23,26 @@ namespace ZeroPhysics.Sample {
         FP64 intervalTime;
 
         void Start() {
-            if (rbRoot == null) return;
+
             canRun = true;
             physicsCore = new PhysicsWorld3DCore(new FPVector3(0, -10, 0));
             InitCubes();
             intervalTime = 1 / FP64.ToFP64(60);
+
         }
 
         void Update() {
+
             if (!canRun) return;
             if (rbTFs == null) return;
             if (cubeTFs == null) return;
 
             var getterAPI = physicsCore.GetterAPI;
             var rbCubes = getterAPI.GetAllCubeRBs();
+            var rbCount = rbCubes.Count;
             var cubes = getterAPI.GetAllCubes();
-            for (int i = 0; i < rbCubes.Count; i++) {
+            var cubeCount = cubes.Count;
+            for (int i = 0; i < rbCount; i++) {
                 var bc = rbTFs[i];
                 var rb = rbCubes[i];
                 var body = rb.Body;
@@ -49,12 +51,13 @@ namespace ZeroPhysics.Sample {
                 body.SetFirctionCoe(FP64.ToFP64(firctionCoe_rbCube));
             }
 
-            for (int i = 0; i < cubes.Count - rbCubes.Count; i++) {
+            for (int i = 0; i < cubeCount; i++) {
                 var bc = cubeTFs[i];
                 var cube = cubes[i];
                 cube.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
             }
             FixedUpdate_Physics();
+
         }
 
         void FixedUpdate_Physics() {
@@ -135,11 +138,16 @@ namespace ZeroPhysics.Sample {
         void InitCubes() {
             var setterAPI = physicsCore.SetterAPI;
 
-            var rbCount = rbRoot.childCount;
+            var rbGos = GameObject.FindGameObjectsWithTag("RB");
+            var cubeGos = GameObject.FindGameObjectsWithTag("Cube");
+
+            // - Physics RB
+            var rbCount = rbGos.Length;
             rbTFs = new Transform[rbCount];
             for (int i = 0; i < rbCount; i++) {
-                rbTFs[i] = rbRoot.GetChild(i);
+                rbTFs[i] = rbGos[i].transform;
             }
+
             for (int i = 0; i < rbCount; i++) {
                 var tf = rbTFs[i].transform;
                 var rb = setterAPI.SpawnRBCube(tf.position.ToFPVector3(), tf.rotation.ToFPQuaternion(), tf.localScale.ToFPVector3(), Vector3.one.ToFPVector3());
@@ -149,10 +157,11 @@ namespace ZeroPhysics.Sample {
             }
             Debug.Log($"Total RBCube: {rbCount}");
 
-            var boxCount = cubeRoot.childCount;
+            // - Physics Cube
+            var boxCount = cubeGos.Length;
             cubeTFs = new Transform[boxCount];
             for (int i = 0; i < boxCount; i++) {
-                cubeTFs[i] = cubeRoot.GetChild(i);
+                cubeTFs[i] = cubeGos[i].transform;
             }
             for (int i = 0; i < boxCount; i++) {
                 var tf = cubeTFs[i].transform;
@@ -171,21 +180,22 @@ namespace ZeroPhysics.Sample {
         }
 
         public float bounce = 0f;
-        public float firctionCoe_box = 5f;
-        public float firctionCoe_rbCube = 1f;
+        public float firctionCoe_box;
+        public float firctionCoe_rbCube;
+
         void OnGUI() {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"弹性系数:{bounce}", GUILayout.Width(100));
             bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
-            // GUILayout.BeginHorizontal();
-            // GUILayout.Label($"摩擦系数(静态Cube):{firctionCoe_box}", GUILayout.Width(200));
-            // firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 5, GUILayout.Width(200));
-            // GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"摩擦系数(Cube):{firctionCoe_box}", GUILayout.Width(200));
+            firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 5, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"摩擦系数(RBBOX):{firctionCoe_rbCube}", GUILayout.Width(200));
+            GUILayout.Label($"摩擦系数(RB):{firctionCoe_rbCube}", GUILayout.Width(200));
             firctionCoe_rbCube = GUILayout.HorizontalSlider(firctionCoe_rbCube, 0, 5, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
