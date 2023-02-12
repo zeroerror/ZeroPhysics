@@ -38,7 +38,7 @@ namespace ZeroPhysics.Physics3D {
             // 弹力速度外力减益
             var hasBounced = !FPUtils.IsNear(v_bounced, v, FP64.EN1);
             if (hasBounced) {
-                var dot = FPVector3.Dot(rb.OutForce, hitDirBA);
+                var dot = FPVector3.Dot(rb.DirtyOutForce, hitDirBA);
                 if (dot < 0) {
                     var offsetV = ForceUtils.GetOffsetV_ByForce(dot * hitDirBA, rb.Mass, dt);
                     v_bounced += 2 * offsetV;

@@ -22,17 +22,23 @@ namespace ZeroPhysics.Physics3D {
             var allCollision_RS = collisionService.GetAllCollisions_RS();
             var allCollision_RR = collisionService.GetAllCollisions_RR();
 
-            ApplyForceHitErase_RS(allCollision_RS, dt);
-            var rbCubees = physicsFacade.rbs;
+            var rbCubes = physicsFacade.rbs;
             var rbCubeIDInfos = idService.rbIDInfos;
-            for (int i = 0; i < rbCubees.Length; i++) {
+
+            // - Update DirtyOutForce
+            ApplyDirtyOutForceByHit(allCollision_RS, dt);
+
+            // - Force To Velocity
+            for (int i = 0; i < rbCubes.Length; i++) {
                 if (!rbCubeIDInfos[i]) continue;
-                var rb = rbCubees[i];
+                var rb = rbCubes[i];
                 var linearV = rb.LinearV;
-                var offsetV = ForceUtils.GetOffsetV_ByForce(rb.OutForce, rb.Mass, dt);
+                var offsetV = ForceUtils.GetOffsetV_ByForce(rb.DirtyOutForce, rb.Mass, dt);
                 linearV += offsetV;
                 rb.SetLinearV(linearV);
             }
+
+            // - Elastic
             ApplyElasticCollision_RR(allCollision_RR, dt);
             ApplyElasticCollision_RS(allCollision_RS, dt);
             ApplyFriction_RR(allCollision_RR, dt);
@@ -107,12 +113,14 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        void ApplyForceHitErase_RS(CollisionModel[] allCollision, in FP64 dt) {
+        void ApplyDirtyOutForceByHit(CollisionModel[] allCollision, in FP64 dt) {
             for (int i = 0; i < allCollision.Length; i++) {
-                var collision = allCollision[i];
-                if (collision.CollisionType == CollisionType.Enter
-                || collision.CollisionType == CollisionType.Stay) {
-                    ForceUtils.ApplyForceHitErase_RS(collision, dt);
+                var collisionModel = allCollision[i];
+                var rb = collisionModel.bodyA.RB;
+                rb.SetDirtyOutForce(rb.OutForce);
+                if (collisionModel.CollisionType == CollisionType.Enter
+                || collisionModel.CollisionType == CollisionType.Stay) {
+                    ForceUtils.ApplyForceHitErase_RS(collisionModel, dt);
                 }
             }
         }

@@ -39,8 +39,10 @@ namespace ZeroPhysics.Sample {
 
             var getterAPI = physicsCore.GetterAPI;
             var rbCubes = getterAPI.GetAllCubeRBs();
+            var rbCount = rbCubes.Count;
             var cubes = getterAPI.GetAllCubes();
-            for (int i = 0; i < rbCubes.Count; i++) {
+            var cubeCount = cubes.Count;
+            for (int i = 0; i < rbCount; i++) {
                 var bc = rbTFs[i];
                 var rb = rbCubes[i];
                 var body = rb.Body;
@@ -49,7 +51,7 @@ namespace ZeroPhysics.Sample {
                 body.SetFirctionCoe(FP64.ToFP64(firctionCoe_rbCube));
             }
 
-            for (int i = 0; i < cubes.Count - rbCubes.Count; i++) {
+            for (int i = 0; i < cubeCount; i++) {
                 var bc = cubeTFs[i];
                 var cube = cubes[i];
                 cube.SetFirctionCoe(FP64.ToFP64(firctionCoe_box));
@@ -178,21 +180,22 @@ namespace ZeroPhysics.Sample {
         }
 
         public float bounce = 0f;
-        public float firctionCoe_box = 5f;
-        public float firctionCoe_rbCube = 1f;
+        public float firctionCoe_box;
+        public float firctionCoe_rbCube;
+
         void OnGUI() {
             GUILayout.BeginHorizontal();
             GUILayout.Label($"弹性系数:{bounce}", GUILayout.Width(100));
             bounce = GUILayout.HorizontalSlider(bounce, 0, 1, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 
-            // GUILayout.BeginHorizontal();
-            // GUILayout.Label($"摩擦系数(静态Cube):{firctionCoe_box}", GUILayout.Width(200));
-            // firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 5, GUILayout.Width(200));
-            // GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"摩擦系数(Cube):{firctionCoe_box}", GUILayout.Width(200));
+            firctionCoe_box = GUILayout.HorizontalSlider(firctionCoe_box, 0, 5, GUILayout.Width(200));
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label($"摩擦系数(RBBOX):{firctionCoe_rbCube}", GUILayout.Width(200));
+            GUILayout.Label($"摩擦系数(RB):{firctionCoe_rbCube}", GUILayout.Width(200));
             firctionCoe_rbCube = GUILayout.HorizontalSlider(firctionCoe_rbCube, 0, 5, GUILayout.Width(200));
             GUILayout.EndHorizontal();
 

@@ -14,6 +14,7 @@ namespace ZeroPhysics.Physics3D {
             var rb = bodyA.RB;
 
             if (hitDirBA == FPVector3.Zero) {
+                UnityEngine.Debug.Log($"111");
                 return;
             }
 
@@ -21,13 +22,15 @@ namespace ZeroPhysics.Physics3D {
             FP64 linearVLen = linearV.Length();
 
             // 速度和外力同一条力线上，则退出
-            var cos = FPVector3.Dot(linearV.normalized, hitDirBA);
+            FPVector3 linearV_nor = linearV.normalized;
+            var cos = FPVector3.Dot(linearV_nor, hitDirBA);
             if (FPUtils.IsNear(cos, FP64.One, FP64.EN2) || FPUtils.IsNear(cos, -FP64.One, FP64.EN2)) {
                 return;
             }
 
             FP64 n = FPVector3.Dot(rb.OutForce, hitDirAB);
-            FPVector3 frictionForce = -u * n * GetFrictionDir(linearV, hitDirBA);
+            FPVector3 firDir = GetFrictionDir(linearV, hitDirBA);
+            FPVector3 frictionForce = -u * n * firDir;
 
             // 计算摩擦力
             var frictionOffsetV = ForceUtils.GetOffsetV_ByForce(frictionForce, rb.Mass, dt);
@@ -38,7 +41,7 @@ namespace ZeroPhysics.Physics3D {
             var cosFlag = FPVector3.Dot(frictionOffsetV, linearV);
             if (cosFlag > FP64.EN4) {
                 linearV = FPVector3.Zero;
-                // UnityEngine.Debug.Log($"{rb} 摩擦力 停下");
+                UnityEngine.Debug.Log($"{rb} 摩擦力 停下");
             }
 
             rb.SetLinearV(linearV);
