@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using FixMath.NET;
 using ZeroPhysics.Generic;
-using ZeroPhysics.Physics3D;
+using ZeroPhysics.Physics;
 
 namespace ZeroPhysics.Service {
 
@@ -15,7 +15,7 @@ namespace ZeroPhysics.Service {
             collisionDic_RR = new Dictionary<ulong, CollisionModel>();
         }
 
-        public void AddCollision_RS(Rigidbody3D rb, IPhysicsBody3D body) {
+        public void AddCollision_RS(Rigidbody rb, IPhysicsBody body) {
             var rbID = rb.GetBodyKey();
             var bodyID = body.GetBodyKey();
             var dicKey = CombineDicKey(rbID, bodyID);
@@ -41,7 +41,7 @@ namespace ZeroPhysics.Service {
             }
         }
 
-        public void AddCollision_RR(Rigidbody3D rb1, Rigidbody3D rb2) {
+        public void AddCollision_RR(Rigidbody rb1, Rigidbody rb2) {
             var rbID1 = rb1.GetBodyKey();
             var rbID2 = rb2.GetBodyKey();
             var dicKey = CombineDicKey(rbID1, rbID2);
@@ -68,7 +68,7 @@ namespace ZeroPhysics.Service {
             }
         }
 
-        public void RemoveCollision_RS(Rigidbody3D rb, IPhysicsBody3D body) {
+        public void RemoveCollision_RS(Rigidbody rb, IPhysicsBody body) {
             var ida = rb.GetBodyKey();
             var idb = body.GetBodyKey();
             var dicKey = CombineDicKey(ida, idb);
@@ -86,7 +86,7 @@ namespace ZeroPhysics.Service {
             }
         }
 
-        public void RemoveCollision_RR(Rigidbody3D rb1, Rigidbody3D rb2) {
+        public void RemoveCollision_RR(Rigidbody rb1, Rigidbody rb2) {
             var rbID1 = rb1.GetBodyKey();
             var rbID2 = rb2.GetBodyKey();
             var dicKey = CombineDicKey(rbID1, rbID2);
@@ -121,7 +121,7 @@ namespace ZeroPhysics.Service {
             return collisions;
         }
 
-        public void UpdateHitDirBA_RS(Rigidbody3D rb, IPhysicsBody3D body, in FPVector3 hitDirBA) {
+        public void UpdateHitDirBA_RS(Rigidbody rb, IPhysicsBody body, in FPVector3 hitDirBA) {
             var rbID = rb.GetBodyKey();
             var bodyID = body.GetBodyKey();
             var dicKey = CombineDicKey(rbID, bodyID);
@@ -137,7 +137,7 @@ namespace ZeroPhysics.Service {
             collisionDic_RS[dicKey] = collision;
         }
 
-        public void UpdateHitDirBA_RR(Rigidbody3D rb1, Rigidbody3D rb2, in FPVector3 hitDirBA) {
+        public void UpdateHitDirBA_RR(Rigidbody rb1, Rigidbody rb2, in FPVector3 hitDirBA) {
             var rbID1 = rb1.GetBodyKey();
             var rbID2 = rb2.GetBodyKey();
             var dicKey = CombineDicKey(rbID1, rbID2);
@@ -154,7 +154,7 @@ namespace ZeroPhysics.Service {
             collisionDic_RR[dicKey] = collision;
         }
 
-        public void UpdateFrictionCoeCombined_RS(Rigidbody3D rb, IPhysicsBody3D body, in FP64 frictionCombined) {
+        public void UpdateFrictionCoeCombined_RS(Rigidbody rb, IPhysicsBody body, in FP64 frictionCombined) {
             var rbID = rb.GetBodyKey();
             var bodyID = body.GetBodyKey();
             var dicKey = CombineDicKey(rbID, bodyID);
@@ -167,7 +167,7 @@ namespace ZeroPhysics.Service {
             collisionDic_RS[dicKey] = collision;
         }
 
-        public void UpdateFrictionCoeCombined_RR(Rigidbody3D rb1, Rigidbody3D rb2, in FP64 frictionCombined) {
+        public void UpdateFrictionCoeCombined_RR(Rigidbody rb1, Rigidbody rb2, in FP64 frictionCombined) {
             var rbID1 = rb1.GetBodyKey();
             var rbID2 = rb2.GetBodyKey();
             var dicKey = CombineDicKey(rbID1, rbID2);

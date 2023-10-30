@@ -1,36 +1,36 @@
 using FixMath.NET;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D.API
+namespace ZeroPhysics.Physics.API
 {
 
     public class SetterAPI : ISetterAPI
     {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public SetterAPI() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
+        public void Inject(PhysicsContext physicsContext)
         {
-            this.physicsFacade = physicsFacade;
+            this.physicsContext = physicsContext;
         }
 
-        Rigidbody3D ISetterAPI.SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Rigidbody ISetterAPI.SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
-            var domain = physicsFacade.Domain.SpawnDomain;
+            var domain = physicsContext.Domain.SpawnDomain;
             return domain.SpawnRBCube(center, rotation, scale, size, 1);
         }
 
-        Cube ISetterAPI.SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Box ISetterAPI.SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
-            var domain = physicsFacade.Domain.SpawnDomain;
+            var domain = physicsContext.Domain.SpawnDomain;
             return domain.SpawnCube(center, rotation, scale, size);
         }
 
-        Sphere3D ISetterAPI.SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
+        Sphere ISetterAPI.SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size)
         {
-            var domain = physicsFacade.Domain.SpawnDomain;
+            var domain = physicsContext.Domain.SpawnDomain;
             return domain.SpawnSphere(center, rotation, scale, size);
         }
     }

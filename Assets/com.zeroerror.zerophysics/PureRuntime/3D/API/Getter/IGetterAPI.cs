@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D.API
+namespace ZeroPhysics.Physics.API
 {
 
     public interface IGetterAPI
     {
 
-        List<Rigidbody3D> GetAllCubeRBs();
-        List<Cube> GetAllCubes();
+        List<Rigidbody> GetAllCubeRBs();
+        List<Box> GetAllCubes();
         CollisionModel[] GetAllCollisions_RS();
 
     }

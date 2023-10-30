@@ -1,38 +1,38 @@
 using System;
 using System.Collections.Generic;
 using ZeroPhysics.Generic;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D.API
+namespace ZeroPhysics.Physics.API
 {
 
     public class GetterAPI : IGetterAPI
     {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public GetterAPI() { }
 
-        public void Inject(Physics3DFacade physicsFacade)
+        public void Inject(PhysicsContext physicsContext)
         {
-            this.physicsFacade = physicsFacade;
+            this.physicsContext = physicsContext;
         }
 
-        List<Cube> IGetterAPI.GetAllCubes()
+        List<Box> IGetterAPI.GetAllCubes()
         {
-            var domain = physicsFacade.Domain.DataDomain;
+            var domain = physicsContext.Domain.DataDomain;
             return domain.GetAllCubes();
         }
 
-        List<Rigidbody3D> IGetterAPI.GetAllCubeRBs()
+        List<Rigidbody> IGetterAPI.GetAllCubeRBs()
         {
-            var domain = physicsFacade.Domain.DataDomain;
+            var domain = physicsContext.Domain.DataDomain;
             return domain.GetAllRBs();
         }
 
         CollisionModel[] IGetterAPI.GetAllCollisions_RS()
         {
-            var collisionService = physicsFacade.Service.CollisionService;
+            var collisionService = physicsContext.Service.CollisionService;
             return collisionService.GetAllCollisions_RS();
         }
     }

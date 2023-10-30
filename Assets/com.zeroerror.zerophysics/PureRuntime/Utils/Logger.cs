@@ -1,5 +1,5 @@
 using UnityEngine;
-using ZeroPhysics.Physics3D;
+using ZeroPhysics.Physics;
 
 namespace ZeroPhysics {
 

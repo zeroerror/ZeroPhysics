@@ -1,12 +1,12 @@
 using FixMath.NET;
-using ZeroPhysics.Generic;
+using ZeroPhysics.Physics2D.Generic;
 
 namespace ZeroPhysics.Physics2D {
 
     public static class IntersectUtil2D {
 
-        public static bool HasCollision(Rectangle rectangle1, Rectangle rectangle2) {
-            if (rectangle1.RectangleType == RectangleType.OBB || rectangle2.RectangleType == RectangleType.OBB) {
+        public static bool HasCollision(Box2D rectangle1, Box2D rectangle2) {
+            if (rectangle1.Box2DType == Box2DType.OBB || rectangle2.Box2DType == Box2DType.OBB) {
                 return HasCollision_OBB(rectangle1, rectangle2);
             }
 
@@ -22,7 +22,7 @@ namespace ZeroPhysics.Physics2D {
             return (xDiff * xDiff + yDiff * yDiff) <= (radiusSum * radiusSum);
         }
 
-        public static bool HasCollision(Circle circle, Rectangle rectangle) {
+        public static bool HasCollision(Circle circle, Box2D rectangle) {
             if (!HasCollision(circle.Box, rectangle)) return false;
             if (circle.HasCollisionWithSphere(rectangle.A)) return true;
             if (circle.HasCollisionWithSphere(rectangle.B)) return true;
@@ -36,7 +36,7 @@ namespace ZeroPhysics.Physics2D {
             bool xOverlapCenter = axisX_PjSub1.x < spherePjCenter_X && spherePjCenter_X < axisX_PjSub1.y;
 
             // - AABB: 经前置条件过滤后, 以Box的2个轴做投影,若出现SphereCenter的投影在Box投影内，则必定碰撞
-            if (rectangle.RectangleType == RectangleType.AABB) {
+            if (rectangle.Box2DType == Box2DType.AABB) {
                 if (xOverlapCenter) {
                     return true;
                 } else {
@@ -62,7 +62,7 @@ namespace ZeroPhysics.Physics2D {
             }
         }
 
-        static bool HasCollision_AABB(Rectangle rectangle1, Rectangle rectangle2) {
+        static bool HasCollision_AABB(Box2D rectangle1, Box2D rectangle2) {
             var ltPos1 = rectangle1.A;
             var rbPos1 = rectangle1.C;
             var ltPos2 = rectangle2.A;
@@ -94,7 +94,7 @@ namespace ZeroPhysics.Physics2D {
             return hasCollisionX && hasCollisionY;
         }
 
-        static bool HasCollision_OBB(Rectangle rectangle1, Rectangle rectangle2) {
+        static bool HasCollision_OBB(Box2D rectangle1, Box2D rectangle2) {
             var rectangle1_projSub = rectangle1.GetAxisX_SelfProjectionSub();
             var rectangle2_projSub = rectangle2.GetProjectionSub(rectangle1.GetAxisX());
             if (rectangle1_projSub.y < rectangle2_projSub.x) return false;
@@ -118,7 +118,7 @@ namespace ZeroPhysics.Physics2D {
             return true;
         }
 
-        public static void GetOBBMinMaxPos(Rectangle rectangle, ref FPVector2 pos_minX, ref FPVector2 pos_maxX, ref FPVector2 pox_minY, ref FPVector2 pos_maxY) {
+        public static void GetOBBMinMaxPos(Box2D rectangle, ref FPVector2 pos_minX, ref FPVector2 pos_maxX, ref FPVector2 pox_minY, ref FPVector2 pos_maxY) {
             var a = rectangle.A;
             var b = rectangle.B;
             var c = rectangle.C;

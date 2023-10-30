@@ -2,7 +2,7 @@ using FixMath.NET;
 using ZeroPhysics.Generic;
 using ZeroPhysics.Utils;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public static class ElasticCollisionUtils {
 

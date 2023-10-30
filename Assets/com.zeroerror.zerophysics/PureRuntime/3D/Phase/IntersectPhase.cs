@@ -1,24 +1,24 @@
 using FixMath.NET;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 using ZeroPhysics.Service;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class IntersectPhase {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public IntersectPhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
         public void Tick(in FP64 time) {
-            var allServices = physicsFacade.Service;
+            var allServices = physicsContext.Service;
             var collisionService = allServices.CollisionService;
             var idService = allServices.IDService;
-            var rbs = physicsFacade.rbs;
+            var rbs = physicsContext.rbs;
             var rbIDinfos = idService.rbIDInfos;
 
             for (int i = 0; i < rbs.Length - 1; i++) {
@@ -47,12 +47,12 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        void RBAndStatic(Rigidbody3D rb) {
-            var allServices = physicsFacade.Service;
+        void RBAndStatic(Rigidbody rb) {
+            var allServices = physicsContext.Service;
             var collisionService = allServices.CollisionService;
             var idService = allServices.IDService;
             var cubeIDInfos = idService.cubeIDInfos;
-            var cubes = physicsFacade.cubes;
+            var cubes = physicsContext.cubes;
             for (int j = 0; j < cubes.Length; j++) {
                 if (!cubeIDInfos[j]) {
                     continue;

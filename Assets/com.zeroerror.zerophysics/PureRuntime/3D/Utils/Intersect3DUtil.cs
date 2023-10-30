@@ -1,30 +1,31 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
+using ZeroPhysics.Physics.Generic;
 using ZeroPhysics.Utils;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public static class Intersect3DUtil {
 
-        public static bool HasCollision(Rigidbody3D rb1, Rigidbody3D rb2) {
+        public static bool HasCollision(Rigidbody rb1, Rigidbody rb2) {
             var rbBody1 = rb1.Body;
             var rbBody2 = rb2.Body;
-            if (rbBody1 is Cube cube1 && rbBody2 is Cube cube2) {
+            if (rbBody1 is Box cube1 && rbBody2 is Box cube2) {
                 return HasCollision(cube1, cube2);
             }
             throw new System.Exception($"Not Handle Collision");
         }
 
-        public static bool HasCollision(Rigidbody3D rb, IPhysicsBody3D body) {
+        public static bool HasCollision(Rigidbody rb, IPhysicsBody body) {
             var rbBody = rb.Body;
-            if (rbBody is Cube cube1 && body is Cube cube2) {
+            if (rbBody is Box cube1 && body is Box cube2) {
                 return HasCollision(cube1, cube2);
             }
             throw new System.Exception($"Not Handle Collision");
         }
 
-        public static bool HasCollision(IPhysicsBody3D body1, IPhysicsBody3D body2) {
-            if (body1 is Cube cube1 && body2 is Cube cube2) {
+        public static bool HasCollision(IPhysicsBody body1, IPhysicsBody body2) {
+            if (body1 is Box cube1 && body2 is Box cube2) {
                 return HasCollision_GJK(cube1.GetModel().vertices, cube2.GetModel().vertices, cube2.Center - cube1.Center);
                 // return HasCollision(cube1, cube2);
             }
@@ -33,15 +34,15 @@ namespace ZeroPhysics.Physics3D {
 
         #region [ --- Cube --- ]
 
-        public static bool HasCollision(Cube cube1, Cube cube2) {
-            if (cube1.GetCubeType() == CubeType.OBB || cube2.GetCubeType() == CubeType.OBB) {
+        public static bool HasCollision(Box cube1, Box cube2) {
+            if (cube1.GetCubeType() == BoxType.OBB || cube2.GetCubeType() == BoxType.OBB) {
                 return HasCollision_OBB(cube1.GetModel(), cube2.GetModel());
             } else {
                 return HasCollision_AABB(cube1.GetModel(), cube2.GetModel());
             }
         }
 
-        public static bool HasCollision_AABB(in CubeModel cube1, in CubeModel cube2) {
+        public static bool HasCollision_AABB(in BoxModel cube1, in BoxModel cube2) {
             var min1 = cube1.Min;
             var max1 = cube1.Max;
             var min2 = cube2.Min;
@@ -57,7 +58,7 @@ namespace ZeroPhysics.Physics3D {
             return hasIntersectX && hasIntersectY && hasIntersectZ;
         }
 
-        public static bool HasCollision_OBB(in CubeModel cube1, in CubeModel cube2) {
+        public static bool HasCollision_OBB(in BoxModel cube1, in BoxModel cube2) {
             // - 6 Axis
             if (!HasIntersectsWithAxisX(cube1, cube2)) {
                 return false;
@@ -79,7 +80,7 @@ namespace ZeroPhysics.Physics3D {
             }
 
             // - 9 Axis
-            Axis3D axis = new Axis3D();
+            Axis axis = new Axis();
             var dirX1 = cube1.GetXDir();
             var dirY1 = cube1.GetYDir();
             var dirZ1 = cube1.GetZDir();
@@ -168,38 +169,38 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        internal static bool HasIntersectsWithAxisX(in CubeModel srcCube, in CubeModel cube) {
+        internal static bool HasIntersectsWithAxisX(in BoxModel srcCube, in BoxModel cube) {
             var b1AxisX = srcCube.GetAxisX();
             var cube1_projSub = srcCube.GetAxisX_SelfProjectionSub();
             var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisX);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisY(in CubeModel srcCube, in CubeModel cube) {
+        internal static bool HasIntersectsWithAxisY(in BoxModel srcCube, in BoxModel cube) {
             var b1AxisY = srcCube.GetAxisY();
             var cube1_projSub = srcCube.GetAxisY_SelfProjectionSub();
             var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisY);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersectsWithAxisZ(in CubeModel cube1, in CubeModel cube) {
+        internal static bool HasIntersectsWithAxisZ(in BoxModel cube1, in BoxModel cube) {
             var b1AxisZ = cube1.GetAxisZ();
             var cube1_projSub = cube1.GetAxisZ_SelfProjectionSub();
             var box2_projSub = Projection3DUtils.GetProjectionSub(cube, b1AxisZ);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool HasIntersects_WithAxis(in CubeModel model1, in CubeModel model2, in Axis3D axis) {
+        internal static bool HasIntersects_WithAxis(in BoxModel model1, in BoxModel model2, in Axis axis) {
             var cube1_projSub = Projection3DUtils.GetProjectionSub(model1, axis);
             var box2_projSub = Projection3DUtils.GetProjectionSub(model2, axis);
             return OBBHasIntersects(cube1_projSub, box2_projSub);
         }
 
-        internal static bool IsInsideCube(in CubeModel model, FPVector3 point, in FP64 epsilon) {
+        internal static bool IsInsideCube(in BoxModel model, FPVector3 point, in FP64 epsilon) {
             var px = point.x;
             var py = point.y;
             var pz = point.z;
-            if (model.GetCubeType() == CubeType.AABB) {
+            if (model.GetCubeType() == BoxType.AABB) {
                 var min = model.Min;
                 var max = model.Max;
                 return px >= (min.x - epsilon) && px <= (max.x + epsilon)

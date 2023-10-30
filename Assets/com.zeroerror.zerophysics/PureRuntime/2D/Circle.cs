@@ -1,5 +1,5 @@
 using FixMath.NET;
-using ZeroPhysics.Generic;
+using ZeroPhysics.Physics2D.Generic;
 
 namespace ZeroPhysics.Physics2D {
 
@@ -22,14 +22,14 @@ namespace ZeroPhysics.Physics2D {
         FP64 radius;
         public FP64 Radius => radius;
 
-        Rectangle rectangle;
-        public Rectangle Box => rectangle;
+        Box2D rectangle;
+        public Box2D Box => rectangle;
 
         #endregion
 
         public Circle(FPVector2 center, FP64 radius, FP64 rotAngle, FP64 scale) {
-            rectangle = new Rectangle(center, radius, radius, 0, new FPVector2(scale, scale));
-            rectangle.SetRectangleType(RectangleType.AABB);
+            rectangle = new Box2D(center, radius, radius, 0, new FPVector2(scale, scale));
+            rectangle.SetBox2DType(Box2DType.AABB);
             UpdateCenter(center);
             UpdateRadius(radius);
             UpdateRotAngle(rotAngle);

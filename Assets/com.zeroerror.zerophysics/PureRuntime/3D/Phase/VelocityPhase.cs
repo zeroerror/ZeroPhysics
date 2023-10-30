@@ -1,28 +1,28 @@
 using System;
 using FixMath.NET;
 using ZeroPhysics.Generic;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class VelocityPhase {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public VelocityPhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
         public void Tick(in FP64 dt) {
-            var service = physicsFacade.Service;
+            var service = physicsContext.Service;
             var idService = service.IDService;
             var collisionService = service.CollisionService;
             var allCollision_RS = collisionService.GetAllCollisions_RS();
             var allCollision_RR = collisionService.GetAllCollisions_RR();
 
-            var rbCubes = physicsFacade.rbs;
+            var rbCubes = physicsContext.rbs;
             var rbCubeIDInfos = idService.rbIDInfos;
 
             // - Update DirtyOutForce

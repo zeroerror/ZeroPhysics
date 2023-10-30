@@ -1,33 +1,33 @@
 using FixMath.NET;
-using ZeroPhysics.Generic;
+using ZeroPhysics.Physics.Generic;
 using ZeroPhysics.Utils;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public static class Penetration3DUtils {
 
-        public static FPVector3 GetMTV_RR(Rigidbody3D rb1, Rigidbody3D rb2) {
+        public static FPVector3 GetMTV_RR(Rigidbody rb1, Rigidbody rb2) {
             var body1 = rb1.Body;
             var body2 = rb2.Body;
-            if (body1 is Cube cube1 && body2 is Cube cube2) {
+            if (body1 is Box cube1 && body2 is Box cube2) {
                 return GetMTV(cube1, cube2);
             }
             throw new System.Exception($"Not Handle MTV");
         }
 
-        public static FPVector3 GetMTV_RS(Rigidbody3D rb, IPhysicsBody3D body) {
+        public static FPVector3 GetMTV_RS(Rigidbody rb, IPhysicsBody body) {
             var rbBody = rb.Body;
             return GetMTV(rbBody, body);
         }
 
-        public static FPVector3 GetMTV(IPhysicsBody3D body1, IPhysicsBody3D body2) {
-            if (body1 is Cube cube1 && body2 is Cube cube2) {
+        public static FPVector3 GetMTV(IPhysicsBody body1, IPhysicsBody body2) {
+            if (body1 is Box cube1 && body2 is Box cube2) {
                 return GetMTV_Cube(cube1.GetModel(), cube2.GetModel());
             }
             throw new System.Exception($"Not Handle MTV");
         }
 
-        public static FPVector3 GetMTV_Cube(CubeModel model1, CubeModel model2) {
+        public static FPVector3 GetMTV_Cube(BoxModel model1, BoxModel model2) {
             FP64 len_min = FP64.MaxValue;
             FPVector3 dir = FPVector3.Zero;
 
@@ -72,7 +72,7 @@ namespace ZeroPhysics.Physics3D {
             return len_min * dir;
         }
 
-        static void UpdateMTV(ref FP64 len_min, ref FPVector3 dir, Axis3D axis, FPVector2 pjSub1, FPVector2 pjSub2) {
+        static void UpdateMTV(ref FP64 len_min, ref FPVector3 dir, Axis axis, FPVector2 pjSub1, FPVector2 pjSub2) {
             var l1 = pjSub2.y - pjSub1.x;
             var l2 = pjSub1.y - pjSub2.x;
             var lm = FP64.Min(l1, l2);

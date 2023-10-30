@@ -1,59 +1,59 @@
 using FixMath.NET;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D.Domain {
+namespace ZeroPhysics.Physics.Domain {
 
     public class SpawnDomain {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public SpawnDomain() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
-        public Rigidbody3D SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass) {
-            var factory = physicsFacade.Factory;
+        public Rigidbody SpawnRBCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size, in FP64 mass) {
+            var factory = physicsContext.Factory;
             var cube = factory.SpawnCube(center, rotation, scale, size);
-            Rigidbody3D rb = new Rigidbody3D(cube);
+            Rigidbody rb = new Rigidbody(cube);
             rb.SetMass(mass);
-            var idService = physicsFacade.Service.IDService;
+            var idService = physicsContext.Service.IDService;
             var id = idService.FetchID_RB();
             rb.SetRBID(id);
             cube.SetRB(rb);
 
             Logger.Log($"Spawn RBCube--{id}");
 
-            physicsFacade.rbs[id] = rb;
+            physicsContext.rbs[id] = rb;
             return rb;
         }
 
-        public Cube SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
-            var factory = physicsFacade.Factory;
+        public Box SpawnCube(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
+            var factory = physicsContext.Factory;
             var cube = factory.SpawnCube(center, rotation, scale, size);
 
-            var idService = physicsFacade.Service.IDService;
+            var idService = physicsContext.Service.IDService;
             var id = idService.FetchID_Cube();
             cube.SetBodyID(id);
-            physicsFacade.cubes[id] = cube;
+            physicsContext.cubes[id] = cube;
             Logger.Log($"Spawn Cube--{id}");
             return cube;
         }
 
-        public Sphere3D SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
-            Sphere3D sphere = new Sphere3D();
+        public Sphere SpawnSphere(in FPVector3 center, in FPQuaternion rotation, in FPVector3 scale, in FPVector3 size) {
+            Sphere sphere = new Sphere();
             sphere.SetCenter(center);
             sphere.SetRotation(rotation);
             sphere.SetScale(scale);
             sphere.SetRadius(size.x);
             sphere.UpdateScaledRadius();
 
-            var idService = physicsFacade.Service.IDService;
+            var idService = physicsContext.Service.IDService;
             var id = idService.FetchID_Sphere();
             sphere.SetInstanceID(id);
 
-            physicsFacade.spheres[id] = sphere;
+            physicsContext.spheres[id] = sphere;
             return sphere;
         }
 

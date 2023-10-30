@@ -1,8 +1,6 @@
-namespace ZeroPhysics.Generic
-{
-    
-    public enum CollisionType : byte
-    {
+namespace ZeroPhysics.Generic {
+
+    public enum CollisionType : byte {
 
         None,
         Enter,

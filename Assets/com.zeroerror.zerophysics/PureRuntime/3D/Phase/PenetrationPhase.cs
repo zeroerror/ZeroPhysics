@@ -1,29 +1,29 @@
 using FixMath.NET;
 using ZeroPhysics.Generic;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 using ZeroPhysics.Utils;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class PenetrationPhase {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public PenetrationPhase() {
         }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
         public void Tick(in FP64 time) {
-            var service = physicsFacade.Service;
+            var service = physicsContext.Service;
             var collisionService = service.CollisionService;
             var allCollision_RS = collisionService.GetAllCollisions_RS();
             var allCollision_RR = collisionService.GetAllCollisions_RR();
 
             // ====== Clear
-            var rbs = physicsFacade.rbs;
+            var rbs = physicsContext.rbs;
             var idService = service.IDService;
             var rbInfos = idService.rbIDInfos;
             for (int i = 0; i < rbs.Length; i++) {

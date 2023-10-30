@@ -1,15 +1,15 @@
 using FixMath.NET;
-using ZeroPhysics.Physics3D.API;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.API;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class PhysicsWorld3DCore {
 
         FPVector3 gravity;
 
-        // ====== Facade
-        Physics3DFacade physicsFacade;
+        // ====== Context
+        PhysicsContext physicsContext;
 
         // ====== Phase
         ForcePhase forcePhase;
@@ -37,16 +37,16 @@ namespace ZeroPhysics.Physics3D {
             getterAPI = new GetterAPI();
             setterAPI = new SetterAPI();
 
-            physicsFacade = new Physics3DFacade(boxMax, rbCubeMax, sphereMax);
+            physicsContext = new PhysicsContext(boxMax, rbCubeMax, sphereMax);
 
-            forcePhase.Inject(physicsFacade);
-            velocityPhase.Inject(physicsFacade);
-            intersectPhase.Inject(physicsFacade);
-            penetrationPhase.Inject(physicsFacade);
-            transformPhase.Inject(physicsFacade);
+            forcePhase.Inject(physicsContext);
+            velocityPhase.Inject(physicsContext);
+            intersectPhase.Inject(physicsContext);
+            penetrationPhase.Inject(physicsContext);
+            transformPhase.Inject(physicsContext);
 
-            getterAPI.Inject(physicsFacade);
-            setterAPI.Inject(physicsFacade);
+            getterAPI.Inject(physicsContext);
+            setterAPI.Inject(physicsContext);
         }
 
         public void Tick(FP64 time) {

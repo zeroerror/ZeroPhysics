@@ -1,8 +1,6 @@
-namespace ZeroPhysics.Generic
-{
+namespace ZeroPhysics.Generic {
 
-    public enum TickType
-    {
+    public enum TickType {
         Auto,
         Manual
     }

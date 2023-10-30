@@ -1,36 +1,36 @@
 using System.Collections.Generic;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D.Domain {
+namespace ZeroPhysics.Physics.Domain {
 
     public class DataDomain {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public DataDomain() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
-        public List<Cube> GetAllCubes() {
-            var cubes = physicsFacade.cubes;
-            var idService = physicsFacade.Service.IDService;
+        public List<Box> GetAllCubes() {
+            var cubes = physicsContext.cubes;
+            var idService = physicsContext.Service.IDService;
             var infos = idService.cubeIDInfos;
             var len = infos.Length;
-            List<Cube> all = new List<Cube>();
+            List<Box> all = new List<Box>();
             for (int i = 0; i < len; i++) {
                 if (infos[i]) all.Add(cubes[i]);
             }
             return all;
         }
 
-        public List<Rigidbody3D> GetAllRBs() {
-            var rbCubees = physicsFacade.rbs;
-            var idService = physicsFacade.Service.IDService;
+        public List<Rigidbody> GetAllRBs() {
+            var rbCubees = physicsContext.rbs;
+            var idService = physicsContext.Service.IDService;
             var infos = idService.rbIDInfos;
             var len = infos.Length;
-            List<Rigidbody3D> all = new List<Rigidbody3D>();
+            List<Rigidbody> all = new List<Rigidbody>();
             for (int i = 0; i < len; i++) {
                 if (infos[i]) {
                     all.Add(rbCubees[i]);

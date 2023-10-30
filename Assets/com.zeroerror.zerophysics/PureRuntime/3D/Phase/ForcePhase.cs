@@ -1,23 +1,21 @@
 using FixMath.NET;
-using ZeroPhysics.Generic;
-using ZeroPhysics.Physics3D.Facade;
-using ZeroPhysics.Utils;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class ForcePhase {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public ForcePhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
         public void Tick(in FP64 dt, in FPVector3 gravity) {
-            var rbs = physicsFacade.rbs;
-            var service = physicsFacade.Service;
+            var rbs = physicsContext.rbs;
+            var service = physicsContext.Service;
             var idService = service.IDService;
             var rbInfos = idService.rbIDInfos;
 
@@ -32,7 +30,7 @@ namespace ZeroPhysics.Physics3D {
             }
         }
 
-        void ApplyGravity(in FPVector3 gravity, Rigidbody3D rb, ref FPVector3 outForce) {
+        void ApplyGravity(in FPVector3 gravity, Rigidbody rb, ref FPVector3 outForce) {
             var rbCube = rb.Body;
             var mass = rb.Mass;
             outForce += gravity * mass;

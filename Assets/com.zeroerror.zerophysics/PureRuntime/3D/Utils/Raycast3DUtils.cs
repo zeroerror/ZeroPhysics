@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using FixMath.NET;
 using ZeroPhysics.Generic;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public static class Raycast3DUtils {
 
-        public static bool RayWithSphere(Ray3D ray, Sphere3D sphere, out List<FPVector3> hitPoints) {
+        public static bool RayWithSphere(Ray ray, Sphere sphere, out List<FPVector3> hitPoints) {
             hitPoints = new List<FPVector3>();
             var sphereCenter = sphere.Center;
             var sphereRadius = sphere.Radius_scaled;
@@ -38,7 +38,7 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        public static bool RayCubeWithPoints(Ray3D ray, CubeModel cube, out FPVector3 p1, out FPVector3 p2) {
+        public static bool RayCubeWithPoints(Ray ray, BoxModel cube, out FPVector3 p1, out FPVector3 p2) {
             p1 = FPVector3.Zero;
             p2 = FPVector3.Zero;
             if (!RayCubeWithLens(ray, cube, out FP64 len1, out FP64 len2)) return false;
@@ -50,13 +50,13 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        public static bool RayCubeWithLens(Ray3D ray, CubeModel cube, out FP64 len1, out FP64 len2) {
+        public static bool RayCubeWithLens(Ray ray, BoxModel cube, out FP64 len1, out FP64 len2) {
             FPVector3 origin = ray.origin;
             FPVector3 dir = ray.dir;
             return RayWithCube(origin, dir, cube, out len1, out len2);
         }
 
-        public static bool RayWithCube(FPVector3 origin, FPVector3 dir, CubeModel cube, out FP64 len1, out FP64 len2) {
+        public static bool RayWithCube(FPVector3 origin, FPVector3 dir, BoxModel cube, out FP64 len1, out FP64 len2) {
             FP64 epsilon = FP64.Epsilon;
             FP64 tmin = FP64.Zero;
             FP64 tmax = FP64.MaxValue;
@@ -121,7 +121,7 @@ namespace ZeroPhysics.Physics3D {
             return true;
         }
 
-        static bool RayWithCube(CubeModel cube, Ray3D ray) {
+        static bool RayWithCube(BoxModel cube, Ray ray) {
             bool HasCrossSub(in FPVector2 sub1, in FPVector2 sub2, in FP64 epsilon) {
                 return !(sub1.y < sub2.x - epsilon || sub2.y < sub1.x - epsilon);
             }
@@ -157,7 +157,7 @@ namespace ZeroPhysics.Physics3D {
         // ③ 根据①②可求得 t = ( P0 · d - Ro · d ) / ( Rd · d ) = ( P0 - Ro ) · d / ( Rd · d )
         // 分别与面进行射线交点检测,可求得t,再求得对应R值,即hitPoint
         [Obsolete]
-        public static bool RayWithCube(Ray3D ray, CubeModel cube, out List<FPVector3> hitPoints) {
+        public static bool RayWithCube(Ray ray, BoxModel cube, out List<FPVector3> hitPoints) {
             hitPoints = new List<FPVector3>();
 
             var ro = ray.origin;

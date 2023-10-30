@@ -1,12 +1,12 @@
 using System;
 using FixMath.NET;
-using ZeroPhysics.Generic;
+using ZeroPhysics.Physics.Generic;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public static class Projection3DUtils {
 
-        public static FPVector2 GetProjectionSub(CubeModel cube, in Axis3D axis) {
+        public static FPVector2 GetProjectionSub(BoxModel cube, in Axis axis) {
             FPVector3 axisOrigin = axis.origin;
             FPVector3 axisDir = axis.dir;
             FPVector3[] vertices = cube.vertices;

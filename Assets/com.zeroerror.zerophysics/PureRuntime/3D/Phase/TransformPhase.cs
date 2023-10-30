@@ -1,22 +1,22 @@
 using FixMath.NET;
-using ZeroPhysics.Physics3D.Facade;
+using ZeroPhysics.Physics.Context;
 
-namespace ZeroPhysics.Physics3D {
+namespace ZeroPhysics.Physics {
 
     public class TransformPhase {
 
-        Physics3DFacade physicsFacade;
+        PhysicsContext physicsContext;
 
         public TransformPhase() { }
 
-        public void Inject(Physics3DFacade physicsFacade) {
-            this.physicsFacade = physicsFacade;
+        public void Inject(PhysicsContext physicsContext) {
+            this.physicsContext = physicsContext;
         }
 
         public void Tick(in FP64 time) {
             // --- Cube
-            var rbCubees = physicsFacade.rbs;
-            var rbCubeInfos = physicsFacade.Service.IDService.rbIDInfos;
+            var rbCubees = physicsContext.rbs;
+            var rbCubeInfos = physicsContext.Service.IDService.rbIDInfos;
             for (int i = 0; i < rbCubees.Length; i++) {
                 if (!rbCubeInfos[i]) continue;
                 var rb = rbCubees[i];

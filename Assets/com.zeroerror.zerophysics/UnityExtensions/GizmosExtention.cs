@@ -1,24 +1,24 @@
 using UnityEngine;
-using ZeroPhysics.Physics3D;
+using ZeroPhysics.Physics;
 
 namespace ZeroPhysics.Extensions {
 
     public static class GizmosExtention {
 
-        public static void DrawPhysicsBody(IPhysicsBody3D body) {
+        public static void DrawPhysicsBody(IPhysicsBody body) {
             var rb = body.RB;
             var color = Gizmos.color;
             if (rb != null && rb.IsDirty) {
                 Gizmos.color = Color.red;
             }
-            if (body is Cube cube) {
+            if (body is Box cube) {
                 DrawCubeBorder(cube);
                 DrawCubePoint(cube);
             }
             Gizmos.color = color;
         }
 
-        public static void DrawCubeBorder(Cube cube) {
+        public static void DrawCubeBorder(Box cube) {
             var model = cube.GetModel();
             var vertices = model.vertices.ToVector3Array();
             Gizmos.DrawLine(vertices[0], vertices[1]);
@@ -37,7 +37,7 @@ namespace ZeroPhysics.Extensions {
             Gizmos.DrawLine(vertices[3], vertices[7]);
         }
 
-        public static void DrawCubePoint(Cube cube, float size = 0.1f) {
+        public static void DrawCubePoint(Box cube, float size = 0.1f) {
             var model = cube.GetModel();
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(model.Min.ToVector3(), size);
